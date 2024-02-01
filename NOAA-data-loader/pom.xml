@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.master</groupId>
-    <artifactId>data-loader</artifactId>
+    <artifactId>NOAA-data-loader</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>data-loader</name>
+    <name>NOAA-data-loader</name>
     <description>data-loader</description>
     <properties>
         <java.version>21</java.version>
