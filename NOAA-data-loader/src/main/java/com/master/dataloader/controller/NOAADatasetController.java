@@ -41,20 +41,7 @@ public class NOAADatasetController {
         requestParams.put("offset",offset);
 
         String datasetsUrl = Constants.baseNoaaApiUrl + Constants.datasetsUrl;
-        URL url = new URL(
-                Utils.buildUrlWithParams(datasetsUrl,requestParams)
-        );
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("GET");
-        Utils.addTokenHeader(connection);
-
-        StringBuilder requestResult = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                requestResult.append(line);
-            }
-        }
+        String requestResult = Utils.sendRequest(datasetsUrl,requestParams);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());

@@ -39,22 +39,9 @@ public class NOAALocationCategoryController {
         Map<String,Object> requestParams = new HashMap<>();
         requestParams.put("limit",limit);
         requestParams.put("offset",offset);
+
         String locationCategoriesUrl = Constants.baseNoaaApiUrl + Constants.locationCategoriesUrl;
-
-        URL url = new URL(
-                Utils.buildUrlWithParams(locationCategoriesUrl,requestParams)
-        );
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("GET");
-        Utils.addTokenHeader(connection);
-
-        StringBuilder requestResult = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                requestResult.append(line);
-            }
-        }
+        String requestResult = Utils.sendRequest(locationCategoriesUrl,requestParams);
 
         ObjectMapper mapper = new ObjectMapper();
 
