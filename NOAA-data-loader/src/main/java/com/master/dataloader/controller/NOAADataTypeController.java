@@ -7,11 +7,10 @@ import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAADataType;
+import com.master.dataloader.repository.NOAADataTypeRepository;
 import com.master.dataloader.utils.Utils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,8 +26,14 @@ import java.util.Map;
 @RequestMapping("/NOAA/datatypes")
 public class NOAADataTypeController {
 
+    private final NOAADataTypeRepository noaaDataTypeRepository;
+
+    public NOAADataTypeController(NOAADataTypeRepository noaaDataTypeRepository) {
+        this.noaaDataTypeRepository = noaaDataTypeRepository;
+    }
+
     @GetMapping
-    public PaginationWrapper<NOAADataType> getDataTypes(
+    public PaginationWrapper<NOAADataType> getAll(
             @RequestParam(name = "datasetId", required = false) String datasetId,
             @RequestParam(name = "locationId", required = false) String locationId,
             @RequestParam(name = "stationId", required = false) String stationId,
@@ -77,5 +82,18 @@ public class NOAADataTypeController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PutMapping("/load")
+    public ResponseEntity<Void> loadDataTypes(
+            @RequestParam(name = "datasetId", required = false) String datasetId,
+            @RequestParam(name = "locationId", required = false) String locationId,
+            @RequestParam(name = "stationId", required = false) String stationId,
+            @RequestParam(name = "limit") Integer limit,
+            @RequestParam(name = "offset", defaultValue = "1") Integer offset
+    ){
+        List<NOAADataType> dataTypes = getAll(datasetId,locationId,stationId,limit,offset).getData();
+        noaaDataTypeRepository.saveAll(dataTypes);
+        return ResponseEntity.ok().build();
     }
 }

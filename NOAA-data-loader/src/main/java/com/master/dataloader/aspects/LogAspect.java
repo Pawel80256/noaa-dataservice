@@ -17,7 +17,7 @@ public class LogAspect {
 //    public void elo(){
 //        System.out.println("test");
 //    }
-    @Pointcut("execution(* com.master.dataloader.service.file_reading..*.*(..))")
+    @Pointcut("execution(* com.master.dataloader.controller..*.*(..))")
     public void fileReadingPackagePointcut() {
     }
 
