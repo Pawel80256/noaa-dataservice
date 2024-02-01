@@ -2,12 +2,12 @@ package com.master.dataloader.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAADataset;
-import com.master.dataloader.repository.NOAADatasetRepository;
+import com.master.dataloader.models.NOAALocationCategory;
+import com.master.dataloader.repository.NOAALocationCategoryRepository;
 import com.master.dataloader.utils.Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,17 +21,17 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("NOAA/datasets")
-public class NOAADatasetController {
+@RequestMapping("NOAA/location-category")
+public class NOAALocationCategoryController {
 
-    private final NOAADatasetRepository noaaDatasetRepository;
+    private final NOAALocationCategoryRepository noaaLocationCategoryRepository;
 
-    public NOAADatasetController(NOAADatasetRepository noaaDatasetRepository) {
-        this.noaaDatasetRepository = noaaDatasetRepository;
+    public NOAALocationCategoryController(NOAALocationCategoryRepository noaaLocationCategoryRepository) {
+        this.noaaLocationCategoryRepository = noaaLocationCategoryRepository;
     }
 
-    @GetMapping()
-    public PaginationWrapper<NOAADataset> getAll(
+    @GetMapping
+    public ResponseEntity<PaginationWrapper<NOAALocationCategory>> getAll(
             @RequestParam(name = "limit") Integer limit,
             @RequestParam(name = "offset", defaultValue = "1") Integer offset
     ) throws Exception {
@@ -39,10 +39,10 @@ public class NOAADatasetController {
         Map<String,Object> requestParams = new HashMap<>();
         requestParams.put("limit",limit);
         requestParams.put("offset",offset);
+        String locationCategoriesUrl = Constants.baseNoaaApiUrl + Constants.locationCategoriesUrl;
 
-        String datasetsUrl = Constants.baseNoaaApiUrl + Constants.datasetsUrl;
         URL url = new URL(
-                Utils.buildUrlWithParams(datasetsUrl,requestParams)
+                Utils.buildUrlWithParams(locationCategoriesUrl,requestParams)
         );
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
@@ -57,25 +57,27 @@ public class NOAADatasetController {
         }
 
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
 
         JsonNode rootNode = mapper.readTree(requestResult.toString());
         JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
         JsonNode resultsNode = rootNode.path("results");
 
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        List<NOAADataset> result = mapper.readerForListOf(NOAADataset.class).readValue(resultsNode);
 
-        return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
+        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
+        List<NOAALocationCategory> result = mapper.readerForListOf(NOAALocationCategory.class).readValue(resultsNode);
+
+        return ResponseEntity.ok(
+                new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result)
+        );
     }
 
     @PutMapping("/load")
-    public ResponseEntity<Void> loadAllDatasets(
+    public ResponseEntity<Void> loadAll(
             @RequestParam(name = "limit") Integer limit,
             @RequestParam(name = "offset", defaultValue = "1") Integer offset
     ) throws Exception {
-        List<NOAADataset> datasets = getAll(limit,offset).getData();
-        noaaDatasetRepository.saveAll(datasets);
+        List<NOAALocationCategory> locationCategories = getAll(limit,offset).getBody().getData();
+        noaaLocationCategoryRepository.saveAll(locationCategories);
         return ResponseEntity.ok().build();
     }
 
