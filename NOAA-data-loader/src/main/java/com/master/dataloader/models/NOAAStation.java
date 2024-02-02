@@ -45,6 +45,14 @@ public class NOAAStation {
     @Column(name = "longitude")
     private Double longitude;
 
+    public NOAAStation(String id) {
+        this.id = id;
+    }
+
+    public NOAAStation() {
+
+    }
+
     public String getId() {
         return id;
     }

@@ -7,4 +7,5 @@ public interface Constants {
     String locationCategoriesUrl = "/locationcategories";
     String locationsUrl = "/locations";
     String stationsUrl = "/stations";
+    String dataUrl = "/data";
 }

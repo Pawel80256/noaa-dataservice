@@ -32,6 +32,13 @@ public class NOAADataType {
     @JsonProperty("datacoverage")
     private Double dataCoverage;
 
+    public NOAADataType() {
+    }
+
+    public NOAADataType(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }
