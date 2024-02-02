@@ -5,11 +5,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
 public class Utils {
     public static String buildUrlWithParams(String baseUrl, Map<String, Object> params) throws Exception {
+        if(params == null){
+            params = new HashMap<>();
+        }
         StringJoiner urlWithParams = new StringJoiner("&", baseUrl + "?", "");
         for (Map.Entry<String, Object> param : params.entrySet()) {
             if (param.getValue() != null && !param.getValue().toString().isEmpty()) {

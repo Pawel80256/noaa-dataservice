@@ -8,6 +8,7 @@ import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAADataType;
 import com.master.dataloader.repository.NOAADataTypeRepository;
+import com.master.dataloader.service.NOAADataTypeService;
 import com.master.dataloader.utils.Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +28,11 @@ import java.util.Map;
 public class NOAADataTypeController {
 
     private final NOAADataTypeRepository noaaDataTypeRepository;
+    private final NOAADataTypeService noaaDataTypeService;
 
-    public NOAADataTypeController(NOAADataTypeRepository noaaDataTypeRepository) {
+    public NOAADataTypeController(NOAADataTypeRepository noaaDataTypeRepository, NOAADataTypeService noaaDataTypeService) {
         this.noaaDataTypeRepository = noaaDataTypeRepository;
+        this.noaaDataTypeService = noaaDataTypeService;
     }
 
     @GetMapping
@@ -69,6 +72,11 @@ public class NOAADataTypeController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/{dataTypeId}")
+    public ResponseEntity<NOAADataType> getById(@PathVariable("dataTypeId") String dataTypeId) throws Exception {
+        return ResponseEntity.ok(noaaDataTypeService.getById(dataTypeId));
     }
 
     @PutMapping("/load")

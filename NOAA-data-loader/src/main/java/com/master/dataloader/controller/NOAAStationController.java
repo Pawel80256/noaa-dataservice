@@ -9,6 +9,7 @@ import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.models.NOAAStation;
 import com.master.dataloader.repository.NOAAStationRepository;
+import com.master.dataloader.service.NOAAStationService;
 import com.master.dataloader.utils.Utils;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,11 @@ import java.util.Map;
 public class NOAAStationController {
 
     private final NOAAStationRepository noaaStationRepository;
+    private final NOAAStationService noaaStationService;
 
-    public NOAAStationController(NOAAStationRepository noaaStationRepository) {
+    public NOAAStationController(NOAAStationRepository noaaStationRepository, NOAAStationService noaaStationService) {
         this.noaaStationRepository = noaaStationRepository;
+        this.noaaStationService = noaaStationService;
     }
 
     @GetMapping
@@ -65,6 +68,11 @@ public class NOAAStationController {
         return ResponseEntity.ok(
                 new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result)
         );
+    }
+
+    @GetMapping("/{stationId}")
+    public ResponseEntity<NOAAStation> getById(@PathVariable("stationId") String stationId) throws Exception {
+        return ResponseEntity.ok(noaaStationService.getById(stationId));
     }
 
     @PutMapping("/load")

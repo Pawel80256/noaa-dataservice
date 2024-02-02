@@ -7,15 +7,13 @@ import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAAData;
-import com.master.dataloader.models.NOAADataType;
-import com.master.dataloader.models.NOAADataset;
 import com.master.dataloader.models.NOAAStation;
+import com.master.dataloader.repository.NOAADataRepository;
+import com.master.dataloader.repository.NOAAStationRepository;
+import com.master.dataloader.service.NOAAStationService;
 import com.master.dataloader.utils.Utils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -26,12 +24,22 @@ import java.util.Map;
 @RequestMapping("NOAA/data")
 public class NOAADataController {
 
+    private final NOAADataRepository noaaDataRepository;
+    private final NOAAStationRepository noaaStationRepository;
+    private final NOAAStationService noaaStationService;
+
+    public NOAADataController(NOAADataRepository noaaDataRepository, NOAAStationRepository noaaStationRepository, NOAAStationService noaaStationService) {
+        this.noaaDataRepository = noaaDataRepository;
+        this.noaaStationRepository = noaaStationRepository;
+        this.noaaStationService = noaaStationService;
+    }
+
     @GetMapping
     public ResponseEntity<PaginationWrapper<NOAAData>> getAll(
             @RequestParam(name = "limit") Integer limit,
             @RequestParam(name = "offset", defaultValue = "1") Integer offset,
             @RequestParam(name = "datasetId", required = true) String datasetId,
-            @RequestParam(name = "dataTypeId", required = false) String datTypeId,
+            @RequestParam(name = "dataTypeId", required = false) String dataTypeId,
             @RequestParam(name = "locationId", required = false) String locationId,
             @RequestParam(name = "stationId", required = false) String stationId,
             @RequestParam(name = "startDate", required = true) LocalDate startDate,
@@ -41,7 +49,7 @@ public class NOAADataController {
         requestParams.put("limit",limit);
         requestParams.put("offset", offset);
         requestParams.put("datasetid", datasetId);
-        requestParams.put("datatypeid", datTypeId);
+        requestParams.put("datatypeid", dataTypeId);
         requestParams.put("locationid", locationId);
         requestParams.put("stationid", stationId);
         requestParams.put("startdate", startDate);
@@ -63,5 +71,34 @@ public class NOAADataController {
         return ResponseEntity.ok(
                 new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result)
         );
+    }
+
+    @PutMapping("/load")
+    public ResponseEntity<Void> loadAll(
+            @RequestParam(name = "limit") Integer limit,
+            @RequestParam(name = "offset", defaultValue = "1") Integer offset,
+            @RequestParam(name = "datasetId", required = true, defaultValue = "GHCND") String datasetId,
+            @RequestParam(name = "dataTypeId", required = false) String dataTypeId,
+            @RequestParam(name = "locationId", required = false) String locationId,
+            @RequestParam(name = "stationId", required = false) String stationId,
+            @RequestParam(name = "startDate", required = true, defaultValue = "2012-10-03") LocalDate startDate,
+            @RequestParam(name = "endDate", required = true, defaultValue = "2012-11-10") LocalDate endDate
+    ){
+        try {
+            List<NOAAData> data = getAll(limit,offset,datasetId,dataTypeId,locationId,stationId,startDate,endDate).getBody().getData();
+            for(NOAAData noaaData : data){
+                NOAAStation station = noaaData.getStation();
+                if(station != null && !noaaStationRepository.existsById(station.getId())){
+                    NOAAStation stationFromApi = noaaStationService.getById(station.getId());
+                    noaaStationRepository.save(stationFromApi);
+                    noaaData.setStation(station);
+                }
+            }
+            noaaDataRepository.saveAll(data);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
 }
