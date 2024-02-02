@@ -6,4 +6,5 @@ public interface Constants {
     String dataTypesUrl = "/datatypes";
     String locationCategoriesUrl = "/locationcategories";
     String locationsUrl = "/locations";
+    String stationsUrl = "/stations";
 }

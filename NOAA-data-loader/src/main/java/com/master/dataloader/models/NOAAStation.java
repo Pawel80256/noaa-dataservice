@@ -39,7 +39,7 @@ public class NOAAStation {
     private Double dataCoverage;
 
     @Column(name = "elevation_unit")
-    @JsonProperty("elevationunit")
+    @JsonProperty("elevationUnit")
     private String elevationUnit;
 
     @Column(name = "longitude")
