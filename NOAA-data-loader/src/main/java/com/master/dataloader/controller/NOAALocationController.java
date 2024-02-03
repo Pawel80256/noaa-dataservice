@@ -69,6 +69,12 @@ public class NOAALocationController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/load/states")
+    public ResponseEntity<Void> loadAllStates() throws Exception{
+        noaaLocationService.loadAllStates();
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/load/cities")
     public ResponseEntity<Void> loadAllCities() throws Exception {
         noaaLocationService.loadAllCities();

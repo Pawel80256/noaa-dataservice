@@ -74,17 +74,40 @@ public class NOAALocationService {
         mapper.registerModule(new JavaTimeModule());
 
         JsonNode rootNode = mapper.readTree(requestResult.toString());
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
         JsonNode resultsNode = rootNode.path("results");
 
-
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
         List<NOAALocation> locations = mapper.readerForListOf(NOAALocation.class).readValue(resultsNode);
 
         //check what is faster - stream.foreach() or for(X x :xs)
 
         for(NOAALocation location : locations){
             location.setNoaaLocationCategory(new NOAALocationCategory("CNTRY"));
+        }
+
+        noaaLocationRepository.saveAll(locations);
+    }
+
+    public void loadAllStates()throws Exception {
+        Map<String,Object> requestParams = new HashMap<>();
+        requestParams.put("limit",51);
+        requestParams.put("offset",1);
+        requestParams.put("locationcategoryid", "ST");
+
+        String locationsUrl = Constants.baseNoaaApiUrl + Constants.locationsUrl;
+        String requestResult = Utils.sendRequest(locationsUrl,requestParams);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        JsonNode rootNode = mapper.readTree(requestResult.toString());
+        JsonNode resultsNode = rootNode.path("results");
+
+        List<NOAALocation> locations = mapper.readerForListOf(NOAALocation.class).readValue(resultsNode);
+
+        //check what is faster - stream.foreach() or for(X x :xs)
+        for(NOAALocation location : locations){
+            location.setNoaaLocationCategory(new NOAALocationCategory("ST"));
+            location.setParent(new NOAALocation("FIPS:US"));
         }
 
         noaaLocationRepository.saveAll(locations);
