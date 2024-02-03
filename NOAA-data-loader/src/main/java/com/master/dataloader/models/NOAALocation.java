@@ -1,11 +1,9 @@
 package com.master.dataloader.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -28,7 +26,26 @@ public class NOAALocation {
     @Column(name = "data_coverage")
     @JsonProperty("datacoverage")
     private Double dataCoverage;
+
+    @Column(name = "name")
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "location_category")
+    @JsonIgnore
+    private NOAALocationCategory noaaLocationCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "parent")
+    @JsonIgnore
+    private NOAALocation parent;
+
+    public NOAALocation() {
+    }
+
+    public NOAALocation(String id) {
+        this.id = id;
+    }
 
     public String getId() {
         return id;
@@ -50,6 +67,14 @@ public class NOAALocation {
         return name;
     }
 
+    public NOAALocationCategory getNoaaLocationCategory() {
+        return noaaLocationCategory;
+    }
+
+    public NOAALocation getParent() {
+        return parent;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -68,5 +93,13 @@ public class NOAALocation {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setNoaaLocationCategory(NOAALocationCategory noaaLocationCategory) {
+        this.noaaLocationCategory = noaaLocationCategory;
+    }
+
+    public void setParent(NOAALocation parent) {
+        this.parent = parent;
     }
 }

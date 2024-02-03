@@ -62,4 +62,17 @@ public class NOAALocationController {
         noaaLocationService.loadAll(limit,offset,datasetId,dataCategoryId,locationCategoryId,startDate,endDate);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/load/countries")
+    public ResponseEntity<Void> loadAllCountries() throws Exception {
+        noaaLocationService.loadAllCountries();
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/load/cities")
+    public ResponseEntity<Void> loadAllCities() throws Exception {
+        noaaLocationService.loadAllCities();
+        return ResponseEntity.ok().build();
+    }
+
 }

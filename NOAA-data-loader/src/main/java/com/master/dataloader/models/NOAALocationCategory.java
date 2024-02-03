@@ -17,6 +17,13 @@ public class NOAALocationCategory {
     @Column(name = "name")
     private String name;
 
+    public NOAALocationCategory() {
+    }
+
+    public NOAALocationCategory(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }
