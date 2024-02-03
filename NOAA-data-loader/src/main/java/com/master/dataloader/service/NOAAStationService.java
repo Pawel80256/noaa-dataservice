@@ -69,10 +69,11 @@ public class NOAAStationService {
         noaaStationRepository.saveAll(stations);
     }
 
-    public NOAAStation getByLocationId(String locationId) throws Exception {
+    public PaginationWrapper<NOAAStation> getByLocationId(String locationId) throws Exception {
         String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationsUrl;
         Map<String,Object> requestParams = new HashMap<>();
         requestParams.put("locationid",locationId);
+        requestParams.put("limit",1000);
 
         //todo: check if it can return more than one station for locationId
         String requestResult = Utils.sendRequest(stationsUrl,requestParams);
@@ -81,26 +82,20 @@ public class NOAAStationService {
         mapper.registerModule(new JavaTimeModule());
 
         JsonNode rootNode = mapper.readTree(requestResult.toString());
-        List<NOAAStation> stations = mapper.readerForListOf(NOAAStation.class).readValue(rootNode.path("results"));
+        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
+        JsonNode resultsNode = rootNode.path("results");
 
-        return stations.getFirst();
+
+        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
+        List<NOAAStation> result = mapper.readerForListOf(NOAAStation.class).readValue(resultsNode);
+
+        return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
     }
 
 
     //todo: endpoint for loading stations where locationId in (List<String> locationIds)
     public void loadByLocationId(String locationId) throws Exception {
-        String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationsUrl;
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("locationid",locationId);
-
-        String requestResult = Utils.sendRequest(stationsUrl,requestParams);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        List<NOAAStation> stations = mapper.readerForListOf(NOAAStation.class).readValue(rootNode.path("results"));
-
-        noaaStationRepository.save(stations.getFirst());
+        List<NOAAStation> stations = getByLocationId(locationId).getData();
+        noaaStationRepository.saveAll(stations);
     }
 }
