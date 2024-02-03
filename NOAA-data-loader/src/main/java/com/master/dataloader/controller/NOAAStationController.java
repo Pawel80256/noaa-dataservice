@@ -52,17 +52,30 @@ public class NOAAStationController {
         return ResponseEntity.ok(noaaStationService.getById(stationId));
     }
 
-    @PutMapping("/load")
-    public ResponseEntity<Void> loadAll(
-            @RequestParam(name = "limit") Integer limit,
-            @RequestParam(name = "offset", defaultValue = "1") Integer offset,
-            @RequestParam(name = "locationId", required = false) String locationId,
-            @RequestParam(name = "dataCategoryId", required = false) String dataCategoryId,
-            @RequestParam(name = "dataTypeId", required = false) String dataTypeId,
-            @RequestParam(name = "startDate", required = false) LocalDate startDate,
-            @RequestParam(name = "endDate", required = false) LocalDate endDate
-    ) throws Exception {
-        noaaStationService.loadAll(limit,offset,locationId,dataCategoryId,dataTypeId,startDate,endDate);
+//    @PutMapping("/load")
+//    public ResponseEntity<Void> loadAll(
+//            @RequestParam(name = "limit") Integer limit,
+//            @RequestParam(name = "offset", defaultValue = "1") Integer offset,
+//            @RequestParam(name = "locationId", required = false) String locationId,
+//            @RequestParam(name = "dataCategoryId", required = false) String dataCategoryId,
+//            @RequestParam(name = "dataTypeId", required = false) String dataTypeId,
+//            @RequestParam(name = "startDate", required = false) LocalDate startDate,
+//            @RequestParam(name = "endDate", required = false) LocalDate endDate
+//    ) throws Exception {
+//        noaaStationService.loadAll(limit,offset,locationId,dataCategoryId,dataTypeId,startDate,endDate);
+//        return ResponseEntity.ok().build();
+//    }
+//
+    @GetMapping("/location/{locationId}")
+    public ResponseEntity<NOAAStation> getByLocationId (@PathVariable("locationId") String locationId) throws Exception {
+        return ResponseEntity.ok(noaaStationService.getByLocationId(locationId));
+    }
+
+    @PutMapping("/load/{locationId}")
+    public ResponseEntity<Void> loadByLocationId(@PathVariable("locationId") String locationId) throws Exception {
+        noaaStationService.loadByLocationId(locationId);
         return ResponseEntity.ok().build();
     }
+
+
 }

@@ -18,10 +18,10 @@ public class LogAspect {
 //        System.out.println("test");
 //    }
     @Pointcut("execution(* com.master.dataloader.service..*.*(..))")
-    public void fileReadingPackagePointcut() {
+    public void testPointcut() {
     }
 
-    @After("fileReadingPackagePointcut()")
+    @After("testPointcut()")
     public void logInfo(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().toShortString();
 //        log.info(methodName + " executed successfully");
