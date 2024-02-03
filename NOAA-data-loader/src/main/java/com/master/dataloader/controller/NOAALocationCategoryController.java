@@ -8,6 +8,7 @@ import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAADataset;
 import com.master.dataloader.models.NOAALocationCategory;
 import com.master.dataloader.repository.NOAALocationCategoryRepository;
+import com.master.dataloader.service.NOAALocationCategoryService;
 import com.master.dataloader.utils.Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +25,10 @@ import java.util.Map;
 @RequestMapping("NOAA/location-category")
 public class NOAALocationCategoryController {
 
-    private final NOAALocationCategoryRepository noaaLocationCategoryRepository;
+    private final NOAALocationCategoryService noaaLocationCategoryService;
 
-    public NOAALocationCategoryController(NOAALocationCategoryRepository noaaLocationCategoryRepository) {
-        this.noaaLocationCategoryRepository = noaaLocationCategoryRepository;
+    public NOAALocationCategoryController(NOAALocationCategoryService noaaLocationCategoryService) {
+        this.noaaLocationCategoryService = noaaLocationCategoryService;
     }
 
     @GetMapping
@@ -36,25 +37,8 @@ public class NOAALocationCategoryController {
             @RequestParam(name = "offset", defaultValue = "1") Integer offset
     ) throws Exception {
 
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",limit);
-        requestParams.put("offset",offset);
-
-        String locationCategoriesUrl = Constants.baseNoaaApiUrl + Constants.locationCategoriesUrl;
-        String requestResult = Utils.sendRequest(locationCategoriesUrl,requestParams);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-        JsonNode resultsNode = rootNode.path("results");
-
-
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        List<NOAALocationCategory> result = mapper.readerForListOf(NOAALocationCategory.class).readValue(resultsNode);
-
         return ResponseEntity.ok(
-                new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result)
+                noaaLocationCategoryService.getAll(limit,offset)
         );
     }
 
@@ -63,8 +47,7 @@ public class NOAALocationCategoryController {
             @RequestParam(name = "limit") Integer limit,
             @RequestParam(name = "offset", defaultValue = "1") Integer offset
     ) throws Exception {
-        List<NOAALocationCategory> locationCategories = getAll(limit,offset).getBody().getData();
-        noaaLocationCategoryRepository.saveAll(locationCategories);
+        noaaLocationCategoryService.loadAll(limit,offset);
         return ResponseEntity.ok().build();
     }
 

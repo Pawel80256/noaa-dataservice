@@ -10,6 +10,7 @@ import com.master.dataloader.models.NOAAData;
 import com.master.dataloader.models.NOAAStation;
 import com.master.dataloader.repository.NOAADataRepository;
 import com.master.dataloader.repository.NOAAStationRepository;
+import com.master.dataloader.service.NOAADataService;
 import com.master.dataloader.service.NOAAStationService;
 import com.master.dataloader.utils.Utils;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,11 @@ import java.util.Map;
 @RequestMapping("NOAA/data")
 public class NOAADataController {
 
-    private final NOAADataRepository noaaDataRepository;
-    private final NOAAStationRepository noaaStationRepository;
-    private final NOAAStationService noaaStationService;
 
-    public NOAADataController(NOAADataRepository noaaDataRepository, NOAAStationRepository noaaStationRepository, NOAAStationService noaaStationService) {
-        this.noaaDataRepository = noaaDataRepository;
-        this.noaaStationRepository = noaaStationRepository;
-        this.noaaStationService = noaaStationService;
+    private final NOAADataService noaaDataService;
+
+    public NOAADataController( NOAADataService noaaDataService) {
+        this.noaaDataService = noaaDataService;
     }
 
     @GetMapping
@@ -45,31 +43,8 @@ public class NOAADataController {
             @RequestParam(name = "startDate", required = true) LocalDate startDate,
             @RequestParam(name = "endDate", required = true) LocalDate endDate
     ) throws Exception {
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",limit);
-        requestParams.put("offset", offset);
-        requestParams.put("datasetid", datasetId);
-        requestParams.put("datatypeid", dataTypeId);
-        requestParams.put("locationid", locationId);
-        requestParams.put("stationid", stationId);
-        requestParams.put("startdate", startDate);
-        requestParams.put("enddate", endDate);
-
-        String dataUrl = Constants.baseNoaaApiUrl + Constants.dataUrl;
-        String requestResult = Utils.sendRequest(dataUrl,requestParams);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-        JsonNode resultsNode = rootNode.path("results");
-
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        List<NOAAData> result = mapper.readerForListOf(NOAAData.class).readValue(resultsNode);
-
         return ResponseEntity.ok(
-                new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result)
+                noaaDataService.getAll(limit,offset,datasetId,dataTypeId,locationId,stationId,startDate,endDate)
         );
     }
 
@@ -85,16 +60,7 @@ public class NOAADataController {
             @RequestParam(name = "endDate", required = true, defaultValue = "2012-11-10") LocalDate endDate
     ){
         try {
-            List<NOAAData> data = getAll(limit,offset,datasetId,dataTypeId,locationId,stationId,startDate,endDate).getBody().getData();
-            for(NOAAData noaaData : data){
-                NOAAStation station = noaaData.getStation();
-                if(station != null && !noaaStationRepository.existsById(station.getId())){
-                    NOAAStation stationFromApi = noaaStationService.getById(station.getId());
-                    noaaStationRepository.save(stationFromApi);
-                    noaaData.setStation(station);
-                }
-            }
-            noaaDataRepository.saveAll(data);
+            noaaDataService.loadAll(limit,offset,datasetId,dataTypeId,locationId,stationId,startDate,endDate);
             return ResponseEntity.ok().build();
         }catch (Exception e){
             throw new RuntimeException(e);

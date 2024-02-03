@@ -42,31 +42,8 @@ public class NOAAStationController {
             @RequestParam(name = "startDate", required = false) LocalDate startDate,
             @RequestParam(name = "endDate", required = false) LocalDate endDate
     ) throws Exception {
-
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",limit);
-        requestParams.put("offset",offset);
-        requestParams.put("locationid", locationId);
-        requestParams.put("datacategoryid", dataCategoryId);
-        requestParams.put("datatypeid", dataTypeId);
-        requestParams.put("startdate", startDate);
-        requestParams.put("enddate", endDate);
-
-        String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationsUrl;
-        String requestResult = Utils.sendRequest(stationsUrl,requestParams);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-        JsonNode resultsNode = rootNode.path("results");
-
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        List<NOAAStation> result = mapper.readerForListOf(NOAAStation.class).readValue(resultsNode);
-
         return ResponseEntity.ok(
-                new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result)
+                noaaStationService.getAll(limit,offset,locationId,dataCategoryId,dataTypeId,startDate,endDate)
         );
     }
 
@@ -85,8 +62,7 @@ public class NOAAStationController {
             @RequestParam(name = "startDate", required = false) LocalDate startDate,
             @RequestParam(name = "endDate", required = false) LocalDate endDate
     ) throws Exception {
-        List<NOAAStation> stations = getAll(limit,offset,locationId,dataCategoryId,dataTypeId,startDate,endDate).getBody().getData();
-        noaaStationRepository.saveAll(stations);
+        noaaStationService.loadAll(limit,offset,locationId,dataCategoryId,dataTypeId,startDate,endDate);
         return ResponseEntity.ok().build();
     }
 }

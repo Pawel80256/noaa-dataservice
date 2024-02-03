@@ -9,6 +9,7 @@ import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.models.NOAALocationCategory;
 import com.master.dataloader.repository.NOAALocationRepository;
+import com.master.dataloader.service.NOAALocationService;
 import com.master.dataloader.utils.Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +27,10 @@ import java.util.Map;
 @RequestMapping("NOAA/location")
 public class NOAALocationController {
 
-    private final NOAALocationRepository noaaLocationRepository;
+    private final NOAALocationService noaaLocationService;
 
-    public NOAALocationController(NOAALocationRepository noaaLocationRepository) {
-        this.noaaLocationRepository = noaaLocationRepository;
+    public NOAALocationController(NOAALocationService noaaLocationService) {
+        this.noaaLocationService = noaaLocationService;
     }
 
     @GetMapping
@@ -43,31 +44,8 @@ public class NOAALocationController {
             @RequestParam(name = "endDate", required = false) LocalDate endDate
             ) throws Exception {
 
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",limit);
-        requestParams.put("offset",offset);
-        requestParams.put("datasetid", datasetId);
-        requestParams.put("datacategoryid", dataCategoryId);
-        requestParams.put("locationcategoryid", locationCategoryId);
-        requestParams.put("startdate", startDate);
-        requestParams.put("enddate", endDate);
-
-        String locationsUrl = Constants.baseNoaaApiUrl + Constants.locationsUrl;
-        String requestResult = Utils.sendRequest(locationsUrl,requestParams);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-        JsonNode resultsNode = rootNode.path("results");
-
-
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        List<NOAALocation> result = mapper.readerForListOf(NOAALocation.class).readValue(resultsNode);
-
         return ResponseEntity.ok(
-                new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result)
+                noaaLocationService.getAll(limit,offset,datasetId,dataCategoryId,locationCategoryId,startDate,endDate)
         );
     }
 
@@ -81,9 +59,7 @@ public class NOAALocationController {
             @RequestParam(name = "startDate", required = false) LocalDate startDate,
             @RequestParam(name = "endDate", required = false) LocalDate endDate
     ) throws Exception {
-        List<NOAALocation> locations = getAll(limit,offset,datasetId,dataCategoryId,locationCategoryId,startDate,endDate)
-                .getBody().getData();
-        noaaLocationRepository.saveAll(locations);
+        noaaLocationService.loadAll(limit,offset,datasetId,dataCategoryId,locationCategoryId,startDate,endDate);
         return ResponseEntity.ok().build();
     }
 }

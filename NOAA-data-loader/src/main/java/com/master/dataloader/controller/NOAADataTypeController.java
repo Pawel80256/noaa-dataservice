@@ -36,42 +36,14 @@ public class NOAADataTypeController {
     }
 
     @GetMapping
-    public PaginationWrapper<NOAADataType> getAll(
+    public ResponseEntity<PaginationWrapper<NOAADataType>> getAll(
             @RequestParam(name = "datasetId", required = false) String datasetId,
             @RequestParam(name = "locationId", required = false) String locationId,
             @RequestParam(name = "stationId", required = false) String stationId,
             @RequestParam(name = "limit") Integer limit,
             @RequestParam(name = "offset", defaultValue = "1") Integer offset
-    ){
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("datasetid",datasetId);
-        requestParams.put("locationid",locationId);
-        requestParams.put("stationId",stationId);
-        requestParams.put("limit",limit);
-        requestParams.put("offset",offset);
-
-        try {
-            String datasetsUrl = Constants.baseNoaaApiUrl + Constants.dataTypesUrl;
-            String requestResult = Utils.sendRequest(datasetsUrl,requestParams);
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-
-            JsonNode rootNode = mapper.readTree(requestResult.toString());
-            JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-            JsonNode resultsNode = rootNode.path("results");
-
-            PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-            List<NOAADataType> result = mapper.readerForListOf(NOAADataType.class).readValue(resultsNode);
-
-            return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    ) throws Exception {
+            return ResponseEntity.ok(noaaDataTypeService.getAll(limit,offset,datasetId,locationId,stationId));
     }
 
     @GetMapping("/{dataTypeId}")
@@ -86,9 +58,8 @@ public class NOAADataTypeController {
             @RequestParam(name = "stationId", required = false) String stationId,
             @RequestParam(name = "limit") Integer limit,
             @RequestParam(name = "offset", defaultValue = "1") Integer offset
-    ){
-        List<NOAADataType> dataTypes = getAll(datasetId,locationId,stationId,limit,offset).getData();
-        noaaDataTypeRepository.saveAll(dataTypes);
+    ) throws Exception {
+        noaaDataTypeService.loadAll(limit,offset,datasetId,locationId,stationId);
         return ResponseEntity.ok().build();
     }
 }
