@@ -45,11 +45,11 @@ public class NOAADataTypeController {
     ) throws Exception {
             return ResponseEntity.ok(noaaDataTypeService.getAll(limit,offset,datasetId,locationId,stationId));
     }
-
-    @GetMapping("/{dataTypeId}")
-    public ResponseEntity<NOAADataType> getById(@PathVariable("dataTypeId") String dataTypeId) throws Exception {
-        return ResponseEntity.ok(noaaDataTypeService.getById(dataTypeId));
-    }
+//
+//    @GetMapping("/{dataTypeId}")
+//    public ResponseEntity<NOAADataType> getById(@PathVariable("dataTypeId") String dataTypeId) throws Exception {
+//        return ResponseEntity.ok(noaaDataTypeService.getById(dataTypeId));
+//    }
 
     @PutMapping("/load")
     public ResponseEntity<Void> loadAll() throws Exception {

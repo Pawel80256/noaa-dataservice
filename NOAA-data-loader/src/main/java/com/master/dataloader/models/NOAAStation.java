@@ -1,14 +1,14 @@
 package com.master.dataloader.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
+//todo: add dataCategories and dataTypes fields, can be fetched by stationId
 @Entity
 @Table(name = "station")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -44,6 +44,20 @@ public class NOAAStation {
 
     @Column(name = "longitude")
     private Double longitude;
+
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    @JsonIgnore
+    private NOAALocation noaaLocation;
+
+    @ManyToMany
+    @JoinTable(
+        name = "stations_data_types",
+            joinColumns = @JoinColumn(name = "station_id"),
+            inverseJoinColumns = @JoinColumn(name = "data_type_id")
+    )
+    @JsonIgnore
+    private List<NOAADataType> dataTypes;
 
     public NOAAStation(String id) {
         this.id = id;
@@ -89,6 +103,14 @@ public class NOAAStation {
         return longitude;
     }
 
+    public List<NOAADataType> getDataTypes() {
+        return dataTypes;
+    }
+
+    public NOAALocation getNoaaLocation() {
+        return noaaLocation;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -123,5 +145,13 @@ public class NOAAStation {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public void setDataTypes(List<NOAADataType> dataTypes) {
+        this.dataTypes = dataTypes;
+    }
+
+    public void setNoaaLocation(NOAALocation noaaLocation) {
+        this.noaaLocation = noaaLocation;
     }
 }

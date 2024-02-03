@@ -7,6 +7,7 @@ import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAADataType;
+import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.models.NOAAStation;
 import com.master.dataloader.repository.NOAAStationRepository;
 import com.master.dataloader.utils.Utils;
@@ -75,7 +76,6 @@ public class NOAAStationService {
         requestParams.put("locationid",locationId);
         requestParams.put("limit",1000);
 
-        //todo: check if it can return more than one station for locationId
         String requestResult = Utils.sendRequest(stationsUrl,requestParams);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -96,6 +96,18 @@ public class NOAAStationService {
     //todo: endpoint for loading stations where locationId in (List<String> locationIds)
     public void loadByLocationId(String locationId) throws Exception {
         List<NOAAStation> stations = getByLocationId(locationId).getData();
+        for (NOAAStation station : stations){
+            station.setNoaaLocation(new NOAALocation(locationId));
+        }
         noaaStationRepository.saveAll(stations);
     }
+
+    public void loadDataTypesAndCategoriesForStations(List<String> stationIds){
+        List<NOAAStation> stations = noaaStationRepository.findAllById(stationIds);
+
+        for(NOAAStation station : stations){
+
+        }
+    }
+
 }

@@ -74,4 +74,13 @@ public class NOAADataService {
         noaaDataRepository.saveAll(data);
     }
 
+    public void loadByStationId(String stationId, LocalDate startDate, LocalDate endDate, String datasetId, String dataTypeId) throws Exception {
+        PaginationWrapper<NOAAData> dataRecords = getAll(1000,1,datasetId,dataTypeId,null,stationId,startDate,endDate);
+        if(dataRecords.getCount() <= 1000){
+            noaaDataRepository.saveAll(dataRecords.getData());
+        }else {
+            System.out.println("More than 1000 records to load, aborting");
+        }
+    }
+
 }

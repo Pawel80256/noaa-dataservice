@@ -53,16 +53,16 @@ public class NOAADataTypeService {
 
     }
 
-    public NOAADataType getById(String id) throws Exception {
-        String dataTypesUrl = Constants.baseNoaaApiUrl + Constants.dataTypeUrl + id;
-        String requestResult = Utils.sendRequest(dataTypesUrl,null);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        return mapper.readerFor(NOAADataType.class).readValue(rootNode);
-    }
+//    public NOAADataType getById(String id) throws Exception {
+//        String dataTypesUrl = Constants.baseNoaaApiUrl + Constants.dataTypeUrl + id;
+//        String requestResult = Utils.sendRequest(dataTypesUrl,null);
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.registerModule(new JavaTimeModule());
+//
+//        JsonNode rootNode = mapper.readTree(requestResult.toString());
+//        return mapper.readerFor(NOAADataType.class).readValue(rootNode);
+//    }
 
     public void loadAll() throws Exception {
         List<NOAADataType> dataTypes = new ArrayList<>();
@@ -70,5 +70,6 @@ public class NOAADataTypeService {
         dataTypes.addAll(getAll(1000,1001,null,null,null).getData());
         noaaDataTypeRepository.saveAll(dataTypes);
     }
+
 
 }
