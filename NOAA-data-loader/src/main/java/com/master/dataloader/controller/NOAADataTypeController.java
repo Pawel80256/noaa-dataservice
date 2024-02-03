@@ -52,14 +52,8 @@ public class NOAADataTypeController {
     }
 
     @PutMapping("/load")
-    public ResponseEntity<Void> loadDataTypes(
-            @RequestParam(name = "datasetId", required = false) String datasetId,
-            @RequestParam(name = "locationId", required = false) String locationId,
-            @RequestParam(name = "stationId", required = false) String stationId,
-            @RequestParam(name = "limit") Integer limit,
-            @RequestParam(name = "offset", defaultValue = "1") Integer offset
-    ) throws Exception {
-        noaaDataTypeService.loadAll(limit,offset,datasetId,locationId,stationId);
+    public ResponseEntity<Void> loadAll() throws Exception {
+        noaaDataTypeService.loadAll();
         return ResponseEntity.ok().build();
     }
 }

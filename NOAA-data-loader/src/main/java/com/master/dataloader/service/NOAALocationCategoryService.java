@@ -47,8 +47,8 @@ public class NOAALocationCategoryService {
         return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
     }
 
-    public void loadAll(Integer limit, Integer offset) throws Exception {
-        List<NOAALocationCategory> locationCategories = getAll(limit,offset).getData();
+    public void loadAll() throws Exception {
+        List<NOAALocationCategory> locationCategories = getAll(1000,1).getData();
         noaaLocationCategoryRepository.saveAll(locationCategories);
     }
 }

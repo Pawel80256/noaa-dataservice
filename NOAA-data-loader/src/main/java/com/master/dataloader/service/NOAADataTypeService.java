@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,8 +64,10 @@ public class NOAADataTypeService {
         return mapper.readerFor(NOAADataType.class).readValue(rootNode);
     }
 
-    public void loadAll(Integer limit, Integer offset, String datasetId, String locationId, String stationId) throws Exception {
-        List<NOAADataType> dataTypes = getAll(limit,offset,datasetId,locationId,stationId).getData();
+    public void loadAll() throws Exception {
+        List<NOAADataType> dataTypes = new ArrayList<>();
+        dataTypes.addAll(getAll(1000,1,null,null,null).getData());
+        dataTypes.addAll(getAll(1000,1001,null,null,null).getData());
         noaaDataTypeRepository.saveAll(dataTypes);
     }
 

@@ -43,11 +43,8 @@ public class NOAALocationCategoryController {
     }
 
     @PutMapping("/load")
-    public ResponseEntity<Void> loadAll(
-            @RequestParam(name = "limit") Integer limit,
-            @RequestParam(name = "offset", defaultValue = "1") Integer offset
-    ) throws Exception {
-        noaaLocationCategoryService.loadAll(limit,offset);
+    public ResponseEntity<Void> loadAll() throws Exception {
+        noaaLocationCategoryService.loadAll();
         return ResponseEntity.ok().build();
     }
 
