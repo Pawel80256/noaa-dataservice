@@ -49,20 +49,6 @@ public class NOAALocationController {
         );
     }
 
-    @PutMapping("/load")
-    public ResponseEntity<Void> loadAll(
-            @RequestParam(name = "limit") Integer limit,
-            @RequestParam(name = "offset", defaultValue = "1") Integer offset,
-            @RequestParam(name = "datasetId", required = false) String datasetId,
-            @RequestParam(name = "dataCategoryId", required = false) String dataCategoryId,
-            @RequestParam(name = "locationCategoryId", required = false) String locationCategoryId,
-            @RequestParam(name = "startDate", required = false) LocalDate startDate,
-            @RequestParam(name = "endDate", required = false) LocalDate endDate
-    ) throws Exception {
-        noaaLocationService.loadAll(limit,offset,datasetId,dataCategoryId,locationCategoryId,startDate,endDate);
-        return ResponseEntity.ok().build();
-    }
-
     @PutMapping("/load/countries")
     public ResponseEntity<Void> loadAllCountries() throws Exception {
         noaaLocationService.loadAllCountries();

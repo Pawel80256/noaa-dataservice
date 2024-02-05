@@ -45,8 +45,8 @@ public class NOAADatasetService {
         return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
     }
 
-    public void loadAll(Integer limit, Integer offset) throws Exception {
-        List<NOAADataset> datasets = getAll(limit,offset).getData();
+    public void loadAll() throws Exception {
+        List<NOAADataset> datasets = getAll(11,1).getData();
         noaaDatasetRepository.saveAll(datasets);
     }
 }

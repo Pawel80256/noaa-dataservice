@@ -48,28 +48,8 @@ public class NOAADataController {
         );
     }
 
-//    @PutMapping("/load")
-//    public ResponseEntity<Void> loadAll(
-//            @RequestParam(name = "limit") Integer limit,
-//            @RequestParam(name = "offset", defaultValue = "1") Integer offset,
-//            @RequestParam(name = "datasetId", required = true, defaultValue = "GHCND") String datasetId,
-//            @RequestParam(name = "dataTypeId", required = false) String dataTypeId,
-//            @RequestParam(name = "locationId", required = false) String locationId,
-//            @RequestParam(name = "stationId", required = false) String stationId,
-//            @RequestParam(name = "startDate", required = true, defaultValue = "2012-10-03") LocalDate startDate,
-//            @RequestParam(name = "endDate", required = true, defaultValue = "2012-11-10") LocalDate endDate
-//    ){
-//        try {
-//            noaaDataService.loadAll(limit,offset,datasetId,dataTypeId,locationId,stationId,startDate,endDate);
-//            return ResponseEntity.ok().build();
-//        }catch (Exception e){
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
-
     @PutMapping("/load")
-    public ResponseEntity<Void> load(
+    public ResponseEntity<Void> loadByStationId(
             @RequestParam(name = "stationId", required = true) String stationId,
             @RequestParam(name = "startDate", required = true, defaultValue = "2012-10-03") LocalDate startDate,
             @RequestParam(name = "endDate", required = true, defaultValue = "2012-11-10") LocalDate endDate,

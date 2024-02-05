@@ -40,11 +40,8 @@ public class NOAADatasetController {
     }
 
     @PutMapping("/load")
-    public ResponseEntity<Void> loadAllDatasets(
-            @RequestParam(name = "limit") Integer limit,
-            @RequestParam(name = "offset", defaultValue = "1") Integer offset
-    ) throws Exception {
-        noaaDatasetService.loadAll(limit,offset);
+    public ResponseEntity<Void> loadAllDatasets() throws Exception {
+        noaaDatasetService.loadAll();
         return ResponseEntity.ok().build();
     }
 

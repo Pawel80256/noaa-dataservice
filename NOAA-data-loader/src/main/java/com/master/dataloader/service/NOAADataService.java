@@ -7,6 +7,7 @@ import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAAData;
+import com.master.dataloader.models.NOAADataType;
 import com.master.dataloader.models.NOAAStation;
 import com.master.dataloader.repository.NOAADataRepository;
 import com.master.dataloader.repository.NOAAStationRepository;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class NOAADataService {
@@ -75,7 +77,16 @@ public class NOAADataService {
     }
 
     public void loadByStationId(String stationId, LocalDate startDate, LocalDate endDate, String datasetId, String dataTypeId) throws Exception {
+        NOAAStation station = noaaStationRepository.findById(stationId).orElseThrow(()-> new RuntimeException("station not found"));
+
+        //todo: handle when there are no records in timeframe for station -> this can be checked by station.getMaxDate & minDate, compare with parameters
         PaginationWrapper<NOAAData> dataRecords = getAll(1000,1,datasetId,dataTypeId,null,stationId,startDate,endDate);
+
+        List<NOAADataType> distinctDataTypesForData = dataRecords.getData().stream().map(NOAAData::getDataType)
+                        .collect(Collectors.groupingBy(NOAADataType::getId)).values().stream().map(dataTypes -> dataTypes.stream().findFirst().get()).collect(Collectors.toList());
+
+        station.setDataTypes(distinctDataTypesForData);
+
         if(dataRecords.getCount() <= 1000){
             noaaDataRepository.saveAll(dataRecords.getData());
         }else {

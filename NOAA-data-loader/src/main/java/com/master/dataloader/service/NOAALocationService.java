@@ -54,13 +54,6 @@ public class NOAALocationService {
         return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
     }
 
-    public void loadAll(Integer limit, Integer offset, String datasetId, String dataCategoryId, String locationCategoryId, LocalDate startDate, LocalDate endDate) throws Exception {
-        List<NOAALocation> locations = getAll(limit,offset,datasetId,dataCategoryId,locationCategoryId,startDate,endDate).getData();
-        noaaLocationRepository.saveAll(locations);
-    }
-    //najpierw ładuje kraje potem miasta, z miast pobieram kraj do ktorego nalezy
-
-
     public void loadAllCountries() throws Exception {
         Map<String,Object> requestParams = new HashMap<>();
         requestParams.put("limit",1000);
