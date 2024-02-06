@@ -1,9 +1,25 @@
-import {Menu, MenuProps} from "antd";
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
+import {Dropdown, Menu, MenuProps} from "antd";
+import {AppstoreOutlined, MailOutlined, SettingOutlined, GlobalOutlined } from '@ant-design/icons';
+import {useTranslation} from "react-i18next";
+import {useState} from "react";
 
 export const MyMenu = () => {
 
+    const{t, i18n} = useTranslation();
+    const [language, setLanguage] = useState("en");
+
+
     type MenuItem = Required<MenuProps>['items'][number];
+
+    const handleLanguageChange = (languageCode:string)  => {
+        i18n.changeLanguage(languageCode);
+    }
+    const onClick: MenuProps['onClick'] = (e) => {
+        if(e.key == 'en' || e.key == 'pl'){
+            handleLanguageChange(e.key);
+        }
+        console.log('click ', e);
+    };
 
     function getItem(
         label: React.ReactNode,
@@ -21,38 +37,53 @@ export const MyMenu = () => {
         } as MenuItem;
     }
 
-    const items: MenuProps['items'] = [
-        getItem('Data Loader', 'sub1', <MailOutlined />, [
-            getItem('Item 1', 'g1', null, [getItem('Option 1', '1'), getItem('Option 2', '2')], 'group'),
-            getItem('Item 2', 'g2', null, [getItem('Option 3', '3'), getItem('Option 4', '4')], 'group'),
-        ]),
-
-        getItem('Data Viewer', 'sub2', <AppstoreOutlined />, [
-            getItem('Option 5', '5'),
-            getItem('Option 6', '6'),
-            getItem('Submenu', 'sub3', null, [getItem('Option 7', '7'), getItem('Option 8', '8')]),
-        ]),
-
-        { type: 'divider' },
-
-        getItem('Data Manager (?)', 'sub4', <SettingOutlined />, [
-            getItem('Option 9', '9'),
-            getItem('Option 10', '10'),
-            getItem('Option 11', '11'),
-            getItem('Option 12', '12'),
-        ]),
-
-        getItem('Group', 'grp', null, [getItem('Option 13', '13'), getItem('Option 14', '14')], 'group'),
+    const languages: MenuProps['items'] = [
+        getItem('English', 'en'),
+        getItem('Polish', 'pl')
     ];
 
+    const languages2: MenuProps['items'] = [
+        getItem("English","en"),
+        getItem("Polish","pl")
+    ];
+
+    const items: MenuProps['items'] = [
+        getItem(t('DATA_LOADER'), 'dataLoader', <MailOutlined />, [
+            getItem(t('DATA_SETS'), 'datasets', null),
+            getItem(t('DATA_TYPES'), 'dataTypes', null),
+            getItem(t('LOCATION_CATEGORIES'), 'locationCategories', null),
+            getItem(t('LOCATIONS'), 'locations', null),
+            getItem(t('STATIONS'), 'stations', null),
+            getItem(t('MEASUREMENTS'), 'measurements', null),
+        ]),
+
+        getItem(t('DATA_VIEWER'), 'dataViewer', <AppstoreOutlined />, [
+            getItem('<in develompent>', 'inDevelopment1'),
+        ]),
+
+
+        getItem(t('DATA_MANAGER'), 'dataManager', <SettingOutlined />, [
+            getItem('<in develompent>', 'inDevelopment2')
+        ]),
+
+        getItem(t('LANGUAGE'), 'lang', <SettingOutlined />, [
+            getItem('English', 'en'),
+            getItem('Polski', 'pl')
+        ]),
+
+    ];
+
+
     return (
-        <Menu
-            onClick={()=>console.log("klikniete")}
-            style={{ width: 256 }}
-            defaultSelectedKeys={['1']}
-            defaultOpenKeys={['sub1']}
-            mode="inline"
-            items={items}
-        />
+        <>
+            <Menu
+                onClick={onClick}
+                style={{ width: 256 }}
+                defaultSelectedKeys={['1']}
+                defaultOpenKeys={['sub1']}
+                mode="inline"
+                items={items}
+            />
+        </>
     )
 }

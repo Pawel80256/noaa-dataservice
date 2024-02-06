@@ -1,0 +1,14 @@
+{
+  "DATA_LOADER": "Data Loader",
+  "DATA_SETS": "Datasets",
+  "DATA_TYPES": "Data types",
+  "LOCATION_CATEGORIES": "Location categories",
+  "LOCATIONS": "Locations",
+  "STATIONS": "Stations",
+  "MEASUREMENTS": "Measurements",
+
+  "DATA_VIEWER": "Data Viewer",
+  "DATA_MANAGER": "Data Manager",
+
+  "LANGUAGE": "Language"
+}
