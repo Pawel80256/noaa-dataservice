@@ -2,11 +2,13 @@ import {Dropdown, Menu, MenuProps} from "antd";
 import {AppstoreOutlined, MailOutlined, SettingOutlined, GlobalOutlined } from '@ant-design/icons';
 import {useTranslation} from "react-i18next";
 import {useState} from "react";
+import { useNavigate } from "react-router-dom";
 
 export const MyMenu = () => {
 
     const{t, i18n} = useTranslation();
     const [language, setLanguage] = useState("en");
+    const navigate = useNavigate();
 
 
     type MenuItem = Required<MenuProps>['items'][number];
@@ -14,11 +16,23 @@ export const MyMenu = () => {
     const handleLanguageChange = (languageCode:string)  => {
         i18n.changeLanguage(languageCode);
     }
+
+    const handleNavigation = (navigationKey:string) => {
+        switch (navigationKey){
+            case 'datasets':
+                navigate('/dataloader/datasets');
+                break;
+            case 'dataTypes':
+                navigate('/dataloader/datatypes');
+                break;
+        }
+    }
+
     const onClick: MenuProps['onClick'] = (e) => {
         if(e.key == 'en' || e.key == 'pl'){
             handleLanguageChange(e.key);
         }else{
-
+            handleNavigation(e.key)
         }
         console.log('click ', e);
     };

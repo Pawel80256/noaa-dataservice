@@ -5,37 +5,44 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './i18n';
 import {
-    createBrowserRouter,
+    createBrowserRouter, Outlet,
     RouterProvider,
 } from "react-router-dom";
 import {DatasetLoaderView} from "./views/DatasetLoaderView";
 import {MyMenu} from "./components/common/MyMenu";
-import {Row} from "antd";
+import {Col, Row} from "antd";
+import {DataTypesLoaderView} from "./views/DataTypesLoaderView";
+
+const Content = () => (
+    <Row style={{ width: '100%', height: '100vh' }}>
+        <Col style={{ width: '250px' }}>
+            <MyMenu />
+        </Col>
+        <Col style={{ flex: 1 }}>
+            <Outlet />
+        </Col>
+    </Row>
+);
 
 const router = createBrowserRouter([
     {
-        path: "/test",
-        element: <div>Hello world!</div>,
+        path: "/",
+        element: <Content />,
+        children: [
+            { path: "test", element: <div>Hello world!</div> },
+            { path: "dataloader/datasets", element: <DatasetLoaderView /> },
+            { path: "dataloader/datatypes", element: <DataTypesLoaderView /> },
+            // Inne ścieżki
+        ],
     },
-    {
-        path:"/dataloader/datasets",
-        element:<DatasetLoaderView/>
-    }
 ]);
-
-const Content = () => (
-    <Row>
-        <MyMenu />
-        <RouterProvider router={router} />
-    </Row>
-);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-      <Content />
+      <RouterProvider router={router} />
   </React.StrictMode>
 );
 

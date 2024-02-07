@@ -7,6 +7,9 @@
   "STATIONS": "Stations",
   "MEASUREMENTS": "Measurements",
 
+  "REMOTE_CONTENT": "Remote Content",
+  "DATABASE_CONTENT": "Database Content",
+
   "DATA_VIEWER": "Data Viewer",
   "DATA_MANAGER": "Data Manager",
 

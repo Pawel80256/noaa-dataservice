@@ -7,6 +7,9 @@
   "STATIONS": "Stacje",
   "MEASUREMENTS": "Pomiary",
 
+  "REMOTE_CONTENT": "Zdalna Zawartość",
+  "DATABASE_CONTENT": "Zawartość Bazy Danych",
+
   "DATA_VIEWER": "Przegląd danych",
   "DATA_MANAGER": "Menadźer danych",
 
