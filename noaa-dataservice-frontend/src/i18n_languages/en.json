@@ -13,6 +13,8 @@
   "MIN_DATE_COLUMN": "Measurements from",
   "MAX_DATE_COLUMN": "Measurements to",
 
+  "FETCH_DATASETS_LABEL": "Fetch datasets",
+
   "REMOTE_CONTENT": "Remote Content",
   "DATABASE_CONTENT": "Database Content",
 

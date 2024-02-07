@@ -5,6 +5,8 @@ import {getAllDatasets} from "../services/NOAADatasetService";
 import {useState} from "react";
 import {NOAADataset} from "../models/NOAADataset";
 import {initialPaginationWrapper, PaginationWrapper} from "../models/PaginationWrapper";
+import { DownloadOutlined } from '@ant-design/icons';
+
 
 export const DatasetLoaderView = () =>{
     const {t} = useTranslation();
@@ -28,14 +30,11 @@ export const DatasetLoaderView = () =>{
                     <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
                 </Row>
                 <Row>
-                    <RemoteDatasetsTable/>
+                    <RemoteDatasetsTable datasets={datasets}/>
                 </Row>
-                <Row>
-                    <Button onClick={onClickTest} loading={isLoading}>Fetch datasets</Button>
-                </Row>
-                <Row>
-                    <Button onClick={()=>{console.log(datasets)}}>Check local datasets state</Button>
-                </Row>
+                {datasets.count === 0 &&    <Row>
+                    <Button style={{marginTop:'25px'}} type="primary" icon={<DownloadOutlined />} onClick={onClickTest} loading={isLoading}>{t('FETCH_DATASETS_LABEL')}</Button>
+                </Row>}
             </Flex>
             <Flex style={{width:'100%', height:'50%'}} align={'flex-start'} justify={'center'}>
                 <Typography.Title level={2}>{t('DATABASE_CONTENT')}</Typography.Title>
