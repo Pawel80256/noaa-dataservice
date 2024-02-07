@@ -17,6 +17,8 @@ export const MyMenu = () => {
     const onClick: MenuProps['onClick'] = (e) => {
         if(e.key == 'en' || e.key == 'pl'){
             handleLanguageChange(e.key);
+        }else{
+
         }
         console.log('click ', e);
     };
@@ -79,8 +81,8 @@ export const MyMenu = () => {
             <Menu
                 onClick={onClick}
                 style={{ width: 256 }}
-                defaultSelectedKeys={['1']}
-                defaultOpenKeys={['sub1']}
+                // defaultSelectedKeys={['1']}
+                // defaultOpenKeys={['sub1']}
                 mode="inline"
                 items={items}
             />

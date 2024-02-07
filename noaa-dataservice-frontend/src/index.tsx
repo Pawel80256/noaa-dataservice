@@ -4,13 +4,38 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './i18n';
+import {
+    createBrowserRouter,
+    RouterProvider,
+} from "react-router-dom";
+import {DatasetLoaderView} from "./views/DatasetLoaderView";
+import {MyMenu} from "./components/common/MyMenu";
+import {Row} from "antd";
+
+const router = createBrowserRouter([
+    {
+        path: "/test",
+        element: <div>Hello world!</div>,
+    },
+    {
+        path:"/dataloader/datasets",
+        element:<DatasetLoaderView/>
+    }
+]);
+
+const Content = () => (
+    <Row>
+        <MyMenu />
+        <RouterProvider router={router} />
+    </Row>
+);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+      <Content />
   </React.StrictMode>
 );
 
