@@ -7,6 +7,12 @@
   "STATIONS": "Stacje",
   "MEASUREMENTS": "Pomiary",
 
+  "IDENTIFIER_COLUMN": "Identyfikator",
+  "NAME_COLUMN": "Nazwa",
+  "DATA_COVERAGE_COLUMN": "Pokrycie danych",
+  "MIN_DATE_COLUMN": "Pomiary od",
+  "MAX_DATE_COLUMN": "Pomiary do",
+
   "REMOTE_CONTENT": "Zdalna Zawartość",
   "DATABASE_CONTENT": "Zawartość Bazy Danych",
 

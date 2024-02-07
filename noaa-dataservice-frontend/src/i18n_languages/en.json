@@ -7,6 +7,12 @@
   "STATIONS": "Stations",
   "MEASUREMENTS": "Measurements",
 
+  "IDENTIFIER_COLUMN": "Identifier",
+  "NAME_COLUMN": "Name",
+  "DATA_COVERAGE_COLUMN": "Data coverage",
+  "MIN_DATE_COLUMN": "Measurements from",
+  "MAX_DATE_COLUMN": "Measurements to",
+
   "REMOTE_CONTENT": "Remote Content",
   "DATABASE_CONTENT": "Database Content",
 
