@@ -4,9 +4,9 @@ import {initialPaginationWrapper, PaginationWrapper} from "../models/PaginationW
 
 const apiPath = 'http://localhost:8080'
 
-export const getAllDatasets = async (limit: number, offset: number): Promise<PaginationWrapper<NOAADataset>> => {
+export const getAllRemoteDatasets = async (limit: number, offset: number): Promise<PaginationWrapper<NOAADataset>> => {
     try {
-        const response = await axios.get<PaginationWrapper<NOAADataset>>(`${apiPath}/NOAA/datasets`, {
+        const response = await axios.get<PaginationWrapper<NOAADataset>>(`${apiPath}/NOAA/datasets/remote`, {
             params: {
                 limit: limit,
                 offset: offset

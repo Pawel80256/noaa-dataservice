@@ -42,7 +42,14 @@ export const RemoteDatasetsTable = ({ datasets }: RemoteDatasetsTableProps) => {
 
     return (
         <>
-            <Table columns={columns} dataSource={datasets.data}/>
+            <Table
+                columns={columns}
+                dataSource={datasets.data}
+                pagination={{
+                    defaultPageSize:5,
+                    showSizeChanger:true,
+                    pageSizeOptions:['5','10','15']
+                }}/>
         </>
     )
 }
