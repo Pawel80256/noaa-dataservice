@@ -27,3 +27,11 @@ export const getAllRemoteDatasets = async (limit: number, offset: number): Promi
         return initialPaginationWrapper;
     }
 };
+
+export const loadByIds = async (ids:string[]) => {
+    try {
+        await axios.put(`${apiPath}/NOAA/datasets/loadByIds`,{ids:ids});
+    }catch (error){
+        console.log(error)
+    }
+}

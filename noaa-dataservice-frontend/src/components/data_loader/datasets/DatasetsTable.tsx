@@ -2,13 +2,27 @@ import {Table, TableProps} from "antd";
 import {NOAADataset} from "../../../models/NOAADataset";
 import {useTranslation} from "react-i18next";
 import {PaginationWrapper} from "../../../models/PaginationWrapper";
+import {useState} from "react";
 
 export interface RemoteDatasetsTableProps {
-    datasets: NOAADataset[];
+    datasets: NOAADataset[],
+    updateSelectedRemoteDatasets: (keys: React.Key[]) => void
 }
 
-export const RemoteDatasetsTable = ({ datasets }: RemoteDatasetsTableProps) => {
+export const DatasetsTable = ({ datasets, updateSelectedRemoteDatasets }: RemoteDatasetsTableProps) => {
     const {t} = useTranslation();
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+        // console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+        setSelectedRowKeys(newSelectedRowKeys);
+        updateSelectedRemoteDatasets(newSelectedRowKeys)
+    };
+
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
 
     const columns: TableProps<NOAADataset>['columns'] = [
         {
@@ -45,11 +59,14 @@ export const RemoteDatasetsTable = ({ datasets }: RemoteDatasetsTableProps) => {
             <Table
                 columns={columns}
                 dataSource={datasets}
+                rowKey="id"
                 pagination={{
                     defaultPageSize:5,
                     showSizeChanger:true,
                     pageSizeOptions:['5','10','15']
-                }}/>
+                }}
+                rowSelection={rowSelection}
+            />
         </>
     )
 }

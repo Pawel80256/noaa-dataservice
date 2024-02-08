@@ -3,7 +3,7 @@ import {NOAADataset} from "../../../models/NOAADataset";
 import {useTranslation} from "react-i18next";
 import {PaginationWrapper} from "../../../models/PaginationWrapper";
 import {useState} from "react";
-import {RemoteDatasetsTableProps} from "./RemoteDatasetsTable";
+import {RemoteDatasetsTableProps} from "./DatasetsTable";
 
 export interface LocalDatasetsTableProps {
     datasets: PaginationWrapper<NOAADataset>;
