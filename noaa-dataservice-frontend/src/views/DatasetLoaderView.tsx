@@ -52,13 +52,25 @@ export const DatasetLoaderView = () =>{
                         <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
                     </Row>
                     <Row>
-                        <DatasetsTable datasets={remoteDatasets.data} updateSelectedRemoteDatasets={updateSelectedRemoteDatasets}/>
+                        <DatasetsTable
+                            datasets={remoteDatasets.data}
+                            updateSelectedRemoteDatasets={updateSelectedRemoteDatasets}
+                            localDatasets={localDatasets}
+                            showStatusColumn={true}/>
                     </Row>
                     {remoteDatasets.count === 0 &&    <Row>
-                        <Button style={{marginTop:'25px'}} type="primary" icon={<DownloadOutlined />} onClick={fetchRemoteDatasets} loading={isRemoteDatasetsLoading}>{t('FETCH_REMOTE_LABEL')}</Button>
+                        <Button
+                            style={{marginTop:'25px'}}
+                            type="primary" icon={<DownloadOutlined />}
+                            onClick={fetchRemoteDatasets}
+                            loading={isRemoteDatasetsLoading}>{t('FETCH_REMOTE_LABEL')}</Button>
                     </Row>}
                     {remoteDatasets.count > 0 &&    <Row>
-                        <Button style={{marginTop:'25px'}} type="primary" icon={<DownloadOutlined />} onClick={() => console.log(selectedRemoteDatasets)} loading={isRemoteDatasetsLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
+                        <Button
+                            style={{marginTop:'25px'}}
+                            type="primary" icon={<DownloadOutlined />}
+                            onClick={() => console.log(selectedRemoteDatasets)}
+                            loading={isRemoteDatasetsLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
                     </Row>}
                 </Flex>
                 <Flex style={{ flex: 1, minHeight: '50vh' }} align={'center'} justify={'flex-start'} vertical>
@@ -66,10 +78,18 @@ export const DatasetLoaderView = () =>{
                         <Typography.Title level={2}>{t('DATABASE_CONTENT')}</Typography.Title>
                     </Row>
                     <Row>
-                        <DatasetsTable datasets={localDatasets} updateSelectedRemoteDatasets={updateSelectedRemoteDatasets}/>
+                        <DatasetsTable
+                            datasets={localDatasets}
+                            updateSelectedRemoteDatasets={updateSelectedRemoteDatasets}
+                            localDatasets={[]}
+                            showStatusColumn={false}/>
                     </Row>
                     {localDatasets.length === 0 &&    <Row>
-                        <Button style={{marginTop:'25px'}} type="primary" icon={<DownloadOutlined />} onClick={fetchLocalDatasets} loading={isLocalDatasetsLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
+                        <Button
+                            style={{marginTop:'25px'}}
+                            type="primary" icon={<DownloadOutlined />}
+                            onClick={fetchLocalDatasets}
+                            loading={isLocalDatasetsLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
                     </Row>}
                 </Flex>
             </div>

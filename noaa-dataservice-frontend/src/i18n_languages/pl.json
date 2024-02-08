@@ -13,6 +13,7 @@
   "DATA_COVERAGE_COLUMN": "Pokrycie danych",
   "MIN_DATE_COLUMN": "Pomiary od",
   "MAX_DATE_COLUMN": "Pomiary do",
+  "STATUS_COLUMN": "Status",
 
   "FETCH_REMOTE_LABEL": "Pobierz zdalne rekordy",
   "FETCH_LOCAL_LABEL": "Pobierz lokalne rekordy",

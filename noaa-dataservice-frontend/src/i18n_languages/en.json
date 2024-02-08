@@ -13,6 +13,7 @@
   "DATA_COVERAGE_COLUMN": "Data coverage",
   "MIN_DATE_COLUMN": "Measurements from",
   "MAX_DATE_COLUMN": "Measurements to",
+  "STATUS_COLUMN": "Status",
 
   "FETCH_REMOTE_LABEL": "Fetch remote data",
   "FETCH_LOCAL_LABEL": "Fetch local data",

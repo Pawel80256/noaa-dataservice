@@ -1,15 +1,17 @@
 import {Table, TableProps} from "antd";
 import {NOAADataset} from "../../../models/NOAADataset";
 import {useTranslation} from "react-i18next";
-import {PaginationWrapper} from "../../../models/PaginationWrapper";
+import { CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import {useState} from "react";
 
 export interface RemoteDatasetsTableProps {
     datasets: NOAADataset[],
-    updateSelectedRemoteDatasets: (keys: React.Key[]) => void
+    updateSelectedRemoteDatasets: (keys: React.Key[]) => void,
+    localDatasets: NOAADataset[],
+    showStatusColumn?: boolean
 }
 
-export const DatasetsTable = ({ datasets, updateSelectedRemoteDatasets }: RemoteDatasetsTableProps) => {
+export const DatasetsTable = ({ datasets, updateSelectedRemoteDatasets, localDatasets, showStatusColumn }: RemoteDatasetsTableProps) => {
     const {t} = useTranslation();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
@@ -20,7 +22,6 @@ export const DatasetsTable = ({ datasets, updateSelectedRemoteDatasets }: Remote
             pageSize: pagination.pageSize
         });
     };
-
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         // console.log('selectedRowKeys changed: ', newSelectedRowKeys);
@@ -67,6 +68,25 @@ export const DatasetsTable = ({ datasets, updateSelectedRemoteDatasets }: Remote
             render: (text, record) => record && record.maxdate ? new Date(record.maxdate).toISOString().split('T')[0] : ''
         }
     ]
+
+    if (showStatusColumn) {
+        columns.push({
+            title: t('STATUS_COLUMN'),
+            key: 'status',
+            render: (text, record) => {
+                if (localDatasets.length === 0) {
+                    return <QuestionCircleOutlined style={{ color: 'orange' }} />;
+                }
+
+                const existsInLocal = localDatasets.some(localDataset => localDataset.id === record.id);
+                if (existsInLocal) {
+                    return <CheckCircleOutlined style={{ color: 'green' }} />;
+                } else {
+                    return <CloseCircleOutlined style={{ color: 'red' }} />;
+                }
+            }
+        });
+    }
 
     return (
         <>
