@@ -1,7 +1,7 @@
 import {Button, Divider, Flex, Row, Typography} from "antd";
 import {useTranslation} from "react-i18next";
 import {DatasetsTable} from "../components/data_loader/datasets/DatasetsTable";
-import {getAllLocalDatasets, getAllRemoteDatasets} from "../services/NOAADatasetService";
+import {getAllLocalDatasets, getAllRemoteDatasets, loadByIds} from "../services/NOAADatasetService";
 import {useState} from "react";
 import {NOAADataset} from "../models/NOAADataset";
 import {initialPaginationWrapper, PaginationWrapper} from "../models/PaginationWrapper";
@@ -16,12 +16,12 @@ export const DatasetLoaderView = () =>{
 
     const [isRemoteDatasetsLoading, setIsRemoteDatasetsLoading] = useState(false);
     const [isLocalDatasetsLoading, setIsLocalDatasetsLoading] = useState(false)
+    const [isLoadingDatasetsLoading, setIsLoadingDatasetsLoading] = useState(false)
 
     const [selectedRemoteDatasets, setSelectedRemoteDatasets] = useState<React.Key[]>([]);
 
     const updateSelectedRemoteDatasets = (keys: React.Key[]) => {
         setSelectedRemoteDatasets(keys)
-        // console.log(selectedRemoteDatasets)
     }
 
     const fetchRemoteDatasets = () => {
@@ -35,12 +35,23 @@ export const DatasetLoaderView = () =>{
     };
 
     const fetchLocalDatasets = () => {
-        setIsLocalDatasetsLoading(true);
+        setIsLoadingDatasetsLoading(true);
         getAllLocalDatasets().then(response => {
             setLocalDatasets(response);
-            setIsLocalDatasetsLoading(false);
+            setIsLoadingDatasetsLoading(false);
         }).catch(()=>{
-            setIsLocalDatasetsLoading(false);
+            setIsLoadingDatasetsLoading(false);
+        })
+    }
+
+    const loadSelectedDatasets = () => {
+        const ids:string[] = selectedRemoteDatasets.map(key => key.toString());
+        setIsLoadingDatasetsLoading(true);
+        loadByIds(ids).then(() => {
+            fetchLocalDatasets();
+            setIsLoadingDatasetsLoading(false);
+        }).catch(()=>{
+            setIsLoadingDatasetsLoading(false);
         })
     }
 
@@ -69,8 +80,8 @@ export const DatasetLoaderView = () =>{
                         <Button
                             style={{marginTop:'25px'}}
                             type="primary" icon={<DownloadOutlined />}
-                            onClick={() => console.log(selectedRemoteDatasets)}
-                            loading={isRemoteDatasetsLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
+                            onClick={loadSelectedDatasets}
+                            loading={isLoadingDatasetsLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
                     </Row>}
                 </Flex>
                 <Flex style={{ flex: 1, minHeight: '50vh' }} align={'center'} justify={'flex-start'} vertical>
@@ -89,7 +100,7 @@ export const DatasetLoaderView = () =>{
                             style={{marginTop:'25px'}}
                             type="primary" icon={<DownloadOutlined />}
                             onClick={fetchLocalDatasets}
-                            loading={isLocalDatasetsLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
+                            loading={isLoadingDatasetsLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
                     </Row>}
                 </Flex>
             </div>

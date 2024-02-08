@@ -30,7 +30,7 @@ export const getAllRemoteDatasets = async (limit: number, offset: number): Promi
 
 export const loadByIds = async (ids:string[]) => {
     try {
-        await axios.put(`${apiPath}/NOAA/datasets/loadByIds`,{ids:ids});
+        await axios.put(`${apiPath}/NOAA/datasets/loadByIds`,ids);
     }catch (error){
         console.log(error)
     }
