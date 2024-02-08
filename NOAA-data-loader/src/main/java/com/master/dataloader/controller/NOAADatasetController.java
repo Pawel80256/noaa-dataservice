@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("NOAA/datasets")
 public class NOAADatasetController {
@@ -18,11 +20,8 @@ public class NOAADatasetController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<NOAADataset>> getAll(
-            @RequestParam(name = "pageNumber") Integer pageNumber,
-            @RequestParam(name = "pageSize") Integer pageSize
-    ){
-        return ResponseEntity.ok(noaaDatasetService.getAll(pageNumber,pageSize));
+    public ResponseEntity<List<NOAADataset>> getAll(){
+        return ResponseEntity.ok(noaaDatasetService.getAll());
     }
 
     @GetMapping("/remote")

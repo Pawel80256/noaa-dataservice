@@ -1,13 +1,14 @@
 import {Table, TableProps} from "antd";
-import {NOAADataset} from "../../models/NOAADataset";
+import {NOAADataset} from "../../../models/NOAADataset";
 import {useTranslation} from "react-i18next";
-import {PaginationWrapper} from "../../models/PaginationWrapper";
+import {PaginationWrapper} from "../../../models/PaginationWrapper";
+import {useState} from "react";
+import {RemoteDatasetsTableProps} from "./RemoteDatasetsTable";
 
-export interface RemoteDatasetsTableProps {
+export interface LocalDatasetsTableProps {
     datasets: PaginationWrapper<NOAADataset>;
 }
-
-export const RemoteDatasetsTable = ({ datasets }: RemoteDatasetsTableProps) => {
+export const LocalDatasetsTable = ({ datasets }: LocalDatasetsTableProps) => {
     const {t} = useTranslation();
 
     const columns: TableProps<NOAADataset>['columns'] = [

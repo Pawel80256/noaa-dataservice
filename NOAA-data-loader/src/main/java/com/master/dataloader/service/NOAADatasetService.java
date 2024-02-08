@@ -27,9 +27,8 @@ public class NOAADatasetService {
         this.noaaDatasetRepository = noaaDatasetRepository;
     }
 
-    public Page<NOAADataset> getAll(Integer pageNumber, Integer pageSize){
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        return noaaDatasetRepository.findAll(pageable);
+    public List<NOAADataset> getAll(){
+        return noaaDatasetRepository.findAll();
     }
 
     public PaginationWrapper<NOAADataset> getAllRemote(Integer limit, Integer offset) throws Exception {
