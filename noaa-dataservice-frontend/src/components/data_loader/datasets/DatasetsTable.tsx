@@ -12,6 +12,15 @@ export interface RemoteDatasetsTableProps {
 export const DatasetsTable = ({ datasets, updateSelectedRemoteDatasets }: RemoteDatasetsTableProps) => {
     const {t} = useTranslation();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
+
+    const handleTableChange = (pagination:any) => {
+        setPagination({
+            current: pagination.current,
+            pageSize: pagination.pageSize
+        });
+    };
+
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         // console.log('selectedRowKeys changed: ', newSelectedRowKeys);
@@ -25,6 +34,11 @@ export const DatasetsTable = ({ datasets, updateSelectedRemoteDatasets }: Remote
     };
 
     const columns: TableProps<NOAADataset>['columns'] = [
+        {
+            title: t('INDEX_COLUMN'),
+            key: 'index',
+            render: (value, item, index) => (pagination.current - 1) * pagination.pageSize + index + 1
+        },
         {
             title: t('IDENTIFIER_COLUMN'),
             dataIndex:'id',
@@ -61,10 +75,13 @@ export const DatasetsTable = ({ datasets, updateSelectedRemoteDatasets }: Remote
                 dataSource={datasets}
                 rowKey="id"
                 pagination={{
-                    defaultPageSize:5,
-                    showSizeChanger:true,
-                    pageSizeOptions:['5','10','15']
+                    defaultPageSize: 5,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['5', '10', '15'],
+                    current: pagination.current,
+                    pageSize: pagination.pageSize
                 }}
+                onChange={handleTableChange}
                 rowSelection={rowSelection}
             />
         </>

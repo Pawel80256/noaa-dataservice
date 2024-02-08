@@ -46,32 +46,34 @@ export const DatasetLoaderView = () =>{
 
     return(
         <>
-            <Flex style={{width:'100%', height:'50%'}} align={'center'} justify={'flex-start'} vertical>
-                <Row>
-                    <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
-                </Row>
-                <Row>
-                    <DatasetsTable datasets={remoteDatasets.data} updateSelectedRemoteDatasets={updateSelectedRemoteDatasets}/>
-                </Row>
-                {remoteDatasets.count === 0 &&    <Row>
-                    <Button style={{marginTop:'25px'}} type="primary" icon={<DownloadOutlined />} onClick={fetchRemoteDatasets} loading={isRemoteDatasetsLoading}>{t('FETCH_REMOTE_LABEL')}</Button>
-                </Row>}
-                {remoteDatasets.count > 0 &&    <Row>
-                    <Button style={{marginTop:'25px'}} type="primary" icon={<DownloadOutlined />} onClick={() => console.log(selectedRemoteDatasets)} loading={isRemoteDatasetsLoading}>Show selected</Button>
-                </Row>}
-            </Flex>
-            //chcialbym zeby ponizszy element dopasowywal sie do wysokosci poprzedniego, tzn ten na gorze moze sie zwiekszac/zmniejszac zaleznie od wielkosci tabeli, ponizej pewnej wielkosci gornej tabeli dolny komponent ma byc w polowie wysokosci ekranu, jezeli powyzszy komponent spuchnie, to ponizszy ma sie przesunac zachowujac odpowiedni odstęp
-            <Flex style={{width:'100%', height:'50%'}} align={'center'} justify={'flex-start'} vertical>
-                <Row>
-                    <Typography.Title level={2}>{t('DATABASE_CONTENT')}</Typography.Title>
-                </Row>
-                <Row>
-                    <DatasetsTable datasets={localDatasets} updateSelectedRemoteDatasets={updateSelectedRemoteDatasets}/>
-                </Row>
-                {localDatasets.length === 0 &&    <Row>
-                    <Button style={{marginTop:'25px'}} type="primary" icon={<DownloadOutlined />} onClick={fetchLocalDatasets} loading={isLocalDatasetsLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
-                </Row>}
-            </Flex>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+                <Flex style={{ flex: 1, minWidth: '50vh' }} align={'center'} justify={'flex-start'} vertical>
+                    <Row>
+                        <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
+                    </Row>
+                    <Row>
+                        <DatasetsTable datasets={remoteDatasets.data} updateSelectedRemoteDatasets={updateSelectedRemoteDatasets}/>
+                    </Row>
+                    {remoteDatasets.count === 0 &&    <Row>
+                        <Button style={{marginTop:'25px'}} type="primary" icon={<DownloadOutlined />} onClick={fetchRemoteDatasets} loading={isRemoteDatasetsLoading}>{t('FETCH_REMOTE_LABEL')}</Button>
+                    </Row>}
+                    {remoteDatasets.count > 0 &&    <Row>
+                        <Button style={{marginTop:'25px'}} type="primary" icon={<DownloadOutlined />} onClick={() => console.log(selectedRemoteDatasets)} loading={isRemoteDatasetsLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
+                    </Row>}
+                </Flex>
+                <Flex style={{ flex: 1, minHeight: '50vh' }} align={'center'} justify={'flex-start'} vertical>
+                    <Row>
+                        <Typography.Title level={2}>{t('DATABASE_CONTENT')}</Typography.Title>
+                    </Row>
+                    <Row>
+                        <DatasetsTable datasets={localDatasets} updateSelectedRemoteDatasets={updateSelectedRemoteDatasets}/>
+                    </Row>
+                    {localDatasets.length === 0 &&    <Row>
+                        <Button style={{marginTop:'25px'}} type="primary" icon={<DownloadOutlined />} onClick={fetchLocalDatasets} loading={isLocalDatasetsLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
+                    </Row>}
+                </Flex>
+            </div>
+
         </>
     )
 }

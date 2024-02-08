@@ -7,6 +7,7 @@
   "STATIONS": "Stacje",
   "MEASUREMENTS": "Pomiary",
 
+  "INDEX_COLUMN": "Indeks",
   "IDENTIFIER_COLUMN": "Identyfikator",
   "NAME_COLUMN": "Nazwa",
   "DATA_COVERAGE_COLUMN": "Pokrycie danych",
@@ -15,6 +16,7 @@
 
   "FETCH_REMOTE_LABEL": "Pobierz zdalne rekordy",
   "FETCH_LOCAL_LABEL": "Pobierz lokalne rekordy",
+  "LOAD_SELECTED_LABEL": "Załaduj zaznaczone",
 
   "REMOTE_CONTENT": "Zdalna Zawartość",
   "DATABASE_CONTENT": "Zawartość Bazy Danych",
