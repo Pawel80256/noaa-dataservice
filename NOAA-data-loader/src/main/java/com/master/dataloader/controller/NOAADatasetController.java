@@ -38,4 +38,10 @@ public class NOAADatasetController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/loadByIds")
+    public ResponseEntity<Void> loadDatasetsByIds(@RequestBody List<String> ids) throws Exception {
+        noaaDatasetService.loadByIds(ids);
+        return ResponseEntity.ok().build();
+    }
+
 }

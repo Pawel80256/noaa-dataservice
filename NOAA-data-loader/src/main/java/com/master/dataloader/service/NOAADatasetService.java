@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +53,30 @@ public class NOAADatasetService {
         return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
     }
 
+    public NOAADataset getRemoteById(String datasetId) throws Exception {
+        String datasetUrl = Constants.baseNoaaApiUrl + Constants.datasetsUrl + "/" + datasetId;
+        String requestResult = Utils.sendRequest(datasetUrl,null);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        JsonNode rootNode = mapper.readTree(requestResult.toString());
+        return mapper.readerFor(NOAADataset.class).readValue(rootNode);
+    }
+
     public void loadAll() throws Exception {
         List<NOAADataset> datasets = getAllRemote(11,1).getData();
         noaaDatasetRepository.saveAll(datasets);
     }
+
+    public void loadByIds(List<String> datasetIds) throws Exception {
+        List<NOAADataset> datasets = new ArrayList<>();
+
+        for(String datasetId : datasetIds){
+            datasets.add(getRemoteById(datasetId));
+        }
+
+        noaaDatasetRepository.saveAll(datasets);
+    }
+
 }
