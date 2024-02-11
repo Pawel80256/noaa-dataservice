@@ -8,6 +8,7 @@ import {DatasetLoaderView} from "./views/DatasetLoaderView";
 import {MyMenu} from "./components/common/MyMenu";
 import {Col, Row} from "antd";
 import {DataTypesLoaderView} from "./views/DataTypesLoaderView";
+import {LocationCategoriesLoaderView} from "./views/LocationCategoriesLoaderView";
 
 const Content = () => (
     <Row style={{ width: '100%', height: '100vh' }}>
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
             { path: "test", element: <div>Hello world!</div> },
             { path: "dataloader/datasets", element: <DatasetLoaderView /> },
             { path: "dataloader/datatypes", element: <DataTypesLoaderView /> },
+            { path: "dataloader/locationcategories", element: <LocationCategoriesLoaderView /> },
             // Inne ścieżki
         ],
     },

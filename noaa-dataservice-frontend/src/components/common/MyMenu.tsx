@@ -25,6 +25,9 @@ export const MyMenu = () => {
             case 'dataTypes':
                 navigate('/dataloader/datatypes');
                 break;
+            case 'locationCategories':
+                navigate('/dataloader/locationcategories');
+                break;
         }
     }
 
