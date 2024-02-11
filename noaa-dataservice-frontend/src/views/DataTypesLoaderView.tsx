@@ -1,11 +1,12 @@
 import {useTranslation} from "react-i18next";
-import {Button, Flex, notification, Row, Typography} from "antd";
+import {Button, Col, Flex, notification, Row, Space, Typography} from "antd";
 import {useState} from "react";
 import {NOAADataType} from "../models/NOAADataType";
 import {showErrorNotification, showSuccessNotification} from "../services/Utils";
 import {deleteLocalDataTypesByIds, getAllLocalDataTypes, getAllRemoteDataTypes} from "../services/NOAADataTypeService";
 import {DownloadOutlined} from "@ant-design/icons";
 import {DataTypesTable} from "../components/data_loader/data_types/DataTypesTable";
+import Column from "antd/es/table/Column";
 
 export const DataTypesLoaderView = () => {
     const {t} = useTranslation();
@@ -28,6 +29,11 @@ export const DataTypesLoaderView = () => {
     const updateSelectedLocalDataTypes = (keys: React.Key[]) => {
         setSelectedLocalDataTypes(keys)
     }
+
+    const selectAllLocalDataTypes = () => {
+        const newSelectedRowKeys = localDataTypes.map(dt => dt.id);
+        setSelectedLocalDataTypes(newSelectedRowKeys);
+    };
 
     const fetchRemoteDataTypes = () => {
         setIsRemoteDataTypesLoading(true);
@@ -62,6 +68,7 @@ export const DataTypesLoaderView = () => {
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
         }).catch(()=>{
             setIsDeletingDataTypesLoading(false);
+            showErrorNotification(t('DELETE_ERROR_LABEL'))
         })
     }
 
@@ -78,6 +85,7 @@ export const DataTypesLoaderView = () => {
                             dataTypes={remoteDataTypes}
                             updateSelectedDataTypes={updateSelectedRemoteDataTypes}
                             localDataTypes={localDataTypes}
+                            selectedDataTypes={selectedRemoteDataTypes}
                             showStatusColumn={true}/>
                     </Row>
                     {remoteDataTypes.length === 0 &&    <Row>
@@ -104,6 +112,7 @@ export const DataTypesLoaderView = () => {
                             dataTypes={localDataTypes}
                             updateSelectedDataTypes={updateSelectedLocalDataTypes}
                             localDataTypes={[]}
+                            selectedDataTypes={selectedLocalDataTypes}
                             showStatusColumn={false}/>
                     </Row>
                     {localDataTypes.length === 0 &&    <Row>
@@ -114,11 +123,20 @@ export const DataTypesLoaderView = () => {
                             loading={isLocalDataTypesLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
                     </Row>}
                     {localDataTypes.length > 0 &&    <Row>
-                        <Button
-                            style={{marginTop:'25px'}}
-                            type="primary" icon={<DownloadOutlined />}
-                            onClick={deleteSelectedDataTypes}
-                            loading={isDeletingDataTypesLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
+                        <Col>
+                            <Space>
+                                <Button
+                                    style={{marginTop:'25px'}}
+                                    type="primary" icon={<DownloadOutlined />}
+                                    onClick={selectAllLocalDataTypes}
+                                    loading={isDeletingDataTypesLoading}>Select all (translate)</Button>
+                                <Button
+                                    style={{marginTop:'25px'}}
+                                    type="primary" icon={<DownloadOutlined />}
+                                    onClick={deleteSelectedDataTypes}
+                                    loading={isDeletingDataTypesLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
+                            </Space>
+                        </Col>
                     </Row>}
                 </Flex>
             </div>
