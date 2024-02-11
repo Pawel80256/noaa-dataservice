@@ -1,12 +1,16 @@
-import {Button, Divider, Flex, notification, Row, Typography} from "antd";
+import {Button, Flex, notification, Row, Typography} from "antd";
 import {useTranslation} from "react-i18next";
 import {DatasetsTable} from "../components/data_loader/datasets/DatasetsTable";
-import {deleteByIds, getAllLocalDatasets, getAllRemoteDatasets, loadByIds} from "../services/NOAADatasetService";
+import {
+    deleteDatasetsByIds,
+    getAllLocalDatasets,
+    getAllRemoteDatasets,
+    loadByIds
+} from "../services/NOAADatasetService";
 import {useState} from "react";
 import {NOAADataset} from "../models/NOAADataset";
 import {initialPaginationWrapper, PaginationWrapper} from "../models/PaginationWrapper";
-import { DownloadOutlined } from '@ant-design/icons';
-import {NotificationPlacement} from "antd/es/notification/interface";
+import {DownloadOutlined} from '@ant-design/icons';
 import {showSuccessNotification} from "../services/Utils";
 
 
@@ -44,13 +48,13 @@ export const DatasetLoaderView = () =>{
     };
 
     const fetchLocalDatasets = () => {
-        setIsLoadingDatasetsLoading(true);
+        setIsLocalDatasetsLoading(true);
         getAllLocalDatasets().then(response => {
             setLocalDatasets(response);
-            setIsLoadingDatasetsLoading(false);
+            setIsLocalDatasetsLoading(false);
             showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'))
         }).catch(()=>{
-            setIsLoadingDatasetsLoading(false);
+            setIsLocalDatasetsLoading(false);
         })
     }
 
@@ -69,7 +73,7 @@ export const DatasetLoaderView = () =>{
     const deleteSelectedDatasets = () => {
         const ids:string[] = selectedLocalDatasets.map(key => key.toString());
         setIsDeletingDatasetsLoading(true);
-        deleteByIds(ids).then(() => {
+        deleteDatasetsByIds(ids).then(() => {
             fetchLocalDatasets();
             setIsDeletingDatasetsLoading(false);
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))

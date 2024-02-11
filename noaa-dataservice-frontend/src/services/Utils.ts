@@ -1,5 +1,5 @@
 import i18n from 'i18next';
-import { notification } from 'antd';
+import {notification} from 'antd';
 
 export const showSuccessNotification = (description: string) => {
     notification.success({

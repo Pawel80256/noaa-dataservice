@@ -1,13 +1,9 @@
 import {useTranslation} from "react-i18next";
 import {Button, Flex, notification, Row, Typography} from "antd";
 import {useState} from "react";
-import {initialPaginationWrapper, PaginationWrapper} from "../models/PaginationWrapper";
-import {NOAADataset} from "../models/NOAADataset";
 import {NOAADataType} from "../models/NOAADataType";
-import {getAllRemoteDatasets} from "../services/NOAADatasetService";
 import {showErrorNotification, showSuccessNotification} from "../services/Utils";
-import {getAllRemoteDataTypes} from "../services/NOAADataTypeService";
-import {DatasetsTable} from "../components/data_loader/datasets/DatasetsTable";
+import {deleteLocalDataTypesByIds, getAllLocalDataTypes, getAllRemoteDataTypes} from "../services/NOAADataTypeService";
 import {DownloadOutlined} from "@ant-design/icons";
 import {DataTypesTable} from "../components/data_loader/data_types/DataTypesTable";
 
@@ -41,9 +37,33 @@ export const DataTypesLoaderView = () => {
             showSuccessNotification(t('REMOTE_FETCH_SUCCESS_LABEL'));
         }).catch(() => {
             setIsRemoteDataTypesLoading(false);
-            showErrorNotification(t('REMOTE_FETCH_ERROR_LABEL'))
+            showErrorNotification(t('REMOTE_FETCH_ERROR_LABEL'));
         });
     };
+
+    const fetchLocalDataTypes = () => {
+        setIsLocalDataTypesLoading(true);
+        getAllLocalDataTypes().then(response => {
+            setLocalDataTypes(response);
+            setIsLocalDataTypesLoading(false);
+            showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'))
+        }).catch(()=>{
+            setIsLocalDataTypesLoading(false);
+            showErrorNotification(t('LOCAL_FETCH_ERROR_LABEL'))
+        })
+    }
+
+    const deleteSelectedDataTypes = () => {
+        const ids:string[] = selectedLocalDataTypes.map(key => key.toString());
+        setIsDeletingDataTypesLoading(true);
+        deleteLocalDataTypesByIds(ids).then(() => {
+            fetchLocalDataTypes(/*boolean showNotification*/);
+            setIsDeletingDataTypesLoading(false);
+            showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
+        }).catch(()=>{
+            setIsDeletingDataTypesLoading(false);
+        })
+    }
 
     return(
         <>
@@ -90,14 +110,14 @@ export const DataTypesLoaderView = () => {
                         <Button
                             style={{marginTop:'25px'}}
                             type="primary" icon={<DownloadOutlined />}
-                            onClick={() =>{}}
+                            onClick={fetchLocalDataTypes}
                             loading={isLocalDataTypesLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
                     </Row>}
                     {localDataTypes.length > 0 &&    <Row>
                         <Button
                             style={{marginTop:'25px'}}
                             type="primary" icon={<DownloadOutlined />}
-                            onClick={() => {}}
+                            onClick={deleteSelectedDataTypes}
                             loading={isDeletingDataTypesLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
                     </Row>}
                 </Flex>

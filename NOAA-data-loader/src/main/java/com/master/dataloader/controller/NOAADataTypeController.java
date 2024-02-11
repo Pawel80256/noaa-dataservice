@@ -35,19 +35,25 @@ public class NOAADataTypeController {
         this.noaaDataTypeService = noaaDataTypeService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<NOAADataType>> getAll(){
+        return ResponseEntity.ok(noaaDataTypeService.getAll());
+    }
+
     @GetMapping("/remote")
     public ResponseEntity<List<NOAADataType>> getAllRemote() throws Exception {
-            return ResponseEntity.ok(noaaDataTypeService.getAllRemote());
+        return ResponseEntity.ok(noaaDataTypeService.getAllRemote());
     }
-//
-//    @GetMapping("/{dataTypeId}")
-//    public ResponseEntity<NOAADataType> getById(@PathVariable("dataTypeId") String dataTypeId) throws Exception {
-//        return ResponseEntity.ok(noaaDataTypeService.getById(dataTypeId));
-//    }
 
     @PutMapping("/load")
     public ResponseEntity<Void> loadAll() throws Exception {
         noaaDataTypeService.loadAll();
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteByIds(@RequestBody List<String> ids){
+        noaaDataTypeService.deleteByIds(ids);
         return ResponseEntity.ok().build();
     }
 }

@@ -79,4 +79,11 @@ public class NOAADataTypeService {
 
     }
 
+    public List<NOAADataType> getAll() {
+        return noaaDataTypeRepository.findAll();
+    }
+
+    public void deleteByIds(List<String> ids) {
+        noaaDataTypeRepository.deleteAllById(ids);
+    }
 }

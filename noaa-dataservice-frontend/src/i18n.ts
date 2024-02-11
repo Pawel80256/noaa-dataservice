@@ -1,5 +1,5 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import {initReactI18next} from 'react-i18next';
 import plLanguage from './i18n_languages/pl.json'
 import enLanguage from './i18n_languages/en.json'
 

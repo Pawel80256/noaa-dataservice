@@ -1,7 +1,6 @@
 import {useTranslation} from "react-i18next";
 import {useState} from "react";
 import {Table, TableProps} from "antd";
-import {NOAADataset} from "../../../models/NOAADataset";
 import {NOAADataType} from "../../../models/NOAADataType";
 import {CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 

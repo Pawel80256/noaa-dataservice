@@ -1,7 +1,7 @@
 import {Table, TableProps} from "antd";
 import {NOAADataset} from "../../../models/NOAADataset";
 import {useTranslation} from "react-i18next";
-import { CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import {CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined} from '@ant-design/icons';
 import {useState} from "react";
 
 export interface RemoteDatasetsTableProps {

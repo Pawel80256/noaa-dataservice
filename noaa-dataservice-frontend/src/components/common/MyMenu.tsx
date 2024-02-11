@@ -1,8 +1,8 @@
-import {Dropdown, Menu, MenuProps} from "antd";
-import {AppstoreOutlined, MailOutlined, SettingOutlined, GlobalOutlined } from '@ant-design/icons';
+import {Menu, MenuProps} from "antd";
+import {AppstoreOutlined, MailOutlined, SettingOutlined} from '@ant-design/icons';
 import {useTranslation} from "react-i18next";
 import {useState} from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 export const MyMenu = () => {
 

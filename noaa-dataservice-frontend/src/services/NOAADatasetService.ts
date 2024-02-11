@@ -36,7 +36,7 @@ export const loadByIds = async (ids:string[]) => {
     }
 }
 
-export const deleteByIds = async(ids:string[]) =>{
+export const deleteDatasetsByIds = async(ids:string[]) =>{
     try{
         await axios.delete(`${apiPath}/NOAA/datasets`,{data:ids});
     }catch (error){

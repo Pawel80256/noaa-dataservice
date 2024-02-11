@@ -30,6 +30,7 @@
   "DELETE_SUCCESS_LABEL": "Data deleted successfully",
   "ERROR_LABEL": "Error",
   "REMOTE_FETCH_ERROR_LABEL": "Remote data fetch failed",
+  "LOCAL_FETCH_ERROR_LABEL": "Local data fetch failed",
 
   "REMOTE_CONTENT": "Remote Content",
   "DATABASE_CONTENT": "Database Content",

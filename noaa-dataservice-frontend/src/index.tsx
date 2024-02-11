@@ -1,13 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './i18n';
-import {
-    createBrowserRouter, Outlet,
-    RouterProvider,
-} from "react-router-dom";
+import {createBrowserRouter, Outlet, RouterProvider,} from "react-router-dom";
 import {DatasetLoaderView} from "./views/DatasetLoaderView";
 import {MyMenu} from "./components/common/MyMenu";
 import {Col, Row} from "antd";

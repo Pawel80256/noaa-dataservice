@@ -30,6 +30,7 @@
   "DELETE_SUCCESS_LABEL": "Dane zostały usunięte poprawnie",
   "ERROR_LABEL": "Błąd",
   "REMOTE_FETCH_ERROR_LABEL": "Podczas pobierania zdalnych rekordów wystąpił błąd",
+  "LOCAL_FETCH_ERROR_LABEL": "Podczas pobierania lokalnych rekordów wystąpił błąd",
 
   "LANGUAGE": "Język",
   "REMOTE_CONTENT": "Zdalna Zawartość",
