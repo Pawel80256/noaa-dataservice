@@ -35,15 +35,9 @@ public class NOAADataTypeController {
         this.noaaDataTypeService = noaaDataTypeService;
     }
 
-    @GetMapping
-    public ResponseEntity<PaginationWrapper<NOAADataType>> getAll(
-            @RequestParam(name = "datasetId", required = false) String datasetId,
-            @RequestParam(name = "locationId", required = false) String locationId,
-            @RequestParam(name = "stationId", required = false) String stationId,
-            @RequestParam(name = "limit") Integer limit,
-            @RequestParam(name = "offset", defaultValue = "1") Integer offset
-    ) throws Exception {
-            return ResponseEntity.ok(noaaDataTypeService.getAll(limit,offset,datasetId,locationId,stationId));
+    @GetMapping("/remote")
+    public ResponseEntity<List<NOAADataType>> getAllRemote() throws Exception {
+            return ResponseEntity.ok(noaaDataTypeService.getAllRemote());
     }
 //
 //    @GetMapping("/{dataTypeId}")

@@ -28,6 +28,8 @@
   "LOCAL_FETCH_SUCCESS_LABEL": "Lokalne rekordy zostały pobrane",
   "LOAD_SUCCESS_LABEL": "Dane zostały załadowane poprawnie",
   "DELETE_SUCCESS_LABEL": "Dane zostały usunięte poprawnie",
+  "ERROR_LABEL": "Błąd",
+  "REMOTE_FETCH_ERROR_LABEL": "Podczas pobierania zdalnych rekordów wystąpił błąd",
 
   "LANGUAGE": "Język",
   "REMOTE_CONTENT": "Zdalna Zawartość",

@@ -8,3 +8,11 @@ export const showSuccessNotification = (description: string) => {
         placement: 'bottomRight'
     });
 };
+
+export const showErrorNotification = (description: string) => {
+    notification.error({
+        message: i18n.t('ERROR_LABEL'),
+        description: description,
+        placement: 'bottomRight'
+    });
+};

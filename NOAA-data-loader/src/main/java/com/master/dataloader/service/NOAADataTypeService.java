@@ -27,31 +27,6 @@ public class NOAADataTypeService {
         this.noaaDataTypeRepository = noaaDataTypeRepository;
     }
 
-    public PaginationWrapper<NOAADataType> getAll(Integer limit, Integer offset, String datasetId, String locationId, String stationId) throws Exception {
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("datasetid",datasetId);
-        requestParams.put("locationid",locationId);
-        requestParams.put("stationId",stationId);
-        requestParams.put("limit",limit);
-        requestParams.put("offset",offset);
-
-
-            String datasetsUrl = Constants.baseNoaaApiUrl + Constants.dataTypesUrl;
-            String requestResult = Utils.sendRequest(datasetsUrl,requestParams);
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-
-            JsonNode rootNode = mapper.readTree(requestResult.toString());
-            JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-            JsonNode resultsNode = rootNode.path("results");
-
-            PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-            List<NOAADataType> result = mapper.readerForListOf(NOAADataType.class).readValue(resultsNode);
-
-            return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
-
-    }
 
 //    public NOAADataType getById(String id) throws Exception {
 //        String dataTypesUrl = Constants.baseNoaaApiUrl + Constants.dataTypeUrl + id;
@@ -64,12 +39,44 @@ public class NOAADataTypeService {
 //        return mapper.readerFor(NOAADataType.class).readValue(rootNode);
 //    }
 
+    public List<NOAADataType> getAllRemote() throws Exception {
+        List<NOAADataType> dataTypes = new ArrayList<>();
+        dataTypes.addAll(getAllRemote(1000,1,null,null,null));
+        dataTypes.addAll(getAllRemote(1000,1001,null,null,null));
+        return dataTypes;
+    }
+
     public void loadAll() throws Exception {
         List<NOAADataType> dataTypes = new ArrayList<>();
-        dataTypes.addAll(getAll(1000,1,null,null,null).getData());
-        dataTypes.addAll(getAll(1000,1001,null,null,null).getData());
+        dataTypes.addAll(getAllRemote(1000,1,null,null,null));
+        dataTypes.addAll(getAllRemote(1000,1001,null,null,null));
         noaaDataTypeRepository.saveAll(dataTypes);
     }
 
+    private List<NOAADataType> getAllRemote(Integer limit, Integer offset, String datasetId, String locationId, String stationId) throws Exception {
+        Map<String,Object> requestParams = new HashMap<>();
+        requestParams.put("datasetid",datasetId);
+        requestParams.put("locationid",locationId);
+        requestParams.put("stationId",stationId);
+        requestParams.put("limit",limit);
+        requestParams.put("offset",offset);
+
+
+        String datasetsUrl = Constants.baseNoaaApiUrl + Constants.dataTypesUrl;
+        String requestResult = Utils.sendRequest(datasetsUrl,requestParams);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        JsonNode rootNode = mapper.readTree(requestResult.toString());
+        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
+        JsonNode resultsNode = rootNode.path("results");
+
+        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
+        List<NOAADataType> result = mapper.readerForListOf(NOAADataType.class).readValue(resultsNode);
+
+        return result;
+
+    }
 
 }
