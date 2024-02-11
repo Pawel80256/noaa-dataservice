@@ -7,6 +7,9 @@
   "STATIONS": "Stacje",
   "MEASUREMENTS": "Pomiary",
 
+  "DATA_VIEWER": "Przegląd danych",
+  "DATA_MANAGER": "Menadźer danych",
+
   "INDEX_COLUMN": "Indeks",
   "IDENTIFIER_COLUMN": "Identyfikator",
   "NAME_COLUMN": "Nazwa",
@@ -20,11 +23,14 @@
   "LOAD_SELECTED_LABEL": "Załaduj zaznaczone",
   "DELETE_SELECTED_LABEL": "Usuń zaznaczone",
 
+  "SUCCESS_LABEL": "Sukces",
+  "REMOTE_FETCH_SUCCESS_LABEL": "Zdalne rekordy zostały pobrane",
+  "LOCAL_FETCH_SUCCESS_LABEL": "Lokalne rekordy zostały pobrane",
+  "LOAD_SUCCESS_LABEL": "Dane zostały załadowane poprawnie",
+  "DELETE_SUCCESS_LABEL": "Dane zostały usunięte poprawnie",
+
+  "LANGUAGE": "Język",
   "REMOTE_CONTENT": "Zdalna Zawartość",
-  "DATABASE_CONTENT": "Zawartość Bazy Danych",
 
-  "DATA_VIEWER": "Przegląd danych",
-  "DATA_MANAGER": "Menadźer danych",
-
-  "LANGUAGE": "Język"
+  "DATABASE_CONTENT": "Zawartość Bazy Danych"
 }

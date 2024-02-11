@@ -1,4 +1,4 @@
-import {Button, Divider, Flex, Row, Typography} from "antd";
+import {Button, Divider, Flex, notification, Row, Typography} from "antd";
 import {useTranslation} from "react-i18next";
 import {DatasetsTable} from "../components/data_loader/datasets/DatasetsTable";
 import {deleteByIds, getAllLocalDatasets, getAllRemoteDatasets, loadByIds} from "../services/NOAADatasetService";
@@ -6,10 +6,13 @@ import {useState} from "react";
 import {NOAADataset} from "../models/NOAADataset";
 import {initialPaginationWrapper, PaginationWrapper} from "../models/PaginationWrapper";
 import { DownloadOutlined } from '@ant-design/icons';
+import {NotificationPlacement} from "antd/es/notification/interface";
+import {showSuccessNotification} from "../services/Utils";
 
 
 export const DatasetLoaderView = () =>{
     const {t} = useTranslation();
+    const [api, contextHolder] = notification.useNotification();
 
     const [remoteDatasets, setRemoteDatasets] = useState<PaginationWrapper<NOAADataset>>(initialPaginationWrapper);
     const [localDatasets, setLocalDatasets] = useState<NOAADataset[]>([]);
@@ -17,6 +20,7 @@ export const DatasetLoaderView = () =>{
     const [isRemoteDatasetsLoading, setIsRemoteDatasetsLoading] = useState(false);
     const [isLocalDatasetsLoading, setIsLocalDatasetsLoading] = useState(false)
     const [isLoadingDatasetsLoading, setIsLoadingDatasetsLoading] = useState(false)
+    const [isDeletingDatasetsLoading, setIsDeletingDatasetsLoading] = useState(false)
 
     const [selectedRemoteDatasets, setSelectedRemoteDatasets] = useState<React.Key[]>([]);
     const [selectedLocalDatasets, setSelectedLocalDatasets] = useState<React.Key[]>([]);
@@ -33,6 +37,7 @@ export const DatasetLoaderView = () =>{
         getAllRemoteDatasets(100, 1).then(response => {
             setRemoteDatasets(response);
             setIsRemoteDatasetsLoading(false);
+            showSuccessNotification(t('REMOTE_FETCH_SUCCESS_LABEL'));
         }).catch(() => {
             setIsRemoteDatasetsLoading(false);
         });
@@ -43,6 +48,7 @@ export const DatasetLoaderView = () =>{
         getAllLocalDatasets().then(response => {
             setLocalDatasets(response);
             setIsLoadingDatasetsLoading(false);
+            showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'))
         }).catch(()=>{
             setIsLoadingDatasetsLoading(false);
         })
@@ -54,6 +60,7 @@ export const DatasetLoaderView = () =>{
         loadByIds(ids).then(() => {
             fetchLocalDatasets();
             setIsLoadingDatasetsLoading(false);
+            showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
         }).catch(()=>{
             setIsLoadingDatasetsLoading(false);
         })
@@ -61,17 +68,20 @@ export const DatasetLoaderView = () =>{
 
     const deleteSelectedDatasets = () => {
         const ids:string[] = selectedLocalDatasets.map(key => key.toString());
-        // setIsLoadingDatasetsLoading(true);
+        setIsDeletingDatasetsLoading(true);
         deleteByIds(ids).then(() => {
             fetchLocalDatasets();
-            setIsLoadingDatasetsLoading(false);
+            setIsDeletingDatasetsLoading(false);
+            showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
         }).catch(()=>{
-            setIsLoadingDatasetsLoading(false);
+            setIsDeletingDatasetsLoading(false);
         })
     }
 
+
     return(
         <>
+            {contextHolder}
             <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
                 <Flex style={{ flex: 1, minWidth: '50vh' }} align={'center'} justify={'flex-start'} vertical>
                     <Row>
@@ -115,14 +125,14 @@ export const DatasetLoaderView = () =>{
                             style={{marginTop:'25px'}}
                             type="primary" icon={<DownloadOutlined />}
                             onClick={fetchLocalDatasets}
-                            loading={isLoadingDatasetsLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
+                            loading={isLocalDatasetsLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
                     </Row>}
                     {localDatasets.length > 0 &&    <Row>
                         <Button
                             style={{marginTop:'25px'}}
                             type="primary" icon={<DownloadOutlined />}
                             onClick={deleteSelectedDatasets}
-                            loading={isLoadingDatasetsLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
+                            loading={isDeletingDatasetsLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
                     </Row>}
                 </Flex>
             </div>

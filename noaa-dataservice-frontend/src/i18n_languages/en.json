@@ -7,6 +7,9 @@
   "STATIONS": "Stations",
   "MEASUREMENTS": "Measurements",
 
+  "DATA_VIEWER": "Data Viewer",
+  "DATA_MANAGER": "Data Manager",
+
   "INDEX_COLUMN": "Index",
   "IDENTIFIER_COLUMN": "Identifier",
   "NAME_COLUMN": "Name",
@@ -20,11 +23,14 @@
   "LOAD_SELECTED_LABEL": "Load selected",
   "DELETE_SELECTED_LABEL": "Delete selected",
 
+  "SUCCESS_LABEL": "Success",
+  "REMOTE_FETCH_SUCCESS_LABEL": "Remote data fetched successfully",
+  "LOCAL_FETCH_SUCCESS_LABEL": "Local data fetched successfully",
+  "LOAD_SUCCESS_LABEL": "Data loaded successfully",
+  "DELETE_SUCCESS_LABEL": "Data deleted successfully",
+
   "REMOTE_CONTENT": "Remote Content",
   "DATABASE_CONTENT": "Database Content",
-
-  "DATA_VIEWER": "Data Viewer",
-  "DATA_MANAGER": "Data Manager",
 
   "LANGUAGE": "Language"
 }
