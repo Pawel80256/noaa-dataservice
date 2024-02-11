@@ -22,6 +22,8 @@
   "FETCH_LOCAL_LABEL": "Pobierz lokalne rekordy",
   "LOAD_SELECTED_LABEL": "Załaduj zaznaczone",
   "DELETE_SELECTED_LABEL": "Usuń zaznaczone",
+  "SELECT_ALL_LABEL": "Zaznacz wszystkie",
+  "LOAD_ALL_LABEL": "Załaduj wszystkie",
 
   "SUCCESS_LABEL": "Sukces",
   "REMOTE_FETCH_SUCCESS_LABEL": "Zdalne rekordy zostały pobrane",
@@ -33,6 +35,8 @@
   "LOCAL_FETCH_ERROR_LABEL": "Podczas pobierania lokalnych rekordów wystąpił błąd",
   "DELETE_ERROR_LABEL": "Podczas usuwania lokalnych rekordów wystąpił błąd",
   "LOAD_ERROR_LABEL": "Podczas ładowania rekordów do bazy danych wystąpił błąd",
+  "WARNING_LABEL": "Ostrzeżenie",
+  "LOAD_LIMIT_EXCEEDED_LABEL": "Przekroczono limit ładowania (60 rekordów)",
 
   "LANGUAGE": "Język",
   "REMOTE_CONTENT": "Zdalna Zawartość",

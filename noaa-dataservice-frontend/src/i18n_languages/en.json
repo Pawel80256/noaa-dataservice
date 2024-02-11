@@ -22,6 +22,8 @@
   "FETCH_LOCAL_LABEL": "Fetch local data",
   "LOAD_SELECTED_LABEL": "Load selected",
   "DELETE_SELECTED_LABEL": "Delete selected",
+  "SELECT_ALL_LABEL": "Select all",
+  "LOAD_ALL_LABEL": "Load all",
 
   "SUCCESS_LABEL": "Success",
   "REMOTE_FETCH_SUCCESS_LABEL": "Remote data fetched successfully",
@@ -33,6 +35,8 @@
   "LOCAL_FETCH_ERROR_LABEL": "Local data fetch failed",
   "DELETE_ERROR_LABEL": "Deleting data failed",
   "LOAD_ERROR_LABEL": "Loading data failed",
+  "WARNING_LABEL": "Warning",
+  "LOAD_LIMIT_EXCEEDED_LABEL": "Load limit exceeded (60 records)",
 
   "REMOTE_CONTENT": "Remote Content",
   "DATABASE_CONTENT": "Database Content",

@@ -16,3 +16,11 @@ export const showErrorNotification = (description: string) => {
         placement: 'bottomRight'
     });
 };
+
+export const showWarningNotification = (description: string) => {
+    notification.warning({
+        message: i18n.t('WARNING_LABEL'),
+        description: description,
+        placement: 'bottomRight'
+    });
+}

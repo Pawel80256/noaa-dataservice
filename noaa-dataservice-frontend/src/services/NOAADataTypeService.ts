@@ -20,3 +20,7 @@ export const deleteLocalDataTypesByIds = async(ids:string[]) => {
 export const loadDataTypesByIds = async (ids:string[]) => {
     await axios.put(`${apiPath}/NOAA/datatypes/loadByIds`, ids)
 }
+
+export const loadAllDataTypes = async () => {
+    await axios.put(`${apiPath}/NOAA/datatypes/load`);
+}
