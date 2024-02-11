@@ -18,6 +18,7 @@
   "FETCH_REMOTE_LABEL": "Pobierz zdalne rekordy",
   "FETCH_LOCAL_LABEL": "Pobierz lokalne rekordy",
   "LOAD_SELECTED_LABEL": "Załaduj zaznaczone",
+  "DELETE_SELECTED_LABEL": "Usuń zaznaczone",
 
   "REMOTE_CONTENT": "Zdalna Zawartość",
   "DATABASE_CONTENT": "Zawartość Bazy Danych",

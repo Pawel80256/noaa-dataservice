@@ -1,7 +1,7 @@
 import {Button, Divider, Flex, Row, Typography} from "antd";
 import {useTranslation} from "react-i18next";
 import {DatasetsTable} from "../components/data_loader/datasets/DatasetsTable";
-import {getAllLocalDatasets, getAllRemoteDatasets, loadByIds} from "../services/NOAADatasetService";
+import {deleteByIds, getAllLocalDatasets, getAllRemoteDatasets, loadByIds} from "../services/NOAADatasetService";
 import {useState} from "react";
 import {NOAADataset} from "../models/NOAADataset";
 import {initialPaginationWrapper, PaginationWrapper} from "../models/PaginationWrapper";
@@ -19,9 +19,13 @@ export const DatasetLoaderView = () =>{
     const [isLoadingDatasetsLoading, setIsLoadingDatasetsLoading] = useState(false)
 
     const [selectedRemoteDatasets, setSelectedRemoteDatasets] = useState<React.Key[]>([]);
+    const [selectedLocalDatasets, setSelectedLocalDatasets] = useState<React.Key[]>([]);
 
     const updateSelectedRemoteDatasets = (keys: React.Key[]) => {
         setSelectedRemoteDatasets(keys)
+    }
+    const updateSelectedLocalDatasets = (keys: React.Key[]) => {
+        setSelectedLocalDatasets(keys)
     }
 
     const fetchRemoteDatasets = () => {
@@ -55,6 +59,17 @@ export const DatasetLoaderView = () =>{
         })
     }
 
+    const deleteSelectedDatasets = () => {
+        const ids:string[] = selectedLocalDatasets.map(key => key.toString());
+        // setIsLoadingDatasetsLoading(true);
+        deleteByIds(ids).then(() => {
+            fetchLocalDatasets();
+            setIsLoadingDatasetsLoading(false);
+        }).catch(()=>{
+            setIsLoadingDatasetsLoading(false);
+        })
+    }
+
     return(
         <>
             <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -65,7 +80,7 @@ export const DatasetLoaderView = () =>{
                     <Row>
                         <DatasetsTable
                             datasets={remoteDatasets.data}
-                            updateSelectedRemoteDatasets={updateSelectedRemoteDatasets}
+                            updateSelectedDatasets={updateSelectedRemoteDatasets}
                             localDatasets={localDatasets}
                             showStatusColumn={true}/>
                     </Row>
@@ -91,7 +106,7 @@ export const DatasetLoaderView = () =>{
                     <Row>
                         <DatasetsTable
                             datasets={localDatasets}
-                            updateSelectedRemoteDatasets={updateSelectedRemoteDatasets}
+                            updateSelectedDatasets={updateSelectedLocalDatasets}
                             localDatasets={[]}
                             showStatusColumn={false}/>
                     </Row>
@@ -101,6 +116,13 @@ export const DatasetLoaderView = () =>{
                             type="primary" icon={<DownloadOutlined />}
                             onClick={fetchLocalDatasets}
                             loading={isLoadingDatasetsLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
+                    </Row>}
+                    {localDatasets.length > 0 &&    <Row>
+                        <Button
+                            style={{marginTop:'25px'}}
+                            type="primary" icon={<DownloadOutlined />}
+                            onClick={deleteSelectedDatasets}
+                            loading={isLoadingDatasetsLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
                     </Row>}
                 </Flex>
             </div>

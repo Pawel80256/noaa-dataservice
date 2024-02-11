@@ -44,4 +44,9 @@ public class NOAADatasetController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteByIds(@RequestBody List<String> ids){
+        noaaDatasetService.deleteByIds(ids);
+        return ResponseEntity.ok().build();
+    }
 }

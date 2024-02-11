@@ -18,6 +18,7 @@
   "FETCH_REMOTE_LABEL": "Fetch remote data",
   "FETCH_LOCAL_LABEL": "Fetch local data",
   "LOAD_SELECTED_LABEL": "Load selected",
+  "DELETE_SELECTED_LABEL": "Delete selected",
 
   "REMOTE_CONTENT": "Remote Content",
   "DATABASE_CONTENT": "Database Content",

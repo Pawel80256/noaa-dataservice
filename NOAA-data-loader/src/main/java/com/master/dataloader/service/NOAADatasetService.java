@@ -79,4 +79,7 @@ public class NOAADatasetService {
         noaaDatasetRepository.saveAll(datasets);
     }
 
+    public void deleteByIds(List<String> ids) {
+        noaaDatasetRepository.deleteAllById(ids);
+    }
 }

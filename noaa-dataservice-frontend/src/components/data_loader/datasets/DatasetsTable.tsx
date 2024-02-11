@@ -6,12 +6,12 @@ import {useState} from "react";
 
 export interface RemoteDatasetsTableProps {
     datasets: NOAADataset[],
-    updateSelectedRemoteDatasets: (keys: React.Key[]) => void,
+    updateSelectedDatasets: (keys: React.Key[]) => void,
     localDatasets: NOAADataset[],
     showStatusColumn?: boolean
 }
 
-export const DatasetsTable = ({ datasets, updateSelectedRemoteDatasets, localDatasets, showStatusColumn }: RemoteDatasetsTableProps) => {
+export const DatasetsTable = ({ datasets, updateSelectedDatasets, localDatasets, showStatusColumn }: RemoteDatasetsTableProps) => {
     const {t} = useTranslation();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
@@ -26,7 +26,7 @@ export const DatasetsTable = ({ datasets, updateSelectedRemoteDatasets, localDat
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         // console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
-        updateSelectedRemoteDatasets(newSelectedRowKeys)
+        updateSelectedDatasets(newSelectedRowKeys)
     };
 
     const rowSelection = {
