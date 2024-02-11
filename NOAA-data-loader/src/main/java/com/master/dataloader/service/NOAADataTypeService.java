@@ -86,4 +86,24 @@ public class NOAADataTypeService {
     public void deleteByIds(List<String> ids) {
         noaaDataTypeRepository.deleteAllById(ids);
     }
+
+    public void loadByIds(List<String> ids) throws Exception {
+        List<NOAADataType> dataTypes = new ArrayList<>();
+        for(String dataTypeId : ids){
+            dataTypes.add(getRemoteById(dataTypeId));
+        }
+        noaaDataTypeRepository.saveAll(dataTypes);
+    }
+
+    private NOAADataType getRemoteById(String dataTypeId) throws Exception {
+        String dataTypeUrl = Constants.baseNoaaApiUrl + Constants.dataTypesUrl + "/" + dataTypeId;
+        String requestResult = Utils.sendRequest(dataTypeUrl,null);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        JsonNode rootNode = mapper.readTree(requestResult);
+        return  mapper.readerFor(NOAADataType.class).readValue(rootNode);
+    }
+
 }

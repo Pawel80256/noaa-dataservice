@@ -51,6 +51,12 @@ public class NOAADataTypeController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("loadByIds")
+    public ResponseEntity<Void> loadByIds(@RequestBody List<String> ids) throws Exception {
+        noaaDataTypeService.loadByIds(ids);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping
     public ResponseEntity<Void> deleteByIds(@RequestBody List<String> ids){
         noaaDataTypeService.deleteByIds(ids);

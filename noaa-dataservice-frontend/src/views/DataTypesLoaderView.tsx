@@ -3,10 +3,16 @@ import {Button, Col, Flex, notification, Row, Space, Typography} from "antd";
 import {useState} from "react";
 import {NOAADataType} from "../models/NOAADataType";
 import {showErrorNotification, showSuccessNotification} from "../services/Utils";
-import {deleteLocalDataTypesByIds, getAllLocalDataTypes, getAllRemoteDataTypes} from "../services/NOAADataTypeService";
+import {
+    deleteLocalDataTypesByIds,
+    getAllLocalDataTypes,
+    getAllRemoteDataTypes,
+    loadDataTypesByIds
+} from "../services/NOAADataTypeService";
 import {DownloadOutlined} from "@ant-design/icons";
 import {DataTypesTable} from "../components/data_loader/data_types/DataTypesTable";
 import Column from "antd/es/table/Column";
+import {loadByIds} from "../services/NOAADatasetService";
 
 export const DataTypesLoaderView = () => {
     const {t} = useTranslation();
@@ -59,6 +65,20 @@ export const DataTypesLoaderView = () => {
         })
     }
 
+    const loadSelectedDataTypes = () => {
+        const ids:string[] = selectedRemoteDataTypes.map(key => key.toString());
+        setIsLoadingDataTypesLoading(true);
+        loadDataTypesByIds(ids).then(() => {
+            fetchLocalDataTypes();
+            setIsLoadingDataTypesLoading(false);
+            showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
+        }).catch(()=>{
+            setIsLoadingDataTypesLoading(false);
+            showErrorNotification(t('LOAD_ERROR_LABEL'))
+        })
+    }
+
+
     const deleteSelectedDataTypes = () => {
         const ids:string[] = selectedLocalDataTypes.map(key => key.toString());
         setIsDeletingDataTypesLoading(true);
@@ -99,7 +119,7 @@ export const DataTypesLoaderView = () => {
                         <Button
                             style={{marginTop:'25px'}}
                             type="primary" icon={<DownloadOutlined />}
-                            onClick={() =>{}}
+                            onClick={loadSelectedDataTypes}
                             loading={isLoadingDataTypesLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
                     </Row>}
                 </Flex>

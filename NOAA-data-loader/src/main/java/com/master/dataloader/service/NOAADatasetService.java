@@ -53,16 +53,6 @@ public class NOAADatasetService {
         return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
     }
 
-    public NOAADataset getRemoteById(String datasetId) throws Exception {
-        String datasetUrl = Constants.baseNoaaApiUrl + Constants.datasetsUrl + "/" + datasetId;
-        String requestResult = Utils.sendRequest(datasetUrl,null);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        return mapper.readerFor(NOAADataset.class).readValue(rootNode);
-    }
 
     public void loadAll() throws Exception {
         List<NOAADataset> datasets = getAllRemote(11,1).getData();
@@ -81,5 +71,16 @@ public class NOAADatasetService {
 
     public void deleteByIds(List<String> ids) {
         noaaDatasetRepository.deleteAllById(ids);
+    }
+
+    private NOAADataset getRemoteById(String datasetId) throws Exception {
+        String datasetUrl = Constants.baseNoaaApiUrl + Constants.datasetsUrl + "/" + datasetId;
+        String requestResult = Utils.sendRequest(datasetUrl,null);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        JsonNode rootNode = mapper.readTree(requestResult.toString());
+        return mapper.readerFor(NOAADataset.class).readValue(rootNode);
     }
 }

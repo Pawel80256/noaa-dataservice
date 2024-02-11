@@ -3,7 +3,6 @@ package com.master.dataloader.controller;
 import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAADataset;
 import com.master.dataloader.service.NOAADatasetService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,13 +32,13 @@ public class NOAADatasetController {
     }
 
     @PutMapping("/load")
-    public ResponseEntity<Void> loadAllDatasets() throws Exception {
+    public ResponseEntity<Void> loadAll() throws Exception {
         noaaDatasetService.loadAll();
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/loadByIds")
-    public ResponseEntity<Void> loadDatasetsByIds(@RequestBody List<String> ids) throws Exception {
+    public ResponseEntity<Void> loadByIds(@RequestBody List<String> ids) throws Exception {
         noaaDatasetService.loadByIds(ids);
         return ResponseEntity.ok().build();
     }

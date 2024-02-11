@@ -32,6 +32,7 @@
   "REMOTE_FETCH_ERROR_LABEL": "Remote data fetch failed",
   "LOCAL_FETCH_ERROR_LABEL": "Local data fetch failed",
   "DELETE_ERROR_LABEL": "Deleting data failed",
+  "LOAD_ERROR_LABEL": "Loading data failed",
 
   "REMOTE_CONTENT": "Remote Content",
   "DATABASE_CONTENT": "Database Content",
