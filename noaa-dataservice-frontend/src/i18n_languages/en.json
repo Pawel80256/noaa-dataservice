@@ -4,6 +4,9 @@
   "DATA_TYPES": "Data types",
   "LOCATION_CATEGORIES": "Location categories",
   "LOCATIONS": "Locations",
+  "COUNTRIES": "Countries",
+  "CITIES": "Cities",
+  "STATES": "States (USA)",
   "STATIONS": "Stations",
   "MEASUREMENTS": "Measurements",
 

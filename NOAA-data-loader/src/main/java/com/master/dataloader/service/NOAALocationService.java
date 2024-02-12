@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class NOAALocationService {
@@ -26,35 +27,19 @@ public class NOAALocationService {
         this.noaaLocationRepository = noaaLocationRepository;
     }
 
-    public PaginationWrapper<NOAALocation> getAll(Integer limit, Integer offset, String datasetId, String dataCategoryId, String locationCategoryId, LocalDate startDate, LocalDate endDate) throws Exception {
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",limit);
-        requestParams.put("offset",offset);
-        requestParams.put("datasetid", datasetId);
-        requestParams.put("datacategoryid", dataCategoryId);
-        requestParams.put("locationcategoryid", locationCategoryId);
-        requestParams.put("startdate", startDate);
-        requestParams.put("enddate", endDate);
-
-        String locationsUrl = Constants.baseNoaaApiUrl + Constants.locationsUrl;
-        String requestResult = Utils.sendRequest(locationsUrl,requestParams);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-        JsonNode resultsNode = rootNode.path("results");
-
-
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        List<NOAALocation> result = mapper.readerForListOf(NOAALocation.class).readValue(resultsNode);
-
-
-        return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
+    public List<NOAALocation> getAllCountries(){
+        return noaaLocationRepository.findNOAALocationByNoaaLocationCategoryId("CNTRY");
     }
 
-    public void loadAllCountries() throws Exception {
+    public List<NOAALocation> getAllCities(){
+        return noaaLocationRepository.findNOAALocationByNoaaLocationCategoryId("CITY");
+    }
+
+    public List<NOAALocation> getAllStates(){
+        return noaaLocationRepository.findNOAALocationByNoaaLocationCategoryId("ST");
+    }
+
+    public List<NOAALocation> getAllRemoteCountries() throws Exception {
         Map<String,Object> requestParams = new HashMap<>();
         requestParams.put("limit",1000);
         requestParams.put("offset",1);
@@ -77,36 +62,10 @@ public class NOAALocationService {
             location.setNoaaLocationCategory(new NOAALocationCategory("CNTRY"));
         }
 
-        noaaLocationRepository.saveAll(locations);
+        return locations;
     }
 
-    public void loadAllStates()throws Exception {
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",51);
-        requestParams.put("offset",1);
-        requestParams.put("locationcategoryid", "ST");
-
-        String locationsUrl = Constants.baseNoaaApiUrl + Constants.locationsUrl;
-        String requestResult = Utils.sendRequest(locationsUrl,requestParams);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        JsonNode resultsNode = rootNode.path("results");
-
-        List<NOAALocation> locations = mapper.readerForListOf(NOAALocation.class).readValue(resultsNode);
-
-        //check what is faster - stream.foreach() or for(X x :xs)
-        for(NOAALocation location : locations){
-            location.setNoaaLocationCategory(new NOAALocationCategory("ST"));
-            location.setParent(new NOAALocation("FIPS:US"));
-        }
-
-        noaaLocationRepository.saveAll(locations);
-    }
-
-    public void loadAllCities() throws Exception {
+    public List<NOAALocation> getAllRemoteCities() throws Exception {
         List<NOAALocation> locations = new ArrayList<>();
         String requestResult;
         JsonNode rootNode, resultsNode;
@@ -135,22 +94,92 @@ public class NOAALocationService {
         resultsNode = rootNode.path("results");
         locations.addAll(mapper.readerForListOf(NOAALocation.class).readValue(resultsNode));
 
-            Iterator<NOAALocation> iterator = locations.iterator();
-            while(iterator.hasNext()){
-                NOAALocation location = iterator.next();
-                String parentCountryId = "FIPS:" + location.getName().substring(location.getName().length()-2);
-                if(noaaLocationRepository.existsById(parentCountryId)){
-                    location.setNoaaLocationCategory(new NOAALocationCategory("CITY"));
-                    location.setParent(new NOAALocation(parentCountryId));
-                } else {
-                    iterator.remove();
-                }
+        Iterator<NOAALocation> iterator = locations.iterator();
+        while(iterator.hasNext()){
+            NOAALocation location = iterator.next();
+            String parentCountryId = "FIPS:" + location.getName().substring(location.getName().length()-2);
+            if(noaaLocationRepository.existsById(parentCountryId)){
+                location.setNoaaLocationCategory(new NOAALocationCategory("CITY"));
+                location.setParent(new NOAALocation(parentCountryId));
+            } else {
+                iterator.remove();
             }
+        }
 
-
-        noaaLocationRepository.saveAll(locations);
+        return locations;
     }
 
+    public List<NOAALocation> getAllRemoteStates() throws Exception {
+        Map<String,Object> requestParams = new HashMap<>();
+        requestParams.put("limit",51);
+        requestParams.put("offset",1);
+        requestParams.put("locationcategoryid", "ST");
 
+        String locationsUrl = Constants.baseNoaaApiUrl + Constants.locationsUrl;
+        String requestResult = Utils.sendRequest(locationsUrl,requestParams);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        JsonNode rootNode = mapper.readTree(requestResult.toString());
+        JsonNode resultsNode = rootNode.path("results");
+
+        List<NOAALocation> locations = mapper.readerForListOf(NOAALocation.class).readValue(resultsNode);
+
+        //check what is faster - stream.foreach() or for(X x :xs)
+        for(NOAALocation location : locations){
+            location.setNoaaLocationCategory(new NOAALocationCategory("ST"));
+            location.setParent(new NOAALocation("FIPS:US"));
+        }
+
+        return locations;
+    }
+
+    public void loadAllCountries() throws Exception {
+        List<NOAALocation> countries = getAllRemoteCountries();
+        noaaLocationRepository.saveAll(countries);
+    }
+
+    //new way
+    public void loadCountriesByIds(List<String> countriesIds) throws Exception {
+        List<NOAALocation> countries = getAllRemoteCountries();
+
+        List<NOAALocation> filteredCountries = countries.stream()
+                .filter(country -> countriesIds.contains(country.getId()))
+                .toList();
+
+        noaaLocationRepository.saveAll(filteredCountries);
+    }
+
+    //todo: require all countries loaded
+    public void loadAllCities() throws Exception {
+        List<NOAALocation> cities = getAllRemoteCities();
+        noaaLocationRepository.saveAll(cities);
+    }
+
+    public void loadCitiesByIds(List<String> citiesIds) throws Exception{
+        List<NOAALocation> cities = getAllRemoteCities();
+
+        List<NOAALocation> filteredCities = cities.stream()
+                .filter(city -> citiesIds.contains(city.getId()))
+                .toList();
+
+        noaaLocationRepository.saveAll(filteredCities);
+    }
+    //todo: require USA loaded
+    public void loadAllStates()throws Exception {
+        List<NOAALocation> states = getAllRemoteStates();
+        noaaLocationRepository.saveAll(states);
+    }
+
+    public void loadStatesByIds(List<String> statesIds) throws Exception {
+        List<NOAALocation> states = getAllRemoteStates();
+
+        List<NOAALocation> filteredStates = states.stream()
+                .filter(state -> statesIds.contains(state.getId()))
+                .toList();
+
+        noaaLocationRepository.saveAll(filteredStates);
+    }
 
 }

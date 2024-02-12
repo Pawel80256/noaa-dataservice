@@ -28,6 +28,9 @@ export const MyMenu = () => {
             case 'locationCategories':
                 navigate('/dataloader/locationcategories');
                 break;
+            case 'countries':
+                navigate('dataloader/locations/countries');
+                break;
         }
     }
 
@@ -71,7 +74,11 @@ export const MyMenu = () => {
             getItem(t('DATA_SETS'), 'datasets', null),
             getItem(t('DATA_TYPES'), 'dataTypes', null),
             getItem(t('LOCATION_CATEGORIES'), 'locationCategories', null),
-            getItem(t('LOCATIONS'), 'locations', null),
+            getItem(t('LOCATIONS'), 'locations', null, [
+                getItem(t('COUNTRIES'), 'countries', null),
+                getItem(t('CITIES'), 'cities', null),
+                getItem(t('STATES'), 'states', null),
+            ]),
             getItem(t('STATIONS'), 'stations', null),
             getItem(t('MEASUREMENTS'), 'measurements', null),
         ]),
