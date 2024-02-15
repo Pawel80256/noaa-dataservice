@@ -32,3 +32,11 @@ export const getAllRemoteStates = async ():Promise<NOAALocation[]> => {
     const response = await axios.get<NOAALocation[]>(`${apiPath}/NOAA/location/states/remote`);
     return response.data;
 }
+
+export const loadCountriesByIds = async (ids:string[]) => {
+    await axios.put(`${apiPath}/NOAA/location/countries/loadByIds`, ids)
+}
+
+export const deleteCountriesByIds = async (ids:string[]) => {
+    await axios.delete(`${apiPath}/NOAA/location/countries`, {data:ids})
+}

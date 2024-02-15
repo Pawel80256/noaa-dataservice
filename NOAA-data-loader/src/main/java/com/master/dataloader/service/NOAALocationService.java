@@ -182,4 +182,7 @@ public class NOAALocationService {
         noaaLocationRepository.saveAll(filteredStates);
     }
 
+    public void deleteCountriesByIds(List<String> countriesIds) {
+        noaaLocationRepository.deleteAllById(countriesIds);
+    }
 }
