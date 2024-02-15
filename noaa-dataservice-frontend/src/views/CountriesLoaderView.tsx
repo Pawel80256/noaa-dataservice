@@ -14,7 +14,7 @@ import {showErrorNotification, showSuccessNotification, showWarningNotification}
 import {
     deleteCountriesByIds,
     getAllLocalCountries,
-    getAllRemoteCountries,
+    getAllRemoteCountries, loadAllCountries,
     loadCountriesByIds
 } from "../services/NOAALocationService";
 import {DataTypesTable} from "../components/data_loader/data_types/DataTypesTable";
@@ -30,7 +30,7 @@ export const CountriesLoaderView = () => {
     const [isRemoteCountriesLoading, setIsRemoteCountriesLoading] = useState(false);
     const [isLocalCountriesLoading, setIsLocalCountriesLoading] = useState(false)
     const [isLoadingSelectedCountriesLoading, setIsLoadingSelectedCountriesLoading] = useState(false)
-    // const [isLoadingAllDataTypesLoading, setIsLoadingAllDataTypesLoading] = useState(false)
+    const [isLoadingAllCountriesLoading, setIsLoadingAllCountriesLoading] = useState(false)
     const [isDeletingCountriesLoading, setIsDeletingCountriesLoading] = useState(false)
 
     const [selectedRemoteCountries, setSelectedRemoteCountries] = useState<React.Key[]>([]);
@@ -96,6 +96,18 @@ export const CountriesLoaderView = () => {
         })
     }
 
+    const handleLoadingAllCountries = () =>{
+        setIsLoadingAllCountriesLoading(true);
+        loadAllCountries().then(()=>{
+            fetchLocalCountries();
+            setIsLoadingAllCountriesLoading(false);
+            showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
+        }).catch(()=>{
+            setIsLoadingAllCountriesLoading(false);
+            showErrorNotification(t('LOAD_ERROR_LABEL'))
+        })
+    }
+
     const deleteSelectedCountries = () => {
         const ids:string[] = selectedLocalCountries.map(key => key.toString());
         setIsDeletingCountriesLoading(true);
@@ -135,11 +147,11 @@ export const CountriesLoaderView = () => {
                     {remoteCountries.length > 0 &&    <Row>
                         <Col>
                             <Space>
-                                {/*<Button*/}
-                                {/*    style={{marginTop:'25px'}}*/}
-                                {/*    type="primary" icon={<DownloadOutlined />}*/}
-                                {/*    onClick={handleLoadingAllCountries}*/}
-                                {/*    loading={isLoadingAllDataTypesLoading}>{t('LOAD_ALL_LABEL')}</Button>*/}
+                                <Button
+                                    style={{marginTop:'25px'}}
+                                    type="primary" icon={<DownloadOutlined />}
+                                    onClick={handleLoadingAllCountries}
+                                    loading={isLoadingAllCountriesLoading}>{t('LOAD_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}

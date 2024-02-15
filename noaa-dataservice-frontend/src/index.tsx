@@ -10,6 +10,7 @@ import {Col, Row} from "antd";
 import {DataTypesLoaderView} from "./views/DataTypesLoaderView";
 import {LocationCategoriesLoaderView} from "./views/LocationCategoriesLoaderView";
 import {CountriesLoaderView} from "./views/CountriesLoaderView";
+import {CitiesLoaderView} from "./views/CitiesLoaderView";
 
 const Content = () => (
     <Row style={{ width: '100%', height: '100vh' }}>
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
             { path: "dataloader/datatypes", element: <DataTypesLoaderView /> },
             { path: "dataloader/locationcategories", element: <LocationCategoriesLoaderView /> },
             { path: "dataloader/locations/countries", element: <CountriesLoaderView /> },
+            { path: "dataloader/locations/cities", element: <CitiesLoaderView /> },
             // Inne ścieżki
         ],
     },

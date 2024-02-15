@@ -118,4 +118,10 @@ public class NOAALocationController {
         noaaLocationService.deleteCountriesByIds(countriesIds);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/cities")
+    public ResponseEntity<Void> deleteCitiesByIds(@RequestBody List<String> citiesIds){
+        noaaLocationService.deleteCitiesIds(citiesIds);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -98,12 +98,13 @@ public class NOAALocationService {
         while(iterator.hasNext()){
             NOAALocation location = iterator.next();
             String parentCountryId = "FIPS:" + location.getName().substring(location.getName().length()-2);
-            if(noaaLocationRepository.existsById(parentCountryId)){
+//            if(noaaLocationRepository.existsById(parentCountryId)){
                 location.setNoaaLocationCategory(new NOAALocationCategory("CITY"));
                 location.setParent(new NOAALocation(parentCountryId));
-            } else {
-                iterator.remove();
-            }
+//            }
+//            else {
+//                iterator.remove(); //TODO: inform user
+//            }
         }
 
         return locations;
@@ -184,5 +185,9 @@ public class NOAALocationService {
 
     public void deleteCountriesByIds(List<String> countriesIds) {
         noaaLocationRepository.deleteAllById(countriesIds);
+    }
+
+    public void deleteCitiesIds(List<String> citiesIds) {
+        noaaLocationRepository.deleteAllById(citiesIds);
     }
 }
