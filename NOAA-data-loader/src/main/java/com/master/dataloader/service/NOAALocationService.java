@@ -1,23 +1,16 @@
 package com.master.dataloader.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
-import com.master.dataloader.dto.PaginationData;
-import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.models.NOAALocationCategory;
 import com.master.dataloader.repository.NOAALocationRepository;
 import com.master.dataloader.utils.Utils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
 
-import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class NOAALocationService {
@@ -183,11 +176,7 @@ public class NOAALocationService {
         noaaLocationRepository.saveAll(filteredStates);
     }
 
-    public void deleteCountriesByIds(List<String> countriesIds) {
-        noaaLocationRepository.deleteAllById(countriesIds);
-    }
-
-    public void deleteCitiesIds(List<String> citiesIds) {
-        noaaLocationRepository.deleteAllById(citiesIds);
+    public void deleteLocationsByIds(List<String> locationIds) {
+        noaaLocationRepository.deleteAllById(locationIds);
     }
 }

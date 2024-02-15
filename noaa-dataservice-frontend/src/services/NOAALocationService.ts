@@ -45,10 +45,22 @@ export const loadCitiesByIds = async (ids:string[]) => {
     await axios.put(`${apiPath}/NOAA/location/cities/loadByIds`, ids);
 }
 
+export const loadStatesByIds = async (ids:string[]) => {
+    await axios.put(`${apiPath}/NOAA/location/states/loadByIds`, ids);
+}
+
+export const loadAllStates = async () => {
+    await axios.put(`${apiPath}/NOAA/location/states/load`);
+}
+
 export const deleteCountriesByIds = async (ids:string[]) => {
     await axios.delete(`${apiPath}/NOAA/location/countries`, {data:ids})
 }
 
 export const deleteCitiesByIds = async (ids:string[]) => {
     await axios.delete(`${apiPath}/NOAA/location/cities`, {data:ids})
+}
+
+export const deleteStatesByIds = async (ids:string[]) => {
+    await axios.delete(`${apiPath}/NOAA/location/states`, {data:ids})
 }

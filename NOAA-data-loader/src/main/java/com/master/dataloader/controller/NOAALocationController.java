@@ -1,27 +1,11 @@
 package com.master.dataloader.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.master.dataloader.constant.Constants;
-import com.master.dataloader.dto.PaginationData;
-import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAALocation;
-import com.master.dataloader.models.NOAALocationCategory;
-import com.master.dataloader.repository.NOAALocationRepository;
 import com.master.dataloader.service.NOAALocationService;
-import com.master.dataloader.utils.Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("NOAA/location")
@@ -115,13 +99,19 @@ public class NOAALocationController {
 
     @DeleteMapping("/countries")
     public ResponseEntity<Void> deleteCountriesByIds(@RequestBody List<String> countriesIds){
-        noaaLocationService.deleteCountriesByIds(countriesIds);
+        noaaLocationService.deleteLocationsByIds(countriesIds);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/cities")
     public ResponseEntity<Void> deleteCitiesByIds(@RequestBody List<String> citiesIds){
-        noaaLocationService.deleteCitiesIds(citiesIds);
+        noaaLocationService.deleteLocationsByIds(citiesIds);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/states")
+    public ResponseEntity<Void> deleteStates(@RequestBody List<String> statesIds){
+        noaaLocationService.deleteLocationsByIds(statesIds);
         return ResponseEntity.ok().build();
     }
 }

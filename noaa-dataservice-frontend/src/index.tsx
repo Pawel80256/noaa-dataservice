@@ -11,6 +11,7 @@ import {DataTypesLoaderView} from "./views/DataTypesLoaderView";
 import {LocationCategoriesLoaderView} from "./views/LocationCategoriesLoaderView";
 import {CountriesLoaderView} from "./views/CountriesLoaderView";
 import {CitiesLoaderView} from "./views/CitiesLoaderView";
+import {StatesLoaderView} from "./views/StatesLoaderView";
 
 const Content = () => (
     <Row style={{ width: '100%', height: '100vh' }}>
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
             { path: "dataloader/locationcategories", element: <LocationCategoriesLoaderView /> },
             { path: "dataloader/locations/countries", element: <CountriesLoaderView /> },
             { path: "dataloader/locations/cities", element: <CitiesLoaderView /> },
-            // Inne ścieżki
+            { path: "dataloader/locations/states", element: <StatesLoaderView /> },
         ],
     },
 ]);
