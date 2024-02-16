@@ -1,4 +1,4 @@
-import {Button, Flex, notification, Row, Typography} from "antd";
+import {Button, Col, Flex, notification, Row, Space, Typography} from "antd";
 import {useTranslation} from "react-i18next";
 import {DatasetsTable} from "../components/data_loader/datasets/DatasetsTable";
 import {
@@ -11,14 +11,14 @@ import {useState} from "react";
 import {NOAADataset} from "../models/NOAADataset";
 import {initialPaginationWrapper, PaginationWrapper} from "../models/PaginationWrapper";
 import {DownloadOutlined} from '@ant-design/icons';
-import {showSuccessNotification} from "../services/Utils";
+import {showErrorNotification, showSuccessNotification} from "../services/Utils";
 
 
-export const DatasetLoaderView = () =>{
+export const DatasetLoaderView = () => {
     const {t} = useTranslation();
     const [api, contextHolder] = notification.useNotification();
 
-    const [remoteDatasets, setRemoteDatasets] = useState<PaginationWrapper<NOAADataset>>(initialPaginationWrapper);
+    const [remoteDatasets, setRemoteDatasets] = useState<NOAADataset[]>([]);
     const [localDatasets, setLocalDatasets] = useState<NOAADataset[]>([]);
 
     const [isRemoteDatasetsLoading, setIsRemoteDatasetsLoading] = useState(false);
@@ -36,14 +36,25 @@ export const DatasetLoaderView = () =>{
         setSelectedLocalDatasets(keys)
     }
 
+    const selectAllLocalDatasets = () => {
+        const newSelectedRowKeys = localDatasets.map(dt => dt.id);
+        setSelectedLocalDatasets(newSelectedRowKeys);
+    };
+
+    const selectAllRemote = () => {
+        const newSelectedRowKeys = remoteDatasets.map(dt => dt.id);
+        setSelectedRemoteDatasets(newSelectedRowKeys);
+    };
+
     const fetchRemoteDatasets = () => {
         setIsRemoteDatasetsLoading(true);
-        getAllRemoteDatasets(100, 1).then(response => {
+        getAllRemoteDatasets().then(response => {
             setRemoteDatasets(response);
             setIsRemoteDatasetsLoading(false);
             showSuccessNotification(t('REMOTE_FETCH_SUCCESS_LABEL'));
         }).catch(() => {
             setIsRemoteDatasetsLoading(false);
+            showErrorNotification(t('REMOTE_FETCH_ERROR_LABEL'));
         });
     };
 
@@ -53,67 +64,81 @@ export const DatasetLoaderView = () =>{
             setLocalDatasets(response);
             setIsLocalDatasetsLoading(false);
             showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'))
-        }).catch(()=>{
+        }).catch(() => {
             setIsLocalDatasetsLoading(false);
+            showErrorNotification(t('LOCAL_FETCH_ERROR_LABEL'))
         })
     }
 
     const loadSelectedDatasets = () => {
-        const ids:string[] = selectedRemoteDatasets.map(key => key.toString());
+        const ids: string[] = selectedRemoteDatasets.map(key => key.toString());
         setIsLoadingDatasetsLoading(true);
-        loadByIds(ids).then(() => {
+        loadByIds(ids, false).then(() => {
             fetchLocalDatasets();
             setIsLoadingDatasetsLoading(false);
             showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
-        }).catch(()=>{
+        }).catch(() => {
             setIsLoadingDatasetsLoading(false);
+            showErrorNotification(t('LOAD_ERROR_LABEL'))
         })
     }
 
     const deleteSelectedDatasets = () => {
-        const ids:string[] = selectedLocalDatasets.map(key => key.toString());
+        const ids: string[] = selectedLocalDatasets.map(key => key.toString());
         setIsDeletingDatasetsLoading(true);
         deleteDatasetsByIds(ids).then(() => {
             fetchLocalDatasets();
             setIsDeletingDatasetsLoading(false);
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
-        }).catch(()=>{
+        }).catch(() => {
             setIsDeletingDatasetsLoading(false);
+            showErrorNotification(t('DELETE_ERROR_LABEL'))
         })
     }
 
 
-    return(
+    return (
         <>
             {contextHolder}
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                <Flex style={{ flex: 1, minWidth: '50vh' }} align={'center'} justify={'flex-start'} vertical>
+            <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
+                <Flex style={{flex: 1, minWidth: '50vh'}} align={'center'} justify={'flex-start'} vertical>
                     <Row>
                         <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
                     </Row>
                     <Row>
                         <DatasetsTable
-                            datasets={remoteDatasets.data}
+                            datasets={remoteDatasets}
                             updateSelectedDatasets={updateSelectedRemoteDatasets}
                             localDatasets={localDatasets}
+                            selectedDatasets={selectedRemoteDatasets}
                             showStatusColumn={true}/>
                     </Row>
-                    {remoteDatasets.count === 0 &&    <Row>
+                    {remoteDatasets.length === 0 && <Row>
                         <Button
-                            style={{marginTop:'25px'}}
-                            type="primary" icon={<DownloadOutlined />}
+                            style={{marginTop: '25px'}}
+                            type="primary" icon={<DownloadOutlined/>}
                             onClick={fetchRemoteDatasets}
                             loading={isRemoteDatasetsLoading}>{t('FETCH_REMOTE_LABEL')}</Button>
                     </Row>}
-                    {remoteDatasets.count > 0 &&    <Row>
-                        <Button
-                            style={{marginTop:'25px'}}
-                            type="primary" icon={<DownloadOutlined />}
-                            onClick={loadSelectedDatasets}
-                            loading={isLoadingDatasetsLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
-                    </Row>}
+                    {remoteDatasets.length > 0 &&
+                        <Row>
+                            <Col>
+                                <Space>
+                                    <Button
+                                        style={{marginTop:'25px'}}
+                                        type="primary" icon={<DownloadOutlined />}
+                                        onClick={selectAllRemote}>{t('SELECT_ALL_LABEL')}</Button>
+                                    <Button
+                                        style={{marginTop: '25px'}}
+                                        type="primary" icon={<DownloadOutlined/>}
+                                        onClick={loadSelectedDatasets}
+                                        loading={isLoadingDatasetsLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
+                                </Space>
+                            </Col>
+                        </Row>
+                    }
                 </Flex>
-                <Flex style={{ flex: 1, minHeight: '50vh' }} align={'center'} justify={'flex-start'} vertical>
+                <Flex style={{flex: 1, minHeight: '50vh'}} align={'center'} justify={'flex-start'} vertical>
                     <Row>
                         <Typography.Title level={2}>{t('DATABASE_CONTENT')}</Typography.Title>
                     </Row>
@@ -122,21 +147,30 @@ export const DatasetLoaderView = () =>{
                             datasets={localDatasets}
                             updateSelectedDatasets={updateSelectedLocalDatasets}
                             localDatasets={[]}
+                            selectedDatasets={selectedLocalDatasets}
                             showStatusColumn={false}/>
                     </Row>
-                    {localDatasets.length === 0 &&    <Row>
+                    {localDatasets.length === 0 && <Row>
                         <Button
-                            style={{marginTop:'25px'}}
-                            type="primary" icon={<DownloadOutlined />}
+                            style={{marginTop: '25px'}}
+                            type="primary" icon={<DownloadOutlined/>}
                             onClick={fetchLocalDatasets}
                             loading={isLocalDatasetsLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
                     </Row>}
-                    {localDatasets.length > 0 &&    <Row>
-                        <Button
-                            style={{marginTop:'25px'}}
-                            type="primary" icon={<DownloadOutlined />}
-                            onClick={deleteSelectedDatasets}
-                            loading={isDeletingDatasetsLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
+                    {localDatasets.length > 0 && <Row>
+                        <Col>
+                            <Space>
+                                <Button
+                                    style={{marginTop: '25px'}}
+                                    type="primary" icon={<DownloadOutlined/>}
+                                    onClick={selectAllLocalDatasets}>{t('SELECT_ALL_LABEL')}</Button>
+                                <Button
+                                    style={{marginTop: '25px'}}
+                                    type="primary" icon={<DownloadOutlined/>}
+                                    onClick={deleteSelectedDatasets}
+                                    loading={isDeletingDatasetsLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
+                            </Space>
+                        </Col>
                     </Row>}
                 </Flex>
             </div>

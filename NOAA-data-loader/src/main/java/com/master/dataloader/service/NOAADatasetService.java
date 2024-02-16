@@ -32,10 +32,10 @@ public class NOAADatasetService {
         return noaaDatasetRepository.findAll();
     }
 
-    public PaginationWrapper<NOAADataset> getAllRemote(Integer limit, Integer offset) throws Exception {
+    public List<NOAADataset> getAllRemote() throws Exception {
         Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",limit);
-        requestParams.put("offset",offset);
+        requestParams.put("limit",100);
+        requestParams.put("offset",1);
 
         String datasetsUrl = Constants.baseNoaaApiUrl + Constants.datasetsUrl;
         String requestResult = Utils.sendRequest(datasetsUrl,requestParams);
@@ -43,27 +43,32 @@ public class NOAADatasetService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
+        JsonNode rootNode = mapper.readTree(requestResult);
         JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
         JsonNode resultsNode = rootNode.path("results");
 
         PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        List<NOAADataset> result = mapper.readerForListOf(NOAADataset.class).readValue(resultsNode);
+        return mapper.readerForListOf(NOAADataset.class).readValue(resultsNode);
 
-        return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
     }
 
 
     public void loadAll() throws Exception {
-        List<NOAADataset> datasets = getAllRemote(11,1).getData();
+        List<NOAADataset> datasets = getAllRemote();
         noaaDatasetRepository.saveAll(datasets);
     }
 
-    public void loadByIds(List<String> datasetIds) throws Exception {
+    public void loadByIds(List<String> datasetIds, boolean singly) throws Exception {
         List<NOAADataset> datasets = new ArrayList<>();
 
-        for(String datasetId : datasetIds){
-            datasets.add(getRemoteById(datasetId));
+        if(singly){
+            for(String datasetId : datasetIds){
+                datasets.add(getRemoteById(datasetId));
+            }
+        }else {
+            datasets = getAllRemote().stream()
+                    .filter(dataset -> datasetIds.contains(dataset.getId()))
+                    .toList();
         }
 
         noaaDatasetRepository.saveAll(datasets);

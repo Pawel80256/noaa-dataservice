@@ -2,19 +2,25 @@ import {Table, TableProps} from "antd";
 import {NOAADataset} from "../../../models/NOAADataset";
 import {useTranslation} from "react-i18next";
 import {CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined} from '@ant-design/icons';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 export interface RemoteDatasetsTableProps {
     datasets: NOAADataset[],
     updateSelectedDatasets: (keys: React.Key[]) => void,
     localDatasets: NOAADataset[],
+    selectedDatasets: React.Key[],
     showStatusColumn?: boolean
 }
 
-export const DatasetsTable = ({ datasets, updateSelectedDatasets, localDatasets, showStatusColumn }: RemoteDatasetsTableProps) => {
+export const DatasetsTable = ({ datasets, updateSelectedDatasets, localDatasets,selectedDatasets, showStatusColumn }: RemoteDatasetsTableProps) => {
     const {t} = useTranslation();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
+
+    useEffect(()=>{
+        setSelectedRowKeys(selectedDatasets)
+    }, [selectedDatasets])
+
 
     const handleTableChange = (pagination:any) => {
         setPagination({

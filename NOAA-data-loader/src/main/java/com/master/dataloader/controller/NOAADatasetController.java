@@ -1,6 +1,5 @@
 package com.master.dataloader.controller;
 
-import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.models.NOAADataset;
 import com.master.dataloader.service.NOAADatasetService;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +23,8 @@ public class NOAADatasetController {
     }
 
     @GetMapping("/remote")
-    public ResponseEntity<PaginationWrapper<NOAADataset>> getAllRemote(
-            @RequestParam(name = "limit") Integer limit,
-            @RequestParam(name = "offset", defaultValue = "1") Integer offset
-    ) throws Exception {
-        return ResponseEntity.ok(noaaDatasetService.getAllRemote(limit,offset));
+    public ResponseEntity<List<NOAADataset>> getAllRemote() throws Exception {
+        return ResponseEntity.ok(noaaDatasetService.getAllRemote());
     }
 
     @PutMapping("/load")
@@ -38,8 +34,8 @@ public class NOAADatasetController {
     }
 
     @PutMapping("/loadByIds")
-    public ResponseEntity<Void> loadByIds(@RequestBody List<String> ids) throws Exception {
-        noaaDatasetService.loadByIds(ids);
+    public ResponseEntity<Void> loadByIds(@RequestBody List<String> ids, @RequestParam(name = "singly", defaultValue = "false") boolean singly) throws Exception {
+        noaaDatasetService.loadByIds(ids, singly);
         return ResponseEntity.ok().build();
     }
 
