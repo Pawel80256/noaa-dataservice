@@ -14,8 +14,8 @@ export const getAllRemoteLocationCategories = async (): Promise<NOAADataType[]> 
     return response.data;
 };
 
-export const loadLocationCategoriesByIds = async (ids:string[]) => {
-    await axios.put(`${apiPath}/NOAA/locationcategory/loadByIds`, ids)
+export const loadLocationCategoriesByIds = async (ids:string[], singly:boolean) => {
+    await axios.put(`${apiPath}/NOAA/locationcategory/loadByIds`, ids, {params: {singly:singly}})
 }
 
 export const loadAllLocationCategories = async () => {

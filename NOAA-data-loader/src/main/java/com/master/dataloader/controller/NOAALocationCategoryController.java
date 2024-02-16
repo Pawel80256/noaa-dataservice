@@ -36,8 +36,11 @@ public class NOAALocationCategoryController {
     }
 
     @PutMapping("/loadByIds")
-    public ResponseEntity<Void> loadByIds(@RequestBody List<String> ids) throws Exception {
-        noaaLocationCategoryService.loadByIds(ids);
+    public ResponseEntity<Void> loadByIds(
+            @RequestBody List<String> ids,
+            @RequestParam(name = "singly",defaultValue = "false") boolean singly
+    ) throws Exception {
+        noaaLocationCategoryService.loadByIds(ids, singly);
         return ResponseEntity.ok().build();
     }
 

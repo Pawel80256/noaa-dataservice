@@ -51,11 +51,19 @@ public class NOAALocationCategoryService {
         noaaLocationCategoryRepository.saveAll(locationCategories);
     }
 
-    public void loadByIds(List<String> ids) throws Exception {
+    public void loadByIds(List<String> ids, boolean singly) throws Exception {
         List<NOAALocationCategory> locationCategories = new ArrayList<>();
-        for(String locationCategoryId : ids){
-            locationCategories.add(getRemoteById(locationCategoryId));
+        if(singly){
+            for(String locationCategoryId : ids){
+                locationCategories.add(getRemoteById(locationCategoryId));
+            }
+        }else {
+            locationCategories =
+                    getAllRemote().stream()
+                            .filter(locationCategory -> ids.contains(locationCategory.getId()))
+                            .toList();
         }
+
         noaaLocationCategoryRepository.saveAll(locationCategories);
     }
 

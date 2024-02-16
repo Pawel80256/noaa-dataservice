@@ -45,10 +45,23 @@ export const LocationCategoriesLoaderView = () =>{
         setSelectedLocalLocationCategories(keys);
     }
 
-    const selectAllLocalLocationCategories = () => {
-        const newSelectedRowKeys = localLocationCategories.map(dt => dt.id);
-        setSelectedLocalLocationCategories(newSelectedRowKeys);
-    }
+    const selectAllLocal = () => {
+        if (selectedLocalLocationCategories.length === localLocationCategories.length) {
+            setSelectedLocalLocationCategories([]);
+        } else {
+            const newSelectedRowKeys = localLocationCategories.map(dt => dt.id);
+            setSelectedLocalLocationCategories(newSelectedRowKeys);
+        }
+    };
+
+    const selectAllRemote = () => {
+        if (selectedRemoteLocationCategories.length === remoteLocationCategories.length) {
+            setSelectedRemoteLocationCategories([]);
+        } else {
+            const newSelectedRowKeys = remoteLocationCategories.map(dt => dt.id);
+            setSelectedRemoteLocationCategories(newSelectedRowKeys);
+        }
+    };
 
     const fetchRemoteLocationCategories = () => {
         setIsRemoteLocationCategoriesLoading(true);
@@ -83,7 +96,7 @@ export const LocationCategoriesLoaderView = () =>{
         }
 
         setIsLoadingSelectedLocationCategoriesLoading(true);
-        loadLocationCategoriesByIds(ids).then(() => {
+        loadLocationCategoriesByIds(ids, false).then(() => {
             fetchLocalLocationCategories();
             setIsLoadingSelectedLocationCategoriesLoading(false);
             showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
@@ -109,6 +122,9 @@ export const LocationCategoriesLoaderView = () =>{
         const ids:string[] = selectedLocalLocationCategories.map(key => key.toString());
         setIsDeletingLocationCategoriesLoading(true);
         deleteLocalLocationCategoriesByIds(ids).then(() => {
+            const updatedSelectedDatasets = selectedLocalLocationCategories.filter(key => !ids.includes(key.toString()));
+            setSelectedLocalLocationCategories(updatedSelectedDatasets);
+
             fetchLocalLocationCategories(/*boolean showNotification*/);
             setIsDeletingLocationCategoriesLoading(false);
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
@@ -147,8 +163,8 @@ export const LocationCategoriesLoaderView = () =>{
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
-                                    onClick={handleLoadingAllLocationCategories}
-                                    loading={isLoadingAllLocationsCategoriesLoading}>{t('LOAD_ALL_LABEL')}</Button>
+                                    onClick={selectAllRemote}
+                                    loading={isLoadingAllLocationsCategoriesLoading}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
@@ -183,7 +199,7 @@ export const LocationCategoriesLoaderView = () =>{
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
-                                    onClick={selectAllLocalLocationCategories}
+                                    onClick={selectAllLocal}
                                     loading={isDeletingLocationCategoriesLoading}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop:'25px'}}
