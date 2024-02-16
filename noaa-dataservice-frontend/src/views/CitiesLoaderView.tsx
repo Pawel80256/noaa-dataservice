@@ -12,7 +12,7 @@ import {
 } from "../services/NOAADataTypeService";
 import {showErrorNotification, showSuccessNotification, showWarningNotification} from "../services/Utils";
 import {
-    deleteCitiesByIds,
+    deleteLocationsByIds,
     getAllLocalCities,
     getAllRemoteCities,
     loadCitiesByIds
@@ -107,7 +107,10 @@ export const CitiesLoaderView = () => {
     const deleteSelectedCities = () => {
         const ids:string[] = selectedLocalCities.map(key => key.toString());
         setIsDeletingCitiesLoading(true);
-        deleteCitiesByIds(ids).then(() => {
+        deleteLocationsByIds(ids).then(() => {
+            const updatedSelectedCities = selectedLocalCities.filter(key => !ids.includes(key.toString()));
+            setSelectedLocalCities(updatedSelectedCities);
+
             fetchLocalCities(/*boolean showNotification*/);
             setIsDeletingCitiesLoading(false);
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))

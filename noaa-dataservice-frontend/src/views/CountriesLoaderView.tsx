@@ -12,7 +12,7 @@ import {
 } from "../services/NOAADataTypeService";
 import {showErrorNotification, showSuccessNotification, showWarningNotification} from "../services/Utils";
 import {
-    deleteCountriesByIds,
+    deleteLocationsByIds,
     getAllLocalCountries,
     getAllRemoteCountries, loadAllCountries,
     loadCountriesByIds
@@ -121,7 +121,7 @@ export const CountriesLoaderView = () => {
     const deleteSelectedCountries = () => {
         const ids:string[] = selectedLocalCountries.map(key => key.toString());
         setIsDeletingCountriesLoading(true);
-        deleteCountriesByIds(ids).then(() => {
+        deleteLocationsByIds(ids).then(() => {
             const updatedSelectedCountries = selectedLocalCountries.filter(key => !ids.includes(key.toString()));
             setSelectedLocalCountries(updatedSelectedCountries);
 

@@ -97,21 +97,9 @@ public class NOAALocationController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/countries")
-    public ResponseEntity<Void> deleteCountriesByIds(@RequestBody List<String> countriesIds){
-        noaaLocationService.deleteLocationsByIds(countriesIds);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/cities")
-    public ResponseEntity<Void> deleteCitiesByIds(@RequestBody List<String> citiesIds){
-        noaaLocationService.deleteLocationsByIds(citiesIds);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/states")
-    public ResponseEntity<Void> deleteStates(@RequestBody List<String> statesIds){
-        noaaLocationService.deleteLocationsByIds(statesIds);
+    @DeleteMapping("/deleteByIds")
+    public ResponseEntity<Void> deleteLocationsByIds(@RequestBody List<String> locationsIds){
+        noaaLocationService.deleteLocationsByIds(locationsIds);
         return ResponseEntity.ok().build();
     }
 }
