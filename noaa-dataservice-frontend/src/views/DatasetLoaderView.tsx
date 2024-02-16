@@ -1,4 +1,4 @@
-import {Button, Col, Flex, notification, Row, Space, Typography} from "antd";
+import {Button, Col, Divider, Flex, notification, Row, Space, Typography} from "antd";
 import {useTranslation} from "react-i18next";
 import {DatasetsTable} from "../components/data_loader/datasets/DatasetsTable";
 import {
@@ -9,7 +9,6 @@ import {
 } from "../services/NOAADatasetService";
 import {useState} from "react";
 import {NOAADataset} from "../models/NOAADataset";
-import {initialPaginationWrapper, PaginationWrapper} from "../models/PaginationWrapper";
 import {DownloadOutlined} from '@ant-design/icons';
 import {showErrorNotification, showSuccessNotification} from "../services/Utils";
 
@@ -37,14 +36,23 @@ export const DatasetLoaderView = () => {
     }
 
     const selectAllLocalDatasets = () => {
-        const newSelectedRowKeys = localDatasets.map(dt => dt.id);
-        setSelectedLocalDatasets(newSelectedRowKeys);
+        if (selectedLocalDatasets.length === localDatasets.length) {
+            setSelectedLocalDatasets([]);
+        } else {
+            const newSelectedRowKeys = localDatasets.map(dt => dt.id);
+            setSelectedLocalDatasets(newSelectedRowKeys);
+        }
     };
 
     const selectAllRemote = () => {
-        const newSelectedRowKeys = remoteDatasets.map(dt => dt.id);
-        setSelectedRemoteDatasets(newSelectedRowKeys);
+        if (selectedRemoteDatasets.length === remoteDatasets.length) {
+            setSelectedRemoteDatasets([]);
+        } else {
+            const newSelectedRowKeys = remoteDatasets.map(dt => dt.id);
+            setSelectedRemoteDatasets(newSelectedRowKeys);
+        }
     };
+
 
     const fetchRemoteDatasets = () => {
         setIsRemoteDatasetsLoading(true);
@@ -87,12 +95,15 @@ export const DatasetLoaderView = () => {
         const ids: string[] = selectedLocalDatasets.map(key => key.toString());
         setIsDeletingDatasetsLoading(true);
         deleteDatasetsByIds(ids).then(() => {
+            const updatedSelectedDatasets = selectedLocalDatasets.filter(key => !ids.includes(key.toString()));
+            setSelectedLocalDatasets(updatedSelectedDatasets);
+
             fetchLocalDatasets();
             setIsDeletingDatasetsLoading(false);
-            showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
+            showSuccessNotification(t('DELETE_SUCCESS_LABEL'));
         }).catch(() => {
             setIsDeletingDatasetsLoading(false);
-            showErrorNotification(t('DELETE_ERROR_LABEL'))
+            showErrorNotification(t('DELETE_ERROR_LABEL'));
         })
     }
 
@@ -102,6 +113,10 @@ export const DatasetLoaderView = () => {
             {contextHolder}
             <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
                 <Flex style={{flex: 1, minWidth: '50vh'}} align={'center'} justify={'flex-start'} vertical>
+                    <Row>
+                        <Typography.Title>{t('DATA_SETS')}</Typography.Title>
+                    </Row>
+                    <Divider />
                     <Row>
                         <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
                     </Row>
@@ -125,8 +140,8 @@ export const DatasetLoaderView = () => {
                             <Col>
                                 <Space>
                                     <Button
-                                        style={{marginTop:'25px'}}
-                                        type="primary" icon={<DownloadOutlined />}
+                                        style={{marginTop: '25px'}}
+                                        type="primary" icon={<DownloadOutlined/>}
                                         onClick={selectAllRemote}>{t('SELECT_ALL_LABEL')}</Button>
                                     <Button
                                         style={{marginTop: '25px'}}

@@ -1,5 +1,5 @@
 import {useTranslation} from "react-i18next";
-import {Button, Col, Flex, notification, Row, Space, Typography} from "antd";
+import {Button, Col, Divider, Flex, notification, Row, Space, Typography} from "antd";
 import {useState} from "react";
 import {NOAADataType} from "../models/NOAADataType";
 import {showErrorNotification, showSuccessNotification, showWarningNotification} from "../services/Utils";
@@ -37,15 +37,23 @@ export const DataTypesLoaderView = () => {
         setSelectedLocalDataTypes(keys)
     }
 
-    const selectAllLocalDataTypes = () => {
-        const newSelectedRowKeys = localDataTypes.map(dt => dt.id);
-        setSelectedLocalDataTypes(newSelectedRowKeys);
+    const selectAllLocal = () => {
+        if (selectedLocalDataTypes.length === localDataTypes.length) {
+            setSelectedLocalDataTypes([]);
+        } else {
+            const newSelectedRowKeys = localDataTypes.map(dt => dt.id);
+            setSelectedLocalDataTypes(newSelectedRowKeys);
+        }
     };
 
-    // const selectAllRemoteDataTypes = () => {
-    //     const newSelectedRowKeys = remoteDataTypes.map(dt => dt.id);
-    //     setSelectedRemoteDataTypes(newSelectedRowKeys);
-    // }
+    const selectAllRemote = () => {
+        if (selectedRemoteDataTypes.length === remoteDataTypes.length) {
+            setSelectedRemoteDataTypes([]);
+        } else {
+            const newSelectedRowKeys = remoteDataTypes.map(dt => dt.id);
+            setSelectedRemoteDataTypes(newSelectedRowKeys);
+        }
+    };
 
     const fetchRemoteDataTypes = () => {
         setIsRemoteDataTypesLoading(true);
@@ -74,13 +82,14 @@ export const DataTypesLoaderView = () => {
     const handleLoadingSelectedDataTypes = () => {
         const ids:string[] = selectedRemoteDataTypes.map(key => key.toString());
 
-        if (ids.length > 60) {
-            showWarningNotification(t('LOAD_LIMIT_EXCEEDED_LABEL'))
-            return;
-        }
+        //todo: for singly loading
+        // if (ids.length > 60) {
+        //     showWarningNotification(t('LOAD_LIMIT_EXCEEDED_LABEL'))
+        //     return;
+        // }
 
         setIsLoadingSelectedDataTypesLoading(true);
-        loadDataTypesByIds(ids).then(() => {
+        loadDataTypesByIds(ids,false).then(() => {
             fetchLocalDataTypes();
             setIsLoadingSelectedDataTypesLoading(false);
             showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
@@ -107,6 +116,9 @@ export const DataTypesLoaderView = () => {
         const ids:string[] = selectedLocalDataTypes.map(key => key.toString());
         setIsDeletingDataTypesLoading(true);
         deleteLocalDataTypesByIds(ids).then(() => {
+            const updatedSelectedDatTypes = selectedLocalDataTypes.filter(key => !ids.includes(key.toString()));
+            setSelectedLocalDataTypes(updatedSelectedDatTypes)
+
             fetchLocalDataTypes(/*boolean showNotification*/);
             setIsDeletingDataTypesLoading(false);
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
@@ -121,6 +133,10 @@ export const DataTypesLoaderView = () => {
             {contextHolder}
             <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
                 <Flex style={{ flex: 1, minWidth: '50vh' }} align={'center'} justify={'flex-start'} vertical>
+                    <Row>
+                        <Typography.Title>{t('DATA_TYPES')}</Typography.Title>
+                    </Row>
+                    <Divider />
                     <Row>
                         <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
                     </Row>
@@ -145,8 +161,7 @@ export const DataTypesLoaderView = () => {
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
-                                    onClick={handleLoadingAllDataTypes}
-                                    loading={isLoadingAllDataTypesLoading}>{t('LOAD_ALL_LABEL')}</Button>
+                                    onClick={selectAllRemote}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
@@ -181,7 +196,7 @@ export const DataTypesLoaderView = () => {
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
-                                    onClick={selectAllLocalDataTypes}
+                                    onClick={selectAllLocal}
                                     loading={isDeletingDataTypesLoading}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop:'25px'}}

@@ -87,11 +87,20 @@ public class NOAADataTypeService {
         noaaDataTypeRepository.deleteAllById(ids);
     }
 
-    public void loadByIds(List<String> ids) throws Exception {
+    public void loadByIds(List<String> dataTypesIds, boolean singly) throws Exception {
         List<NOAADataType> dataTypes = new ArrayList<>();
-        for(String dataTypeId : ids){
-            dataTypes.add(getRemoteById(dataTypeId));
+
+        if(singly){
+            for(String dataTypeId : dataTypesIds){
+                dataTypes.add(getRemoteById(dataTypeId));
+            }
         }
+        else {
+            dataTypes = getAllRemote().stream()
+                    .filter(dataType -> dataTypesIds.contains(dataType.getId()))
+                    .toList();
+        }
+
         noaaDataTypeRepository.saveAll(dataTypes);
     }
 

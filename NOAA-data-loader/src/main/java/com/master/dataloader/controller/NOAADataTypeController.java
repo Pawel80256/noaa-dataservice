@@ -52,8 +52,11 @@ public class NOAADataTypeController {
     }
 
     @PutMapping("loadByIds")
-    public ResponseEntity<Void> loadByIds(@RequestBody List<String> ids) throws Exception {
-        noaaDataTypeService.loadByIds(ids);
+    public ResponseEntity<Void> loadByIds(
+            @RequestBody List<String> ids,
+            @RequestParam(name = "singly", defaultValue = "false") boolean singly)
+            throws Exception {
+        noaaDataTypeService.loadByIds(ids,singly);
         return ResponseEntity.ok().build();
     }
 
