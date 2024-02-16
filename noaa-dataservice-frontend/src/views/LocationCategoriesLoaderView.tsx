@@ -1,5 +1,5 @@
 import {useTranslation} from "react-i18next";
-import {Button, Col, Flex, notification, Row, Space, Typography} from "antd";
+import {Button, Col, Divider, Flex, notification, Row, Space, Typography} from "antd";
 import {useState} from "react";
 import {NOAADataType} from "../models/NOAADataType";
 import {NOAALocationCategory} from "../models/NOAALocationCategory";
@@ -139,6 +139,10 @@ export const LocationCategoriesLoaderView = () =>{
             {contextHolder}
             <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
                 <Flex style={{ flex: 1, minWidth: '50vh' }} align={'center'} justify={'flex-start'} vertical>
+                    <Row>
+                        <Typography.Title>{t('LOCATION_CATEGORIES')}</Typography.Title>
+                    </Row>
+                    <Divider />
                     <Row>
                         <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
                     </Row>

@@ -43,15 +43,23 @@ export const CitiesLoaderView = () => {
         setSelectedLocalCities(keys)
     }
 
-    const selectAllLocalDataTypes = () => {
-        const newSelectedRowKeys = localCities.map(dt => dt.id);
-        setSelectedLocalCities(newSelectedRowKeys);
+    const selectAllLocal = () => {
+        if (selectedLocalCities.length === localCities.length) {
+            setSelectedLocalCities([]);
+        } else {
+            const newSelectedRowKeys = localCities.map(dt => dt.id);
+            setSelectedLocalCities(newSelectedRowKeys);
+        }
     };
 
-    const selectAllRemoteDataTypes = () => {
-        const newSelectedRowKeys = remoteCities.map(dt => dt.id);
-        setSelectedRemoteCities(newSelectedRowKeys);
-    }
+    const selectAllRemote = () => {
+        if (selectedRemoteCities.length === remoteCities.length) {
+            setSelectedRemoteCities([]);
+        } else {
+            const newSelectedRowKeys = remoteCities.map(dt => dt.id);
+            setSelectedRemoteCities(newSelectedRowKeys);
+        }
+    };
 
     const fetchRemoteDataTypes = () => {
         setIsRemoteCitiesLoading(true);
@@ -169,7 +177,7 @@ export const CitiesLoaderView = () => {
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
-                                    onClick={selectAllLocalDataTypes}
+                                    onClick={selectAllLocal}
                                     loading={isDeletingCitiesLoading}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop:'25px'}}

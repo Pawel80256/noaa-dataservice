@@ -43,15 +43,24 @@ export const CountriesLoaderView = () => {
         setSelectedLocalCountries(keys)
     }
 
-    const selectAllLocalDataTypes = () => {
-        const newSelectedRowKeys = localCountries.map(dt => dt.id);
-        setSelectedLocalCountries(newSelectedRowKeys);
+    const selectAllLocal = () => {
+        if (selectedLocalCountries.length === localCountries.length) {
+            setSelectedLocalCountries([]);
+        } else {
+            const newSelectedRowKeys = localCountries.map(dt => dt.id);
+            setSelectedLocalCountries(newSelectedRowKeys);
+        }
     };
 
-    const selectAllRemoteDataTypes = () => {
-        const newSelectedRowKeys = remoteCountries.map(dt => dt.id);
-        setSelectedRemoteCountries(newSelectedRowKeys);
-    }
+    const selectAllRemote = () => {
+        if (selectedRemoteCountries.length === remoteCountries.length) {
+            setSelectedRemoteCountries([]);
+        } else {
+            const newSelectedRowKeys = remoteCountries.map(dt => dt.id);
+            setSelectedRemoteCountries(newSelectedRowKeys);
+        }
+    };
+
 
     const fetchRemoteDataTypes = () => {
         setIsRemoteCountriesLoading(true);
@@ -80,10 +89,11 @@ export const CountriesLoaderView = () => {
     const handleLoadingSelectedCountries = () => {
         const ids:string[] = selectedRemoteCountries.map(key => key.toString());
 
-        if (ids.length > 60) {
-            showWarningNotification(t('LOAD_LIMIT_EXCEEDED_LABEL'))
-            return;
-        }
+        //todo: for singly loading
+        // if (ids.length > 60) {
+        //     showWarningNotification(t('LOAD_LIMIT_EXCEEDED_LABEL'))
+        //     return;
+        // }
 
         setIsLoadingSelectedCountriesLoading(true);
         loadCountriesByIds(ids).then(() => {
@@ -112,6 +122,9 @@ export const CountriesLoaderView = () => {
         const ids:string[] = selectedLocalCountries.map(key => key.toString());
         setIsDeletingCountriesLoading(true);
         deleteCountriesByIds(ids).then(() => {
+            const updatedSelectedCountries = selectedLocalCountries.filter(key => !ids.includes(key.toString()));
+            setSelectedLocalCountries(updatedSelectedCountries);
+
             fetchLocalCountries(/*boolean showNotification*/);
             setIsDeletingCountriesLoading(false);
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
@@ -150,8 +163,8 @@ export const CountriesLoaderView = () => {
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
-                                    onClick={handleLoadingAllCountries}
-                                    loading={isLoadingAllCountriesLoading}>{t('LOAD_ALL_LABEL')}</Button>
+                                    onClick={selectAllRemote}
+                                    loading={isLoadingAllCountriesLoading}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
@@ -186,7 +199,7 @@ export const CountriesLoaderView = () => {
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
-                                    onClick={selectAllLocalDataTypes}
+                                    onClick={selectAllLocal}
                                     loading={isDeletingCountriesLoading}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop:'25px'}}

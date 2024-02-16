@@ -43,15 +43,23 @@ export const StatesLoaderView = () => {
         setSelectedLocalStates(keys)
     }
 
-    const selectAllLocalDataTypes = () => {
-        const newSelectedRowKeys = localStates.map(dt => dt.id);
-        setSelectedLocalStates(newSelectedRowKeys);
+    const selectAllLocal = () => {
+        if (selectedLocalStates.length === localStates.length) {
+            setSelectedLocalStates([]);
+        } else {
+            const newSelectedRowKeys = localStates.map(dt => dt.id);
+            setSelectedLocalStates(newSelectedRowKeys);
+        }
     };
 
-    const selectAllRemoteDataTypes = () => {
-        const newSelectedRowKeys = remoteStates.map(dt => dt.id);
-        setSelectedRemoteStates(newSelectedRowKeys);
-    }
+    const selectAllRemote = () => {
+        if (selectedRemoteStates.length === remoteStates.length) {
+            setSelectedRemoteStates([]);
+        } else {
+            const newSelectedRowKeys = remoteStates.map(dt => dt.id);
+            setSelectedRemoteStates(newSelectedRowKeys);
+        }
+    };
 
     const fetchRemoteStates = () => {
         setIsRemoteStatesLoading(true);
@@ -112,6 +120,9 @@ export const StatesLoaderView = () => {
         const ids:string[] = selectedLocalStates.map(key => key.toString());
         setIsDeletingStatesLoading(true);
         deleteStatesByIds(ids).then(() => {
+            const updatedSelectedStates = selectedLocalStates.filter(key => !ids.includes(key.toString()));
+            setSelectedLocalStates(updatedSelectedStates);
+
             fetchLocalStates(/*boolean showNotification*/);
             setIsDeletingStatesLoading(false);
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
@@ -150,8 +161,8 @@ export const StatesLoaderView = () => {
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
-                                    onClick={handleLoadingAllStates}
-                                    loading={isLoadingAllStatesLoading}>{t('LOAD_ALL_LABEL')}</Button>
+                                    onClick={selectAllRemote}
+                                    loading={isLoadingAllStatesLoading}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
@@ -186,7 +197,7 @@ export const StatesLoaderView = () => {
                                 <Button
                                     style={{marginTop:'25px'}}
                                     type="primary" icon={<DownloadOutlined />}
-                                    onClick={selectAllLocalDataTypes}
+                                    onClick={selectAllLocal}
                                     loading={isDeletingStatesLoading}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop:'25px'}}
