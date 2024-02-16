@@ -7,9 +7,9 @@ import {CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined} from "
 
 export interface LocationsTableProps {
     locations: NOAALocation[],
-    updateSelectedLocations: (keys: React.Key[]) => void,
-    localLocations: NOAALocation[],
-    selectedLocations:React.Key[],
+    updateSelectedLocations?: (keys: React.Key[]) => void,
+    localLocations?: NOAALocation[],
+    selectedLocations?:React.Key[],
     showStatusColumn?: boolean,
     showParentColumn?:boolean
     // locationCategory:string
@@ -20,7 +20,9 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
     const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
 
     useEffect(()=>{
-        setSelectedRowKeys(selectedLocations)
+        if(selectedLocations){
+            setSelectedRowKeys(selectedLocations)
+        }
     }, [selectedLocations])
 
     const handleTableChange = (pagination:any) => {
@@ -33,7 +35,9 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         // console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
-        updateSelectedLocations(newSelectedRowKeys)
+        if (updateSelectedLocations) {
+            updateSelectedLocations(newSelectedRowKeys)
+        }
     };
 
     const rowSelection = {
@@ -77,7 +81,7 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
     ]
 
     //todo: same for parent column
-    if (showStatusColumn) {
+    if (showStatusColumn && localLocations) {
         columns.push({
             title: t('STATUS_COLUMN'),
             key: 'status',

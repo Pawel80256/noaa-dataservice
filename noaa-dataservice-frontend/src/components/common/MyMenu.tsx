@@ -37,6 +37,9 @@ export const MyMenu = () => {
             case 'states':
                 navigate('dataloader/locations/states');
                 break;
+            case 'stations':
+                navigate('dataloader/stations');
+                break;
         }
     }
 
