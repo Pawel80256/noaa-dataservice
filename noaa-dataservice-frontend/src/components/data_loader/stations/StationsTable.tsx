@@ -82,8 +82,8 @@ export const StationsTable = (
         },
         {
             title: t('ELEVATION_UNIT_COLUMN'),
-            dataIndex: 'elevationunit',
-            key: 'elevationunit'
+            dataIndex: 'elevationUnit',
+            key: 'elevationUnit'
         },
         {
             title: t('LATITUDE_COLUMN'),

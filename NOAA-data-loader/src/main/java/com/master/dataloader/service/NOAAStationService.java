@@ -70,7 +70,7 @@ public class NOAAStationService {
         noaaStationRepository.saveAll(stations);
     }
 
-    public PaginationWrapper<NOAAStation> getByLocationId(String locationId) throws Exception {
+    public List<NOAAStation> getByLocationId(String locationId) throws Exception {
         String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationsUrl;
         Map<String,Object> requestParams = new HashMap<>();
         requestParams.put("locationid",locationId);
@@ -85,17 +85,13 @@ public class NOAAStationService {
         JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
         JsonNode resultsNode = rootNode.path("results");
 
-
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        List<NOAAStation> result = mapper.readerForListOf(NOAAStation.class).readValue(resultsNode);
-
-        return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
+        return mapper.readerForListOf(NOAAStation.class).readValue(resultsNode);
     }
 
 
     //todo: endpoint for loading stations where locationId in (List<String> locationIds)
     public void loadByLocationId(String locationId) throws Exception {
-        List<NOAAStation> stations = getByLocationId(locationId).getData();
+        List<NOAAStation> stations = getByLocationId(locationId);
         for (NOAAStation station : stations){
             station.setNoaaLocation(new NOAALocation(locationId));
         }

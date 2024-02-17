@@ -67,7 +67,7 @@ public class NOAAStationController {
 //    }
 //
     @GetMapping("/location/{locationId}")
-    public ResponseEntity<PaginationWrapper<NOAAStation>> getByLocationId (@PathVariable("locationId") String locationId) throws Exception {
+    public ResponseEntity<List<NOAAStation>> getByLocationId (@PathVariable("locationId") String locationId) throws Exception {
         return ResponseEntity.ok(noaaStationService.getByLocationId(locationId));
     }
 

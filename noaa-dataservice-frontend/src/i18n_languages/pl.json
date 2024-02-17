@@ -20,6 +20,10 @@
   "MIN_DATE_COLUMN": "Pomiary od",
   "MAX_DATE_COLUMN": "Pomiary do",
   "STATUS_COLUMN": "Status",
+  "ELEVATION_COLUMN": "Wysokość",
+  "ELEVATION_UNIT_COLUMN": "Jednostka wysokości",
+  "LATITUDE_COLUMN": "Szerokość geogr.",
+  "LONGITUDE_COLUMN": "Długość geogr.",
 
   "FETCH_REMOTE_LABEL": "Pobierz zdalne rekordy",
   "FETCH_LOCAL_LABEL": "Pobierz lokalne rekordy",

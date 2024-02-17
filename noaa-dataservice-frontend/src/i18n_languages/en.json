@@ -20,6 +20,10 @@
   "MIN_DATE_COLUMN": "Measurements from",
   "MAX_DATE_COLUMN": "Measurements to",
   "STATUS_COLUMN": "Status",
+  "ELEVATION_COLUMN": "Elevation",
+  "ELEVATION_UNIT_COLUMN": "Elevation unit",
+  "LATITUDE_COLUMN": "Latitude",
+  "LONGITUDE_COLUMN": "Longitude",
 
   "FETCH_REMOTE_LABEL": "Fetch remote data",
   "FETCH_LOCAL_LABEL": "Fetch local data",

@@ -11,6 +11,7 @@ import com.master.dataloader.utils.Utils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class NOAALocationService {
@@ -100,7 +101,25 @@ public class NOAALocationService {
 //            }
         }
 
+        filterIncorrectCities(locations);
+
         return locations;
+    }
+
+    private void filterIncorrectCities(List<NOAALocation> cities) throws Exception {
+        List<NOAALocation> remoteCountries = getAllRemoteCountries();
+        List<String> remoteCountriesIds = remoteCountries.stream()
+                .map(NOAALocation::getId)
+                .toList();
+
+        Iterator<NOAALocation> cityIterator = cities.iterator();
+
+        while (cityIterator.hasNext()) {
+            NOAALocation city = cityIterator.next();
+            if (!remoteCountriesIds.contains(city.getParent().getId())) {
+                cityIterator.remove();
+            }
+        }
     }
 
     public List<NOAALocation> getAllRemoteStates() throws Exception {
@@ -151,6 +170,7 @@ public class NOAALocationService {
         noaaLocationRepository.saveAll(cities);
     }
 
+    //TODO: w api brakuje kilkunastu krajów (w danych z FTP są), mimo to w miastach są miasta należące do brakujących krajów, powoduje to wywalenie ładowania, na ten moment ominąć, potem obsłużyć
     public void loadCitiesByIds(List<String> citiesIds) throws Exception{
         List<NOAALocation> cities = getAllRemoteCities();
 

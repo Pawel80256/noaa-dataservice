@@ -11,10 +11,11 @@ export interface LocationsTableProps {
     localLocations?: NOAALocation[],
     selectedLocations?:React.Key[],
     showStatusColumn?: boolean,
-    showParentColumn?:boolean
+    showParentColumn?:boolean,
+    multiSelect?:boolean
     // locationCategory:string
 }
-export const LocationsTable = ({locations,updateSelectedLocations,localLocations,selectedLocations,showStatusColumn,showParentColumn}:LocationsTableProps) => {
+export const LocationsTable = ({locations,updateSelectedLocations,localLocations,selectedLocations,showStatusColumn,showParentColumn,multiSelect=true}:LocationsTableProps) => {
     const {t} = useTranslation();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
@@ -43,6 +44,7 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
+        type: multiSelect ? 'checkbox' as const : 'radio' as const,
     };
 
     const columns: TableProps<NOAADataType>['columns'] = [

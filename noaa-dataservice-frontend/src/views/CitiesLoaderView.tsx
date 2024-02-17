@@ -88,10 +88,10 @@ export const CitiesLoaderView = () => {
     const handleLoadingSelectedCities = () => {
         const ids:string[] = selectedRemoteCities.map(key => key.toString());
 
-        if (ids.length > 60) {
-            showWarningNotification(t('LOAD_LIMIT_EXCEEDED_LABEL'))
-            return;
-        }
+        // if (ids.length > 60) {
+        //     showWarningNotification(t('LOAD_LIMIT_EXCEEDED_LABEL'))
+        //     return;
+        // }
 
         setIsLoadingSelectedCitiesLoading(true);
         loadCitiesByIds(ids).then(() => {
