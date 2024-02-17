@@ -44,9 +44,15 @@
   "LOAD_ERROR_LABEL": "Loading data failed",
   "WARNING_LABEL": "Warning",
   "LOAD_LIMIT_EXCEEDED_LABEL": "Load limit exceeded (60 records)",
+  "SEARCH_COUNTRIES_LABEL": "Search countries",
+  "SEARCH_CITIES_LABEL": "Search cities",
+  "SEARCH_STATES_LABEL": "Search states (USA)",
+  "FIND_STATIONS_LABEL": "Find stations",
 
   "REMOTE_CONTENT": "Remote Content",
   "DATABASE_CONTENT": "Database Content",
+  "REMOTE_STATIONS_LABEL": "Remote stations data",
+  "LOCAL_STATIONS_LABEL": "Local stations data",
 
   "LANGUAGE": "Language"
 }

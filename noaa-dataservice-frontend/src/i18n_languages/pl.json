@@ -44,9 +44,15 @@
   "LOAD_ERROR_LABEL": "Podczas ładowania rekordów do bazy danych wystąpił błąd",
   "WARNING_LABEL": "Ostrzeżenie",
   "LOAD_LIMIT_EXCEEDED_LABEL": "Przekroczono limit ładowania (60 rekordów)",
+  "SEARCH_COUNTRIES_LABEL": "Wyszukaj kraje",
+  "SEARCH_CITIES_LABEL": "Wyszukaj miasta",
+  "SEARCH_STATES_LABEL": "Wyszukaj stany (USA)",
+  "FIND_STATIONS_LABEL": "Znajdź stacje",
 
   "LANGUAGE": "Język",
   "REMOTE_CONTENT": "Zdalna Zawartość",
+  "REMOTE_STATIONS_LABEL": "Zdalne rekordy stacji badawczych",
+  "LOCAL_STATIONS_LABEL": "Lokalne rekordy stacji badawczych",
 
   "DATABASE_CONTENT": "Zawartość Bazy Danych"
 }

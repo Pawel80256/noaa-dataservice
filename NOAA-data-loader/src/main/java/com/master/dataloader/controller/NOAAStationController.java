@@ -33,18 +33,8 @@ public class NOAAStationController {
     }
 
     @GetMapping
-    public ResponseEntity<PaginationWrapper<NOAAStation>> getAll(
-            @RequestParam(name = "limit") Integer limit,
-            @RequestParam(name = "offset", defaultValue = "1") Integer offset,
-            @RequestParam(name = "locationId", required = false) String locationId,
-            @RequestParam(name = "dataCategoryId", required = false) String dataCategoryId,
-            @RequestParam(name = "dataTypeId", required = false) String dataTypeId,
-            @RequestParam(name = "startDate", required = false) LocalDate startDate,
-            @RequestParam(name = "endDate", required = false) LocalDate endDate
-    ) throws Exception {
-        return ResponseEntity.ok(
-                noaaStationService.getAll(limit,offset,locationId,dataCategoryId,dataTypeId,startDate,endDate)
-        );
+    public ResponseEntity<List<NOAAStation>> getAll(){
+        return ResponseEntity.ok(noaaStationService.getAll());
     }
 
     @GetMapping("/{stationId}")
@@ -52,30 +42,22 @@ public class NOAAStationController {
         return ResponseEntity.ok(noaaStationService.getById(stationId));
     }
 
-//    @PutMapping("/load")
-//    public ResponseEntity<Void> loadAll(
-//            @RequestParam(name = "limit") Integer limit,
-//            @RequestParam(name = "offset", defaultValue = "1") Integer offset,
-//            @RequestParam(name = "locationId", required = false) String locationId,
-//            @RequestParam(name = "dataCategoryId", required = false) String dataCategoryId,
-//            @RequestParam(name = "dataTypeId", required = false) String dataTypeId,
-//            @RequestParam(name = "startDate", required = false) LocalDate startDate,
-//            @RequestParam(name = "endDate", required = false) LocalDate endDate
-//    ) throws Exception {
-//        noaaStationService.loadAll(limit,offset,locationId,dataCategoryId,dataTypeId,startDate,endDate);
-//        return ResponseEntity.ok().build();
-//    }
-//
     @GetMapping("/location/{locationId}")
     public ResponseEntity<List<NOAAStation>> getByLocationId (@PathVariable("locationId") String locationId) throws Exception {
-        return ResponseEntity.ok(noaaStationService.getByLocationId(locationId));
+        return ResponseEntity.ok(noaaStationService.getRemoteByLocationId(locationId));
     }
 
     @PutMapping("/load/{locationId}")
-    public ResponseEntity<Void> loadByLocationId(@PathVariable("locationId") String locationId) throws Exception {
-        noaaStationService.loadByLocationId(locationId);
+    public ResponseEntity<Void> loadByIdsAndLocationId
+            (@PathVariable("locationId") String locationId,
+             @RequestBody List<String> stationIds) throws Exception {
+        noaaStationService.loadByIdsAndLocationId(locationId,stationIds);
         return ResponseEntity.ok().build();
     }
 
-
+    @DeleteMapping
+    public ResponseEntity<Void> deleteByIds(@RequestBody List<String> stationIds){
+        noaaStationService.deleteByIds(stationIds);
+        return ResponseEntity.ok().build();
+    }
 }

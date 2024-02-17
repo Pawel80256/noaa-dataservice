@@ -28,32 +28,6 @@ public class NOAAStationService {
         this.noaaStationRepository = noaaStationRepository;
     }
 
-    public PaginationWrapper<NOAAStation> getAll(Integer limit, Integer offset, String locationId, String dataCategoryId, String dataTypeId, LocalDate startDate, LocalDate endDate) throws Exception {
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",limit);
-        requestParams.put("offset",offset);
-        requestParams.put("locationid", locationId);
-        requestParams.put("datacategoryid", dataCategoryId);
-        requestParams.put("datatypeid", dataTypeId);
-        requestParams.put("startdate", startDate);
-        requestParams.put("enddate", endDate);
-
-        String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationsUrl;
-        String requestResult = Utils.sendRequest(stationsUrl,requestParams);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-        JsonNode resultsNode = rootNode.path("results");
-
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        List<NOAAStation> result = mapper.readerForListOf(NOAAStation.class).readValue(resultsNode);
-
-        return new PaginationWrapper<>(paginationData.getOffset(),paginationData.getCount(),paginationData.getLimit(),result);
-    }
-
     public NOAAStation getById(String id) throws Exception {
         String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationUrl + id;
         String requestResult = Utils.sendRequest(stationsUrl,null);
@@ -61,16 +35,12 @@ public class NOAAStationService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
+        JsonNode rootNode = mapper.readTree(requestResult);
         return mapper.readerFor(NOAAStation.class).readValue(rootNode);
     }
 
-    public void loadAll(Integer limit, Integer offset, String locationId, String dataCategoryId, String dataTypeId, LocalDate startDate, LocalDate endDate) throws Exception {
-        List<NOAAStation> stations = getAll(limit,offset,locationId,dataCategoryId,dataTypeId,startDate,endDate).getData();
-        noaaStationRepository.saveAll(stations);
-    }
 
-    public List<NOAAStation> getByLocationId(String locationId) throws Exception {
+    public List<NOAAStation> getRemoteByLocationId(String locationId) throws Exception {
         String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationsUrl;
         Map<String,Object> requestParams = new HashMap<>();
         requestParams.put("locationid",locationId);
@@ -81,21 +51,10 @@ public class NOAAStationService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
+        JsonNode rootNode = mapper.readTree(requestResult);
         JsonNode resultsNode = rootNode.path("results");
 
         return mapper.readerForListOf(NOAAStation.class).readValue(resultsNode);
-    }
-
-
-    //todo: endpoint for loading stations where locationId in (List<String> locationIds)
-    public void loadByLocationId(String locationId) throws Exception {
-        List<NOAAStation> stations = getByLocationId(locationId);
-        for (NOAAStation station : stations){
-            station.setNoaaLocation(new NOAALocation(locationId));
-        }
-        noaaStationRepository.saveAll(stations);
     }
 
     public void loadDataTypesAndCategoriesForStations(List<String> stationIds){
@@ -106,4 +65,20 @@ public class NOAAStationService {
         }
     }
 
+    public List<NOAAStation> getAll() {
+        return noaaStationRepository.findAll();
+    }
+
+    public void loadByIdsAndLocationId(String locationId, List<String> stationIds) throws Exception {
+        List<NOAAStation> remoteByLocationId = getRemoteByLocationId(locationId);
+        List<NOAAStation> stationsToLoad = remoteByLocationId.stream().filter(station -> stationIds.contains(station.getId())).toList();
+        for(NOAAStation station : stationsToLoad){
+            station.setNoaaLocation(new NOAALocation(locationId));
+        }
+        noaaStationRepository.saveAll(stationsToLoad);
+    }
+
+    public void deleteByIds(List<String> stationIds) {
+        noaaStationRepository.deleteAllById(stationIds);
+    }
 }
