@@ -11,7 +11,7 @@ public class NOAADataDto {
     private String stationId;
     private LocalDate date;
     private String attributes;
-    private Object value;
+    private Integer value;
 
     public NOAADataDto(NOAAData entity){
         this.id = entity.getId();
@@ -61,11 +61,11 @@ public class NOAADataDto {
     public void setAttributes(String attributes) {
         this.attributes = attributes;
     }
-    public Object getValue() {
+    public Integer getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(Integer value) {
         this.value = value;
     }
 

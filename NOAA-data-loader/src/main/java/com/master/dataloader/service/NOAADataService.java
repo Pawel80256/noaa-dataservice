@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
-import com.master.dataloader.dto.PaginationWrapper;
 import com.master.dataloader.dtos.NOAADataDto;
 import com.master.dataloader.models.NOAAData;
 import com.master.dataloader.models.NOAADataType;
@@ -35,9 +34,37 @@ public class NOAADataService {
         this.noaaStationRepository = noaaStationRepository;
     }
 
-    public List<NOAADataDto> getAll(String datasetId, String dataTypeId,
-                                    String locationId, String stationId, LocalDate startDate, LocalDate endDate) throws Exception {
-        List<NOAADataDto> result = new ArrayList<>();
+    public List<NOAADataDto> getAllDtos(String datasetId, String dataTypeId,
+                                           String locationId, String stationId, LocalDate startDate, LocalDate endDate) throws Exception {
+        List<NOAAData> entities = getAll(datasetId,dataTypeId,locationId,stationId,startDate,endDate);
+        return entities.stream().map(NOAADataDto::new).collect(Collectors.toList());
+    }
+
+
+    public void load(String datasetId, String dataTypeId, String stationId, LocalDate startDate, LocalDate endDate) throws Exception {
+        NOAAStation station = noaaStationRepository.findById(stationId).orElseThrow(()-> new RuntimeException("station not found"));
+
+        //todo: handle when there are no records in timeframe for station -> this can be checked by station.getMaxDate & minDate, compare with parameters
+        //todo: handle when station does not support provided dataset
+        List<NOAAData> dataRecords = getAll(datasetId,dataTypeId,null,stationId,startDate,endDate);
+
+        List<NOAADataType> distinctDataTypesForData = dataRecords.stream().map(NOAAData::getDataType)
+                .collect(Collectors.groupingBy(NOAADataType::getId)).values()
+                .stream().map(dataTypes -> dataTypes.stream().findFirst().get())
+                .collect(Collectors.toList());
+
+        station.setDataTypes(distinctDataTypesForData);
+
+//        if(dataRecords.getCount() <= 1000){
+            noaaDataRepository.saveAll(dataRecords);
+//        }else {
+//            System.out.println("More than 1000 records to load, aborting");
+//        }
+    }
+
+    private List<NOAAData> getAll(String datasetId, String dataTypeId,
+                                  String locationId, String stationId, LocalDate startDate, LocalDate endDate) throws Exception {
+        List<NOAAData> result = new ArrayList<>();
 
         Map<String,Object> requestParams = new HashMap<>();
         requestParams.put("limit",1000);
@@ -60,7 +87,7 @@ public class NOAADataService {
         PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
         JsonNode resultsNode = rootNode.path("results");
         result.addAll(
-                ((List<NOAAData>)mapper.readerForListOf(NOAAData.class).readValue(resultsNode)).stream().map(NOAADataDto::new).toList()
+                (mapper.readerForListOf(NOAAData.class).readValue(resultsNode))//.stream().map(NOAADataDto::new).toList()
         );
 
         if(paginationData.getCount() > 1000){
@@ -69,31 +96,12 @@ public class NOAADataService {
                 String additionalRequestResult = Utils.sendRequest(dataUrl,requestParams);
                 JsonNode additionalRootNode = mapper.readTree(additionalRequestResult);
                 result.addAll(
-                        ((List<NOAAData>)mapper.readerForListOf(NOAAData.class).readValue(additionalRootNode.path("results"))).stream().map(NOAADataDto::new).toList()
+                        (mapper.readerForListOf(NOAAData.class).readValue(additionalRootNode.path("results")))//.stream().map(NOAADataDto::new).toList()
                 );
             }
         }
 
         return result;
     }
-
-
-//    public void load(String stationId, LocalDate startDate, LocalDate endDate, String datasetId, String dataTypeId) throws Exception {
-//        NOAAStation station = noaaStationRepository.findById(stationId).orElseThrow(()-> new RuntimeException("station not found"));
-//
-//        //todo: handle when there are no records in timeframe for station -> this can be checked by station.getMaxDate & minDate, compare with parameters
-//        List<NOAAData> dataRecords = getAll(datasetId,dataTypeId,null,stationId,startDate,endDate);
-//
-//        List<NOAADataType> distinctDataTypesForData = dataRecords.getData().stream().map(NOAAData::getDataType)
-//                        .collect(Collectors.groupingBy(NOAADataType::getId)).values().stream().map(dataTypes -> dataTypes.stream().findFirst().get()).collect(Collectors.toList());
-//
-//        station.setDataTypes(distinctDataTypesForData);
-//
-//        if(dataRecords.getCount() <= 1000){
-//            noaaDataRepository.saveAll(dataRecords.getData());
-//        }else {
-//            System.out.println("More than 1000 records to load, aborting");
-//        }
-//    }
 
 }
