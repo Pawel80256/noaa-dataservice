@@ -33,6 +33,11 @@ public class NOAAData {
     private String attributes;
 
 
+
+    @Column(name = "value")
+    private Object value;
+
+
     public UUID getId() {
         return id;
     }
@@ -68,7 +73,12 @@ public class NOAAData {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-
+    public Object getValue() {
+        return value;
+    }
+    public void setValue(Object value) {
+        this.value = value;
+    }
     public void setAttributes(String attributes) {
         this.attributes = attributes;
     }
