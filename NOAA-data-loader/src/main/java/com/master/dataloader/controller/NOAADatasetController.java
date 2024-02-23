@@ -1,5 +1,6 @@
 package com.master.dataloader.controller;
 
+import com.master.dataloader.dtos.NOAADatasetDto;
 import com.master.dataloader.models.NOAADataset;
 import com.master.dataloader.service.NOAADatasetService;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,13 @@ public class NOAADatasetController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<NOAADataset>> getAll(){
+    public ResponseEntity<List<NOAADatasetDto>> getAll(){
         return ResponseEntity.ok(noaaDatasetService.getAll());
     }
 
     @GetMapping("/remote")
-    public ResponseEntity<List<NOAADataset>> getAllRemote() throws Exception {
-        return ResponseEntity.ok(noaaDatasetService.getAllRemote());
+    public ResponseEntity<List<NOAADatasetDto>> getAllRemote() throws Exception {
+        return ResponseEntity.ok(noaaDatasetService.getAllRemoteDtos());
     }
 
     @PutMapping("/load")

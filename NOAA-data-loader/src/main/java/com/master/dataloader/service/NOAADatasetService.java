@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
+import com.master.dataloader.dtos.NOAADatasetDto;
 import com.master.dataloader.models.NOAADataset;
 import com.master.dataloader.repository.NOAADatasetRepository;
 import com.master.dataloader.utils.Utils;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class NOAADatasetService {
@@ -28,30 +30,21 @@ public class NOAADatasetService {
         this.noaaDatasetRepository = noaaDatasetRepository;
     }
 
-    public List<NOAADataset> getAll(){
-        return noaaDatasetRepository.findAll();
+    public List<NOAADatasetDto> getAll(){
+        return noaaDatasetRepository.findAll().stream().map(NOAADatasetDto::new).toList();
     }
 
-    public List<NOAADataset> getAllRemote() throws Exception {
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",100);
-        requestParams.put("offset",1);
+    public List<NOAADatasetDto> getAllRemoteDtos() throws Exception {
+        List<NOAADataset> remoteDatasets = getAllRemote();
 
-        String datasetsUrl = Constants.baseNoaaApiUrl + Constants.datasetsUrl;
-        String requestResult = Utils.sendRequest(datasetsUrl,requestParams);
+        List<String> localDatasetsIds = noaaDatasetRepository.findAllById(
+                remoteDatasets.stream().map(NOAADataset::getId).toList()
+        ).stream().map(NOAADataset::getId).toList();
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult);
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-        JsonNode resultsNode = rootNode.path("results");
-
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        return mapper.readerForListOf(NOAADataset.class).readValue(resultsNode);
-
+        List<NOAADatasetDto> result = remoteDatasets.stream().map(NOAADatasetDto::new).toList();
+        result.forEach(ds -> ds.setLoaded(localDatasetsIds.contains(ds.getId())));
+        return result;
     }
-
 
     public void loadAll() throws Exception {
         List<NOAADataset> datasets = getAllRemote();
@@ -87,5 +80,24 @@ public class NOAADatasetService {
 
         JsonNode rootNode = mapper.readTree(requestResult.toString());
         return mapper.readerFor(NOAADataset.class).readValue(rootNode);
+    }
+
+    private List<NOAADataset> getAllRemote() throws Exception {
+        Map<String,Object> requestParams = new HashMap<>();
+        requestParams.put("limit",100);
+        requestParams.put("offset",1);
+
+        String datasetsUrl = Constants.baseNoaaApiUrl + Constants.datasetsUrl;
+        String requestResult = Utils.sendRequest(datasetsUrl,requestParams);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        JsonNode rootNode = mapper.readTree(requestResult);
+        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
+        JsonNode resultsNode = rootNode.path("results");
+
+        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
+        return mapper.readerForListOf(NOAADataset.class).readValue(resultsNode);
+
     }
 }

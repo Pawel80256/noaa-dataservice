@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
+import com.master.dataloader.dtos.NOAADataTypeDto;
 import com.master.dataloader.models.NOAADataType;
 import com.master.dataloader.repository.NOAADataTypeRepository;
 import com.master.dataloader.utils.Utils;
@@ -27,60 +28,20 @@ public class NOAADataTypeService {
         this.noaaDataTypeRepository = noaaDataTypeRepository;
     }
 
-
-//    public NOAADataType getById(String id) throws Exception {
-//        String dataTypesUrl = Constants.baseNoaaApiUrl + Constants.dataTypeUrl + id;
-//        String requestResult = Utils.sendRequest(dataTypesUrl,null);
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        mapper.registerModule(new JavaTimeModule());
-//
-//        JsonNode rootNode = mapper.readTree(requestResult.toString());
-//        return mapper.readerFor(NOAADataType.class).readValue(rootNode);
-//    }
-
-    public List<NOAADataType> getAllRemote() throws Exception {
-        List<NOAADataType> dataTypes = new ArrayList<>();
-        dataTypes.addAll(getAllRemote(1000,1,null,null,null));
-        dataTypes.addAll(getAllRemote(1000,1001,null,null,null));
-        return dataTypes;
+    public List<NOAADataTypeDto> getAll() {
+        return noaaDataTypeRepository.findAll().stream().map(NOAADataTypeDto::new).toList();
     }
 
-    public void loadAll() throws Exception {
-        List<NOAADataType> dataTypes = new ArrayList<>();
-        dataTypes.addAll(getAllRemote(1000,1,null,null,null));
-        dataTypes.addAll(getAllRemote(1000,1001,null,null,null));
-        noaaDataTypeRepository.saveAll(dataTypes);
-    }
+    public List<NOAADataTypeDto> getAllRemoteDtos() throws Exception {
+        List<NOAADataType> remoteDataTypes = getAllRemote();
 
-    private List<NOAADataType> getAllRemote(Integer limit, Integer offset, String datasetId, String locationId, String stationId) throws Exception {
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("datasetid",datasetId);
-        requestParams.put("locationid",locationId);
-        requestParams.put("stationId",stationId);
-        requestParams.put("limit",limit);
-        requestParams.put("offset",offset);
+        List<String> localDatasetIds = noaaDataTypeRepository.findAllById(
+                remoteDataTypes.stream().map(NOAADataType::getId).toList()
+        ).stream().map(NOAADataType::getId).toList();
 
-
-        String datasetsUrl = Constants.baseNoaaApiUrl + Constants.dataTypesUrl;
-        String requestResult = Utils.sendRequest(datasetsUrl,requestParams);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-        JsonNode resultsNode = rootNode.path("results");
-
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        List<NOAADataType> result = mapper.readerForListOf(NOAADataType.class).readValue(resultsNode);
-
+        List<NOAADataTypeDto> result = remoteDataTypes.stream().map(NOAADataTypeDto::new).toList();
+        result.forEach(dt -> dt.setLoaded(localDatasetIds.contains(dt.getId())));
         return result;
-
-    }
-
-    public List<NOAADataType> getAll() {
-        return noaaDataTypeRepository.findAll();
     }
 
     public void deleteByIds(List<String> ids) {
@@ -88,31 +49,41 @@ public class NOAADataTypeService {
     }
 
     public void loadByIds(List<String> dataTypesIds, boolean singly) throws Exception {
-        List<NOAADataType> dataTypes = new ArrayList<>();
-
-        if(singly){
-            for(String dataTypeId : dataTypesIds){
-                dataTypes.add(getRemoteById(dataTypeId));
-            }
-        }
-        else {
-            dataTypes = getAllRemote().stream()
-                    .filter(dataType -> dataTypesIds.contains(dataType.getId()))
-                    .toList();
-        }
+        List<NOAADataType> dataTypes = getAllRemote().stream()
+                .filter(dataType -> dataTypesIds.contains(dataType.getId()))
+                .toList();
 
         noaaDataTypeRepository.saveAll(dataTypes);
     }
 
-    private NOAADataType getRemoteById(String dataTypeId) throws Exception {
-        String dataTypeUrl = Constants.baseNoaaApiUrl + Constants.dataTypesUrl + "/" + dataTypeId;
-        String requestResult = Utils.sendRequest(dataTypeUrl,null);
+    private List<NOAADataType> getAllRemote() throws Exception {
+        List<NOAADataType> result = new ArrayList<>();
+        String requestResult;
+        JsonNode rootNode, resultsNode;
+
+        //1st part
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("limit", 1000);
+        requestParams.put("offset", 1);
+
+        String datasetsUrl = Constants.baseNoaaApiUrl + Constants.dataTypesUrl;
+        requestResult = Utils.sendRequest(datasetsUrl, requestParams);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
-        JsonNode rootNode = mapper.readTree(requestResult);
-        return  mapper.readerFor(NOAADataType.class).readValue(rootNode);
-    }
+        rootNode = mapper.readTree(requestResult);
+        resultsNode = rootNode.path("results");
 
+        result.addAll(mapper.readerForListOf(NOAADataType.class).readValue(resultsNode));
+
+        //2nd part
+        requestParams.put("offset", 1001);
+        requestResult = Utils.sendRequest(datasetsUrl, requestParams);
+        resultsNode = mapper.readTree(requestResult).path("results");
+
+        result.addAll(mapper.readerForListOf(NOAADataType.class).readValue(resultsNode));
+        return result;
+
+    }
 }

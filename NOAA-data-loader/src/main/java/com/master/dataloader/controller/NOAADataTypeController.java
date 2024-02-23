@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
+import com.master.dataloader.dtos.NOAADataTypeDto;
 import com.master.dataloader.models.NOAADataType;
 import com.master.dataloader.repository.NOAADataTypeRepository;
 import com.master.dataloader.service.NOAADataTypeService;
@@ -27,29 +28,22 @@ import java.util.Map;
 @RequestMapping("/NOAA/datatypes")
 public class NOAADataTypeController {
 
-    private final NOAADataTypeRepository noaaDataTypeRepository;
     private final NOAADataTypeService noaaDataTypeService;
 
-    public NOAADataTypeController(NOAADataTypeRepository noaaDataTypeRepository, NOAADataTypeService noaaDataTypeService) {
-        this.noaaDataTypeRepository = noaaDataTypeRepository;
+    public NOAADataTypeController(NOAADataTypeService noaaDataTypeService) {
         this.noaaDataTypeService = noaaDataTypeService;
     }
 
     @GetMapping
-    public ResponseEntity<List<NOAADataType>> getAll(){
+    public ResponseEntity<List<NOAADataTypeDto>> getAll(){
         return ResponseEntity.ok(noaaDataTypeService.getAll());
     }
 
     @GetMapping("/remote")
-    public ResponseEntity<List<NOAADataType>> getAllRemote() throws Exception {
-        return ResponseEntity.ok(noaaDataTypeService.getAllRemote());
+    public ResponseEntity<List<NOAADataTypeDto>> getAllRemote() throws Exception {
+        return ResponseEntity.ok(noaaDataTypeService.getAllRemoteDtos());
     }
 
-    @PutMapping("/load")
-    public ResponseEntity<Void> loadAll() throws Exception {
-        noaaDataTypeService.loadAll();
-        return ResponseEntity.ok().build();
-    }
 
     @PutMapping("loadByIds")
     public ResponseEntity<Void> loadByIds(
