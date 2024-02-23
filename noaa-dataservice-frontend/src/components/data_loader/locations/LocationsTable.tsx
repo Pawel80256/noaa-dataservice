@@ -21,6 +21,15 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
     const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
     const [filteredData, setFilteredData] = useState<NOAALocation[]>(locations);
     const [searchText, setSearchText] = useState<string>('');
+
+    const [filters, setFilters] = useState({
+        id: '',
+        name: '',
+        datacoverage: '',
+        mindate: '',
+        maxdate: ''
+    });
+
     useEffect(()=>{
         if(selectedLocations){
             setSelectedRowKeys(selectedLocations)
@@ -29,16 +38,31 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
 
     useEffect(() => {
         const filtered = locations.filter(location =>
-            location.id.toLowerCase().includes(searchText.toLowerCase()) ||
-            location.name.toLowerCase().includes(searchText.toLowerCase()) ||
-            location.datacoverage.toString().toLowerCase().includes(searchText.toLowerCase()) ||
-            new Date(location.mindate).toISOString().toLowerCase().includes(searchText.toLowerCase()) ||
-            new Date(location.maxdate).toISOString().toLowerCase().includes(searchText.toLowerCase())
+            location.id.toLowerCase().includes(filters.id.toLowerCase()) &&
+            location.name.toLowerCase().includes(filters.name.toLowerCase()) &&
+            location.datacoverage.toString().toLowerCase().includes(filters.datacoverage.toLowerCase()) &&
+            new Date(location.mindate).toISOString().toLowerCase().includes(filters.mindate.toLowerCase()) &&
+            new Date(location.maxdate).toISOString().toLowerCase().includes(filters.maxdate.toLowerCase())
         );
         setFilteredData(filtered);
-    }, [searchText, locations]);
+    }, [filters, locations]);
 
+    const handleFilterChange = (key: keyof typeof filters) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFilters({...filters, [key]: e.target.value});
+    };
 
+    const getColumnSearchProps = (dataIndex: keyof typeof filters) => ({
+        filterDropdown: () => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    placeholder={`Search ${dataIndex}`}
+                    value={filters[dataIndex]}
+                    onChange={handleFilterChange(dataIndex)}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+            </div>
+        ),
+    });
     const handleTableChange = (pagination: any, filters: any, sorter: any) => {
         setPagination({
             current: pagination.current,
@@ -71,33 +95,38 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
             title: t('IDENTIFIER_COLUMN'),
             dataIndex: 'id',
             key: 'id',
-            sorter: (a, b) => a.id.localeCompare(b.id)
+            sorter: (a, b) => a.id.localeCompare(b.id),
+            ...getColumnSearchProps('id')
         },
         {
             title: t('NAME_COLUMN'),
             dataIndex: 'name',
             key: 'name',
-            sorter: (a, b) => a.name.localeCompare(b.name)
+            sorter: (a, b) => a.name.localeCompare(b.name),
+            ...getColumnSearchProps('name')
         },
         {
             title: t('DATA_COVERAGE_COLUMN'),
             dataIndex: 'datacoverage',
             key: 'datacoverage',
-            sorter: (a, b) => a.datacoverage - b.datacoverage
+            sorter: (a, b) => a.datacoverage - b.datacoverage,
+            ...getColumnSearchProps('datacoverage')
         },
         {
             title: t('MIN_DATE_COLUMN'),
             dataIndex: 'mindate',
             key: 'mindate',
             render: (text, record) => record && record.mindate ? new Date(record.mindate).toISOString().split('T')[0] : '',
-            sorter: (a, b) => new Date(a.mindate).getTime() - new Date(b.mindate).getTime()
+            sorter: (a, b) => new Date(a.mindate).getTime() - new Date(b.mindate).getTime(),
+            ...getColumnSearchProps('mindate')
         },
         {
             title: t('MAX_DATE_COLUMN'),
             dataIndex: 'maxdate',
             key: 'maxdate',
             render: (text, record) => record && record.maxdate ? new Date(record.maxdate).toISOString().split('T')[0] : '',
-            sorter: (a, b) => new Date(a.maxdate).getTime() - new Date(b.maxdate).getTime()
+            sorter: (a, b) => new Date(a.maxdate).getTime() - new Date(b.maxdate).getTime(),
+            ...getColumnSearchProps('maxdate')
         }
         // Pozostałe definicje kolumn
     ];
@@ -125,9 +154,6 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
 
     return (
         <>
-            <Space style={{ marginBottom: 16 }}>
-                <Input placeholder="Search" onChange={e => setSearchText(e.target.value)} />
-            </Space>
             <Table
                 columns={columns}
                 dataSource={filteredData}
