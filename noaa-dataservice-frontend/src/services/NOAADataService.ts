@@ -13,3 +13,14 @@ export const getRemoteMeasurements = async(startDate:string | string[], endDate:
     })
     return response.data;
 }
+
+export const loadMeasurements = async(startDate: string | string [], endDate: string | string [], stationId: string) =>{
+    await axios.put(`${apiPath}/NOAA/data/load`, null, {params :
+            {
+                datasetId:"GHCND",
+                startDate:startDate,
+                endDate:endDate,
+                stationId: stationId
+            }
+    })
+}

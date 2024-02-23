@@ -1,4 +1,4 @@
-import { Button, Flex, Row, Space, Typography, DatePicker, Input } from "antd";
+import {Button, Flex, Row, Space, Typography, DatePicker, Input, Col} from "antd";
 import { useTranslation } from "react-i18next";
 import { StationsTable } from "../components/data_loader/stations/StationsTable";
 import { useState } from "react";
@@ -8,8 +8,8 @@ import { getAllLocalStations } from "../services/NOAAStationService";
 import { showErrorNotification, showSuccessNotification } from "../services/Utils";
 import {MeasurementsTable} from "../components/data_loader/measurements/MeasurementsTable";
 import {NOAAData} from "../models/NOAAData";
-import {getAllRemoteCountries} from "../services/NOAALocationService";
-import {getRemoteMeasurements} from "../services/NOAADataService";
+import {getAllRemoteCountries, loadCountriesByIds} from "../services/NOAALocationService";
+import {getRemoteMeasurements, loadMeasurements} from "../services/NOAADataService";
 
 export const MeasurementsLoaderView = () => {
     const { t } = useTranslation();
@@ -23,6 +23,7 @@ export const MeasurementsLoaderView = () => {
 
     const [remoteMeasurements, setRemoteMeasurements] = useState<NOAAData[]>([]);
     const [isRemoteMeasurementsLoading, setIsRemoteMeasurementsLoading] = useState<boolean>(false);
+    const [isLoadingMeasurementsLoading, setIsLoadingMeasurementsLoading] = useState<boolean>(false);
     const updateSelectedLocalStations = (keys: React.Key[]) => {
         setSelectedLocalStations(keys)
     }
@@ -51,6 +52,17 @@ export const MeasurementsLoaderView = () => {
         });
     };
 
+    const loadAllRemoteMeasurements = () => {
+        setIsLoadingMeasurementsLoading(true);
+        loadMeasurements(startDate,endDate, selectedLocalStations[0].toString()).then(() => {
+            // fetchLocalCountries();
+            setIsLoadingMeasurementsLoading(false);
+            showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
+        }).catch(()=>{
+            setIsLoadingMeasurementsLoading(false);
+            showErrorNotification(t('LOAD_ERROR_LABEL'))
+        })
+    }
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -100,6 +112,22 @@ export const MeasurementsLoaderView = () => {
                             </Row>
                             <Row>
                                 <MeasurementsTable measurements={remoteMeasurements}/>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <Space>
+                                        <Button
+                                            style={{marginTop:'25px'}}
+                                            type="primary" icon={<DownloadOutlined />}
+                                            onClick={loadAllRemoteMeasurements}
+                                            loading={isLoadingMeasurementsLoading}>{t('LOAD_ALL_LABEL')}</Button>
+                                        <Button
+                                            style={{marginTop:'25px'}}
+                                            type="primary" icon={<DownloadOutlined />}
+                                            onClick={() => {}}
+                                            loading={false}>{t('CHECK_STATUSES_LABEL')}</Button>
+                                    </Space>
+                                </Col>
                             </Row>
                         </>
                     }

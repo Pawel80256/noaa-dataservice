@@ -116,7 +116,7 @@ export const MeasurementsTable = ({measurements,updateSelectedMeasurements,local
                     pageSize: pagination.pageSize
                 }}
                 onChange={handleTableChange}
-                rowSelection={rowSelection}
+                // rowSelection={rowSelection}
             />
         </>
     )
