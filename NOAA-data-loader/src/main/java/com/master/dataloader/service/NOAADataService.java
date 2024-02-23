@@ -36,7 +36,7 @@ public class NOAADataService {
 
     public List<NOAADataDto> getAllDtos(String datasetId, String dataTypeId,
                                            String locationId, String stationId, LocalDate startDate, LocalDate endDate) throws Exception {
-        List<NOAAData> entities = getAll(datasetId,dataTypeId,locationId,stationId,startDate,endDate);
+        List<NOAAData> entities = getAllRemote(datasetId,dataTypeId,locationId,stationId,startDate,endDate);
         return entities.stream().map(NOAADataDto::new).collect(Collectors.toList());
     }
 
@@ -46,7 +46,7 @@ public class NOAADataService {
 
         //todo: handle when there are no records in timeframe for station -> this can be checked by station.getMaxDate & minDate, compare with parameters
         //todo: handle when station does not support provided dataset
-        List<NOAAData> dataRecords = getAll(datasetId,dataTypeId,null,stationId,startDate,endDate);
+        List<NOAAData> dataRecords = getAllRemote(datasetId,dataTypeId,null,stationId,startDate,endDate);
 
         List<NOAADataType> distinctDataTypesForData = dataRecords.stream().map(NOAAData::getDataType)
                 .collect(Collectors.groupingBy(NOAADataType::getId)).values()
@@ -62,8 +62,8 @@ public class NOAADataService {
 //        }
     }
 
-    private List<NOAAData> getAll(String datasetId, String dataTypeId,
-                                  String locationId, String stationId, LocalDate startDate, LocalDate endDate) throws Exception {
+    private List<NOAAData> getAllRemote(String datasetId, String dataTypeId,
+                                        String locationId, String stationId, LocalDate startDate, LocalDate endDate) throws Exception {
         List<NOAAData> result = new ArrayList<>();
 
         Map<String,Object> requestParams = new HashMap<>();

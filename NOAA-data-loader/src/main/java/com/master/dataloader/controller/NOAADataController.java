@@ -19,8 +19,9 @@ public class NOAADataController {
         this.noaaDataService = noaaDataService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<NOAADataDto>> getAll(
+
+    @GetMapping("/remote")
+    public ResponseEntity<List<NOAADataDto>> getAllRemote(
             @RequestParam(name = "datasetId", required = true) String datasetId,
             @RequestParam(name = "dataTypeId", required = false) String dataTypeId,
             @RequestParam(name = "locationId", required = false) String locationId,
