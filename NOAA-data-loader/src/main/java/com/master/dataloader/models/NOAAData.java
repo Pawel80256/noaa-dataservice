@@ -14,8 +14,7 @@ public class NOAAData {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "data_type")
@@ -36,7 +35,7 @@ public class NOAAData {
     private Integer value;
 
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
@@ -56,7 +55,7 @@ public class NOAAData {
         return attributes;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

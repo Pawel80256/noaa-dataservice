@@ -101,6 +101,9 @@ public class NOAADataService {
             }
         }
 
+        result.forEach(measurement -> {
+            measurement.setId(measurement.getDataType().getId() + measurement.getDate().toString() + measurement.getStation().getId());
+        });
         return result;
     }
 
