@@ -19,6 +19,7 @@ import {
 } from "../services/NOAALocationService";
 import {DataTypesTable} from "../components/data_loader/data_types/DataTypesTable";
 import {DownloadOutlined} from "@ant-design/icons";
+import {LocationsTable} from "../components/data_loader/locations/LocationsTable";
 
 export const CitiesLoaderView = () => {
     const {t} = useTranslation();
@@ -133,11 +134,11 @@ export const CitiesLoaderView = () => {
                         <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
                     </Row>
                     <Row>
-                        <DataTypesTable
-                            dataTypes={remoteCities}
-                            updateSelectedDataTypes={updateSelectedRemoteCities}
-                            localDataTypes={localCities}
-                            selectedDataTypes={selectedRemoteCities}
+                        <LocationsTable
+                            locations={remoteCities}
+                            updateSelectedLocations={updateSelectedRemoteCities}
+                            localLocations={localCities}
+                            selectedLocations={selectedRemoteCities}
                             showStatusColumn={true}/>
                     </Row>
                     {remoteCities.length === 0 &&    <Row>
@@ -164,11 +165,11 @@ export const CitiesLoaderView = () => {
                         <Typography.Title level={2}>{t('DATABASE_CONTENT')}</Typography.Title>
                     </Row>
                     <Row>
-                        <DataTypesTable
-                            dataTypes={localCities}
-                            updateSelectedDataTypes={updateSelectedLocalCities}
-                            localDataTypes={[]}
-                            selectedDataTypes={selectedLocalCities}
+                        <LocationsTable
+                            locations={localCities}
+                            updateSelectedLocations={updateSelectedLocalCities}
+                            localLocations={[]}
+                            selectedLocations={selectedLocalCities}
                             showStatusColumn={false}/>
                     </Row>
                     {localCities.length === 0 &&    <Row>
