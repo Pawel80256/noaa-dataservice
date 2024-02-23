@@ -111,7 +111,7 @@ export const MeasurementsLoaderView = () => {
                                 </Button>
                             </Row>
                             <Row>
-                                <MeasurementsTable measurements={remoteMeasurements}/>
+                                <MeasurementsTable measurements={remoteMeasurements} showStatusColumn={true}/>
                             </Row>
                             <Row>
                                 <Col>

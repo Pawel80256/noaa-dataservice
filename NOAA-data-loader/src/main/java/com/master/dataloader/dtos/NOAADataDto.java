@@ -12,6 +12,15 @@ public class NOAADataDto {
     private LocalDate date;
     private String attributes;
     private Integer value;
+    private boolean isLoaded;
+
+    public boolean isLoaded() {
+        return isLoaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        isLoaded = loaded;
+    }
 
     public NOAADataDto(NOAAData entity){
         this.id = entity.getId();

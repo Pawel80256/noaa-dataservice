@@ -37,7 +37,12 @@ public class NOAADataService {
     public List<NOAADataDto> getAllDtos(String datasetId, String dataTypeId,
                                            String locationId, String stationId, LocalDate startDate, LocalDate endDate) throws Exception {
         List<NOAAData> entities = getAllRemote(datasetId,dataTypeId,locationId,stationId,startDate,endDate);
-        return entities.stream().map(NOAADataDto::new).collect(Collectors.toList());
+        List<String> localMeasurementsIds = noaaDataRepository.findAllByStationIdAndDateBetween(stationId,startDate,endDate).stream().map(NOAAData::getId).toList();
+        List<NOAADataDto> result = entities.stream().map(NOAADataDto::new).toList();
+        result.forEach(measurement -> {
+            measurement.setLoaded(localMeasurementsIds.contains(measurement.getId()));
+        });
+        return result;
     }
 
 
