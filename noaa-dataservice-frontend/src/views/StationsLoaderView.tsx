@@ -156,7 +156,10 @@ export const StationsLoaderView = () => {
         <>
             <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
                 <Flex style={{flex: 1, minWidth: '50vh'}} align={'center'} justify={'flex-start'} vertical>
-                    <Row style={{marginTop: "5%"}}>
+                    <Row>
+                        <Typography.Title level={2}>{t('REMOTE_LOCATIONS_LABEL')}</Typography.Title>
+                    </Row>
+                    <Row style={{marginTop: "2%"}}>
                         <Col>
                             <Space>
                                 <Button

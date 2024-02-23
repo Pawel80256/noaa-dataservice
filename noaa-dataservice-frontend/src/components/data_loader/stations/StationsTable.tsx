@@ -11,10 +11,11 @@ export interface StationsTableProps {
     localStations: NOAAStation[],
     selectedStations: React.Key[],
     showStatusColumn?: boolean
+    multiSelect?:boolean
 }
 
 export const StationsTable = (
-    {stations,updateSelectedLocations,localStations,selectedStations,showStatusColumn}:StationsTableProps
+    {stations,updateSelectedLocations,localStations,selectedStations,showStatusColumn, multiSelect=true}:StationsTableProps
 ) => {
     const {t} = useTranslation();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -40,6 +41,7 @@ export const StationsTable = (
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
+        type: multiSelect ? 'checkbox' as const : 'radio' as const,
     };
 
     const columns: TableProps<NOAAStation>['columns'] = [

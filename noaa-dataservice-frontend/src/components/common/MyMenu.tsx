@@ -6,19 +6,19 @@ import {useNavigate} from "react-router-dom";
 
 export const MyMenu = () => {
 
-    const{t, i18n} = useTranslation();
+    const {t, i18n} = useTranslation();
     const [language, setLanguage] = useState("en");
     const navigate = useNavigate();
 
 
     type MenuItem = Required<MenuProps>['items'][number];
 
-    const handleLanguageChange = (languageCode:string)  => {
+    const handleLanguageChange = (languageCode: string) => {
         i18n.changeLanguage(languageCode);
     }
 
-    const handleNavigation = (navigationKey:string) => {
-        switch (navigationKey){
+    const handleNavigation = (navigationKey: string) => {
+        switch (navigationKey) {
             case 'datasets':
                 navigate('/dataloader/datasets');
                 break;
@@ -40,13 +40,16 @@ export const MyMenu = () => {
             case 'stations':
                 navigate('dataloader/stations');
                 break;
+            case 'measurements':
+                navigate('dataloader/measurements');
+                break;
         }
     }
 
     const onClick: MenuProps['onClick'] = (e) => {
-        if(e.key == 'en' || e.key == 'pl'){
+        if (e.key == 'en' || e.key == 'pl') {
             handleLanguageChange(e.key);
-        }else{
+        } else {
             handleNavigation(e.key)
         }
         console.log('click ', e);
@@ -74,12 +77,12 @@ export const MyMenu = () => {
     ];
 
     const languages2: MenuProps['items'] = [
-        getItem("English","en"),
-        getItem("Polish","pl")
+        getItem("English", "en"),
+        getItem("Polish", "pl")
     ];
 
     const items: MenuProps['items'] = [
-        getItem(t('DATA_LOADER'), 'dataLoader', <MailOutlined />, [
+        getItem(t('DATA_LOADER'), 'dataLoader', <MailOutlined/>, [
             getItem(t('DATA_SETS'), 'datasets', null),
             getItem(t('DATA_TYPES'), 'dataTypes', null),
             getItem(t('LOCATION_CATEGORIES'), 'locationCategories', null),
@@ -92,16 +95,16 @@ export const MyMenu = () => {
             getItem(t('MEASUREMENTS'), 'measurements', null),
         ]),
 
-        getItem(t('DATA_VIEWER'), 'dataViewer', <AppstoreOutlined />, [
+        getItem(t('DATA_VIEWER'), 'dataViewer', <AppstoreOutlined/>, [
             getItem('<in develompent>', 'inDevelopment1'),
         ]),
 
 
-        getItem(t('DATA_MANAGER'), 'dataManager', <SettingOutlined />, [
+        getItem(t('DATA_MANAGER'), 'dataManager', <SettingOutlined/>, [
             getItem('<in develompent>', 'inDevelopment2')
         ]),
 
-        getItem(t('LANGUAGE'), 'lang', <SettingOutlined />, [
+        getItem(t('LANGUAGE'), 'lang', <SettingOutlined/>, [
             getItem('English', 'en'),
             getItem('Polski', 'pl')
         ]),
@@ -113,7 +116,7 @@ export const MyMenu = () => {
         <>
             <Menu
                 onClick={onClick}
-                style={{ width: 256 }}
+                style={{width: 256}}
                 // defaultSelectedKeys={['1']}
                 // defaultOpenKeys={['sub1']}
                 mode="inline"
