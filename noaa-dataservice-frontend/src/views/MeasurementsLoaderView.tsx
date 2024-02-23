@@ -7,7 +7,7 @@ import { DownloadOutlined } from "@ant-design/icons";
 import { getAllLocalStations } from "../services/NOAAStationService";
 import { showErrorNotification, showSuccessNotification } from "../services/Utils";
 import {MeasurementsTable} from "../components/data_loader/measurements/MeasurementsTable";
-import {NOAAData} from "../models/NOAAData";
+import {NOAADataDto} from "../models/NOAADataDto";
 import {getAllRemoteCountries, loadCountriesByIds} from "../services/NOAALocationService";
 import {getRemoteMeasurements, loadMeasurements} from "../services/NOAADataService";
 
@@ -21,7 +21,7 @@ export const MeasurementsLoaderView = () => {
     const [endDate, setEndDate] = useState<string | string[]>("")
     const [dataset, setDataset] = useState('');
 
-    const [remoteMeasurements, setRemoteMeasurements] = useState<NOAAData[]>([]);
+    const [remoteMeasurements, setRemoteMeasurements] = useState<NOAADataDto[]>([]);
     const [isRemoteMeasurementsLoading, setIsRemoteMeasurementsLoading] = useState<boolean>(false);
     const [isLoadingMeasurementsLoading, setIsLoadingMeasurementsLoading] = useState<boolean>(false);
     const updateSelectedLocalStations = (keys: React.Key[]) => {

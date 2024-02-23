@@ -1,5 +1,5 @@
 import {NOAALocation} from "../../../models/NOAALocation";
-import {NOAAData} from "../../../models/NOAAData";
+import {NOAADataDto} from "../../../models/NOAADataDto";
 import {useTranslation} from "react-i18next";
 import {useEffect, useState} from "react";
 import {Table, TableProps} from "antd";
@@ -7,25 +7,31 @@ import {NOAADataType} from "../../../models/NOAADataType";
 import {CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 
 export interface MeasurementsTableProps {
-    measurements: NOAAData[],
+    measurements: NOAADataDto[],
     updateSelectedMeasurements?: (keys: React.Key[]) => void,
-    localMeasurements?: NOAAData[],
-    selectedMeasurements?:React.Key[],
+    localMeasurements?: NOAADataDto[],
+    selectedMeasurements?: React.Key[],
     showStatusColumn?: boolean,
 }
 
-export const MeasurementsTable = ({measurements,updateSelectedMeasurements,localMeasurements,selectedMeasurements,showStatusColumn}:MeasurementsTableProps) => {
+export const MeasurementsTable = ({
+                                      measurements,
+                                      updateSelectedMeasurements,
+                                      localMeasurements,
+                                      selectedMeasurements,
+                                      showStatusColumn
+                                  }: MeasurementsTableProps) => {
     const {t} = useTranslation();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
+    const [pagination, setPagination] = useState<{ current: number, pageSize: number }>({current: 1, pageSize: 5});
 
-    useEffect(()=>{
-        if(selectedMeasurements){
+    useEffect(() => {
+        if (selectedMeasurements) {
             setSelectedRowKeys(selectedMeasurements)
         }
     }, [selectedMeasurements])
 
-    const handleTableChange = (pagination:any) => {
+    const handleTableChange = (pagination: any) => {
         setPagination({
             current: pagination.current,
             pageSize: pagination.pageSize
@@ -45,7 +51,7 @@ export const MeasurementsTable = ({measurements,updateSelectedMeasurements,local
         onChange: onSelectChange,
     };
 
-    const columns: TableProps<NOAAData>['columns'] = [
+    const columns: TableProps<NOAADataDto>['columns'] = [
         {
             title: t('INDEX_COLUMN'),
             key: 'index',
@@ -58,51 +64,64 @@ export const MeasurementsTable = ({measurements,updateSelectedMeasurements,local
         // },
         {
             title: t('DATA_TYPE_COLUMN'),
-            dataIndex:'dataTypeId',
-            key:'dataTypeId'
+            dataIndex: 'dataTypeId',
+            key: 'dataTypeId'
         },
         {
             title: t('DATE_COLUMN'),
-            dataIndex:'date',
-            key:'date',
+            dataIndex: 'date',
+            key: 'date',
         },
         {
             title: t('VALUE_COLUMN'),
-            dataIndex:'value',
-            key:'value',
+            dataIndex: 'value',
+            key: 'value',
         },
         {
             title: t('ATTRIBUTES_COLUMN'),
-            dataIndex:'attributes',
-            key:'attributes',
+            dataIndex: 'attributes',
+            key: 'attributes',
         },
         {
             title: t('STATION_COLUMN'),
-            dataIndex:'stationId',
-            key:'stationId',
-        }
-    ]
-
-    if (showStatusColumn) {
-        columns.push({
+            dataIndex: 'stationId',
+            key: 'stationId',
+        },
+        {
             title: t('STATUS_COLUMN'),
-            key: 'status',
-            render: (text, record) => {
-                if (localMeasurements?.length === 0) {
-                    return <QuestionCircleOutlined style={{ color: 'orange' }} />;
-                }
-
-                const existsInLocal = localMeasurements?.some(localMeasurement => localMeasurement.id === record.id);
-                if (existsInLocal) {
-                    return <CheckCircleOutlined style={{ color: 'green' }} />;
+            dataIndex: 'loaded',
+            key: 'loaded',
+            render: (value, item, index) => {
+                if (value) {
+                    return <CheckCircleOutlined style={{color: 'green'}}/>;
                 } else {
-                    return <CloseCircleOutlined style={{ color: 'red' }} />;
+                    return <CloseCircleOutlined style={{color: 'red'}}/>;
                 }
             }
-        });
-    }
+        },
 
-    return(
+    ]
+
+    // if (showStatusColumn) {
+    //     columns.push({
+    //         title: t('STATUS_COLUMN'),
+    //         key: 'status',
+    //         render: (text, record) => {
+    //             if (localMeasurements?.length === 0) {
+    //                 return <QuestionCircleOutlined style={{ color: 'orange' }} />;
+    //             }
+    //
+    //             const existsInLocal = localMeasurements?.some(localMeasurement => localMeasurement.id === record.id);
+    //             if (existsInLocal) {
+    //                 return <CheckCircleOutlined style={{ color: 'green' }} />;
+    //             } else {
+    //                 return <CloseCircleOutlined style={{ color: 'red' }} />;
+    //             }
+    //         }
+    //     });
+    // }
+
+    return (
         <>
             <Table
                 columns={columns}
