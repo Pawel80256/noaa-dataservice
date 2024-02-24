@@ -1,5 +1,6 @@
 package com.master.dataloader.controller;
 
+import com.master.dataloader.dtos.NoaaLocationCategoryDto;
 import com.master.dataloader.models.NOAALocationCategory;
 import com.master.dataloader.service.NOAALocationCategoryService;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +19,14 @@ public class NOAALocationCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<NOAALocationCategory>> getAll(){
+    public ResponseEntity<List<NoaaLocationCategoryDto>> getAll(){
         return ResponseEntity.ok(noaaLocationCategoryService.getAll());
     }
 
     @GetMapping("/remote")
-    public ResponseEntity<List<NOAALocationCategory>> getAllRemote() throws Exception {
+    public ResponseEntity<List<NoaaLocationCategoryDto>> getAllRemote() throws Exception {
         return ResponseEntity.ok(
-                noaaLocationCategoryService.getAllRemote()
+                noaaLocationCategoryService.getAllRemoteDtos()
         );
     }
 
@@ -36,11 +37,8 @@ public class NOAALocationCategoryController {
     }
 
     @PutMapping("/loadByIds")
-    public ResponseEntity<Void> loadByIds(
-            @RequestBody List<String> ids,
-            @RequestParam(name = "singly",defaultValue = "false") boolean singly
-    ) throws Exception {
-        noaaLocationCategoryService.loadByIds(ids, singly);
+    public ResponseEntity<Void> loadByIds(@RequestBody List<String> ids) throws Exception {
+        noaaLocationCategoryService.loadByIds(ids);
         return ResponseEntity.ok().build();
     }
 

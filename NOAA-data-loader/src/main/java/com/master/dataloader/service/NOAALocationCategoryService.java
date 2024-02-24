@@ -4,16 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
-import com.master.dataloader.models.NOAADataType;
+import com.master.dataloader.dtos.NoaaLocationCategoryDto;
 import com.master.dataloader.models.NOAALocationCategory;
 import com.master.dataloader.repository.NOAALocationCategoryRepository;
 import com.master.dataloader.utils.Utils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class NOAALocationCategoryService {
@@ -24,61 +21,56 @@ public class NOAALocationCategoryService {
         this.noaaLocationCategoryRepository = noaaLocationCategoryRepository;
     }
 
-    public List<NOAALocationCategory> getAll() {
-        return noaaLocationCategoryRepository.findAll();
+    public List<NoaaLocationCategoryDto> getAll() {
+        return noaaLocationCategoryRepository.findAll().stream().map(NoaaLocationCategoryDto::new).toList();
     }
 
-    public List<NOAALocationCategory> getAllRemote() throws Exception {
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",100);
-        requestParams.put("offset",1);
+    public List<NoaaLocationCategoryDto> getAllRemoteDtos() throws Exception {
+        List<NOAALocationCategory> remoteLocationCategories = getAllRemote();
 
-        String locationCategoriesUrl = Constants.baseNoaaApiUrl + Constants.locationCategoriesUrl;
-        String requestResult = Utils.sendRequest(locationCategoriesUrl,requestParams);
+        List<NoaaLocationCategoryDto> result = remoteLocationCategories.stream().map(NoaaLocationCategoryDto::new).toList();
 
-        ObjectMapper mapper = new ObjectMapper();
+        List<String> localLocationCategoriesIds = noaaLocationCategoryRepository.findAllById(
+                remoteLocationCategories.stream().map(NOAALocationCategory::getId).toList()
+        ).stream().map(NOAALocationCategory::getId).toList();
 
-        JsonNode rootNode = mapper.readTree(requestResult.toString());
-        JsonNode resultsNode = rootNode.path("results");
-
-        List<NOAALocationCategory> result = mapper.readerForListOf(NOAALocationCategory.class).readValue(resultsNode);
+        result.forEach(lc -> lc.setIsLoaded(localLocationCategoriesIds.contains(lc.getId())));
 
         return result;
     }
+
+
+
 
     public void loadAll() throws Exception {
         List<NOAALocationCategory> locationCategories = getAllRemote();
         noaaLocationCategoryRepository.saveAll(locationCategories);
     }
 
-    public void loadByIds(List<String> ids, boolean singly) throws Exception {
-        List<NOAALocationCategory> locationCategories = new ArrayList<>();
-        if(singly){
-            for(String locationCategoryId : ids){
-                locationCategories.add(getRemoteById(locationCategoryId));
-            }
-        }else {
-            locationCategories =
+    public void loadByIds(List<String> ids) throws Exception {
+        List<NOAALocationCategory> locationCategories =
                     getAllRemote().stream()
                             .filter(locationCategory -> ids.contains(locationCategory.getId()))
                             .toList();
-        }
 
         noaaLocationCategoryRepository.saveAll(locationCategories);
     }
 
-    private NOAALocationCategory getRemoteById(String locationCategoryId) throws Exception {
-        String locationCategoryUrl = Constants.baseNoaaApiUrl + Constants.locationCategoriesUrl + "/" + locationCategoryId;
-        String requestResult = Utils.sendRequest(locationCategoryUrl,null);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult);
-        return  mapper.readerFor(NOAALocationCategory.class).readValue(rootNode);
-    }
 
     public void deleteByIds(List<String> ids) {
         noaaLocationCategoryRepository.deleteAllById(ids);
+    }
+
+    private List<NOAALocationCategory> getAllRemote() throws Exception {
+        Map<String,Object> requestParams = Utils.getBasicParams();
+
+        String locationCategoriesUrl = Constants.baseNoaaApiUrl + Constants.locationCategoriesUrl;
+
+        List<NOAALocationCategory> result = Utils.getRemoteData(locationCategoriesUrl,requestParams,NOAALocationCategory.class);
+
+        List<String> supportedLocationCategoriesIds = Arrays.asList("CNTRY","CITY","ST");
+        List<NOAALocationCategory> supportedLocationCategories = result.stream().filter(lc -> supportedLocationCategoriesIds.contains(lc.getId())).toList();
+
+        return supportedLocationCategories;
     }
 }
