@@ -39,10 +39,6 @@ public class NOAADataCategoryService {
         return result;
     }
 
-    public void deleteByIds(List<String> ids){
-        noaaDataCategoryRepository.deleteAllById(ids);
-    }
-
     public void loadByIds(List<String> dataCategoriesIds) throws Exception {
         List<NOAADataCategory> dataCategoriesToLoad = getAllRemote().stream()
                 .filter(dc -> dataCategoriesIds.contains(dc.getId()))
@@ -50,6 +46,11 @@ public class NOAADataCategoryService {
 
         noaaDataCategoryRepository.saveAll(dataCategoriesToLoad);
     }
+
+    public void deleteByIds(List<String> ids){
+        noaaDataCategoryRepository.deleteAllById(ids);
+    }
+
     private List<NOAADataCategory> getAllRemote() throws Exception {
         Map<String, Object> requestParams = Utils.getBasicParams();
 
