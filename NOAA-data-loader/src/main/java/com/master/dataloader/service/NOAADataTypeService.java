@@ -59,12 +59,11 @@ public class NOAADataTypeService {
     }
 
     private List<NOAADataType> getAllRemote() throws Exception {
-        Map<String, Object> requestParams = new HashMap<>();
-        requestParams.put("limit", 1000);
-        requestParams.put("offset", 1);
+        Map<String, Object> requestParams = Utils.getBasicParams();
 
         String datasetsUrl = Constants.baseNoaaApiUrl + Constants.dataTypesUrl;
 
         return Utils.getRemoteData(datasetsUrl,requestParams, NOAADataType.class);
     }
+
 }

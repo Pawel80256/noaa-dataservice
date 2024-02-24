@@ -87,4 +87,12 @@ public class Utils {
         return result.toString();
     }
 
+    public static Map<String, Object> getBasicParams(){
+        Map<String,Object> result = new HashMap<>();
+        result.put("limit", 1000);
+        result.put("offset",1);
+        return result;
+    }
+
+
 }

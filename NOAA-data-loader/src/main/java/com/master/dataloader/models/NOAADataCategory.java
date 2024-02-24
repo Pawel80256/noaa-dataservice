@@ -1,12 +1,18 @@
 package com.master.dataloader.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "data_category")
 public class NOAADataCategory {
     @Id
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "name")
     private String name;
 
     public NOAADataCategory() {

@@ -9,7 +9,7 @@ public class NOAADataCategoryDto {
 
     public NOAADataCategoryDto(NOAADataCategory entity) {
         this.id = entity.getId();
-        this.name = getName();
+        this.name = entity.getName();
     }
 
     public String getId() {

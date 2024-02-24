@@ -4,7 +4,7 @@ public interface Constants {
     String baseNoaaApiUrl = "https://www.ncei.noaa.gov/cdo-web/api/v2";
     String datasetsUrl = "/datasets";
     String dataTypesUrl = "/datatypes";
-    String dataTypeUrl = "/datatypes/";
+    String dataCategoriesUrl = "/datacategories";
     String locationCategoriesUrl = "/locationcategories";
     String locationsUrl = "/locations";
     String stationsUrl = "/stations";
