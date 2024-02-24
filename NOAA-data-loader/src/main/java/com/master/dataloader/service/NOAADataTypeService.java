@@ -6,7 +6,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
+import com.master.dataloader.dtos.NOAADataDto;
 import com.master.dataloader.dtos.NOAADataTypeDto;
+import com.master.dataloader.models.NOAAData;
 import com.master.dataloader.models.NOAADataType;
 import com.master.dataloader.repository.NOAADataTypeRepository;
 import com.master.dataloader.utils.Utils;
@@ -57,33 +59,12 @@ public class NOAADataTypeService {
     }
 
     private List<NOAADataType> getAllRemote() throws Exception {
-        List<NOAADataType> result = new ArrayList<>();
-        String requestResult;
-        JsonNode rootNode, resultsNode;
-
-        //1st part
         Map<String, Object> requestParams = new HashMap<>();
         requestParams.put("limit", 1000);
         requestParams.put("offset", 1);
 
         String datasetsUrl = Constants.baseNoaaApiUrl + Constants.dataTypesUrl;
-        requestResult = Utils.sendRequest(datasetsUrl, requestParams);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        rootNode = mapper.readTree(requestResult);
-        resultsNode = rootNode.path("results");
-
-        result.addAll(mapper.readerForListOf(NOAADataType.class).readValue(resultsNode));
-
-        //2nd part
-        requestParams.put("offset", 1001);
-        requestResult = Utils.sendRequest(datasetsUrl, requestParams);
-        resultsNode = mapper.readTree(requestResult).path("results");
-
-        result.addAll(mapper.readerForListOf(NOAADataType.class).readValue(resultsNode));
-        return result;
-
+        return Utils.getRemoteData(datasetsUrl,requestParams, NOAADataType.class);
     }
 }

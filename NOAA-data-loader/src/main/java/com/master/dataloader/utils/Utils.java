@@ -1,14 +1,17 @@
 package com.master.dataloader.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.master.dataloader.dto.PaginationData;
+import com.master.dataloader.models.NOAAData;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -32,6 +35,40 @@ public class Utils {
         connection.setRequestProperty("token","kSwPNBVuPrfrjOIXXGllzYQSrVWCfTec");
     }
 
+    public static <T> List<T> getRemoteData(String url, Map<String, Object> params, Class<T> tClass) throws Exception {
+        List<T> result = new ArrayList<>();
+        String requestResult;
+        JsonNode rootNode, resultsNode;
+
+        requestResult = sendRequest(url, params);
+
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+        rootNode = mapper.readTree(requestResult);
+
+        PaginationData paginationData = mapper.readerFor(PaginationData.class)
+                .readValue(rootNode.path("metadata").path("resultset"));
+        resultsNode = rootNode.path("results");
+
+        result.addAll(
+                mapper.readerForListOf(tClass).readValue(resultsNode)
+        );
+
+        if(paginationData.getCount() > 100){
+            for (int i=1001; i<paginationData.getCount() ; i+=1000){
+                params.put("offset",i);
+                String additionalRequestResult = Utils.sendRequest(url,params);
+                JsonNode additionalResultsNode = mapper.readTree(additionalRequestResult).path("results");
+                result.addAll(
+                        mapper.readerForListOf(tClass).readValue(additionalResultsNode)
+                );
+            }
+        }
+
+        return result;
+    }
+
+    //todo:private
     public static String sendRequest(String urlString, Map<String,Object> params) throws Exception {
         StringBuilder result = new StringBuilder();
         URL url = new URL(
