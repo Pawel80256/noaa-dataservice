@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
+import com.master.dataloader.dtos.NOAAStationDto;
 import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.models.NOAAStation;
 import com.master.dataloader.repository.NOAAStationRepository;
@@ -33,25 +34,21 @@ public class NOAAStationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<NOAAStation>> getAll(){
+    public ResponseEntity<List<NOAAStationDto>> getAll(){
         return ResponseEntity.ok(noaaStationService.getAll());
     }
 
-    @GetMapping("/{stationId}")
-    public ResponseEntity<NOAAStation> getById(@PathVariable("stationId") String stationId) throws Exception {
-        return ResponseEntity.ok(noaaStationService.getById(stationId));
+    @GetMapping ("/remote")
+    ResponseEntity<List<NOAAStationDto>> getAllRemote(@RequestParam(name = "locationId") String locationId) throws Exception {
+        return ResponseEntity.ok(noaaStationService.getAllRemoteDtos(locationId));
     }
 
-    @GetMapping("/location/{locationId}")
-    public ResponseEntity<List<NOAAStation>> getByLocationId (@PathVariable("locationId") String locationId) throws Exception {
-        return ResponseEntity.ok(noaaStationService.getRemoteByLocationId(locationId));
-    }
-
-    @PutMapping("/load/{locationId}")
-    public ResponseEntity<Void> loadByIdsAndLocationId
-            (@PathVariable("locationId") String locationId,
-             @RequestBody List<String> stationIds) throws Exception {
-        noaaStationService.loadByIdsAndLocationId(locationId,stationIds);
+    @PutMapping("/load")
+    ResponseEntity<Void> loadByIds(
+            @RequestParam(name = "locationId") String locationId,
+            @RequestBody List<String> stationIds
+    ) throws Exception {
+        noaaStationService.loadByIds(locationId,stationIds);
         return ResponseEntity.ok().build();
     }
 

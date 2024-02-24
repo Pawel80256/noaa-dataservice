@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
+import com.master.dataloader.dtos.NOAAStationDto;
 import com.master.dataloader.models.NOAADataType;
 import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.models.NOAAStation;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class NOAAStationService {
@@ -28,57 +30,47 @@ public class NOAAStationService {
         this.noaaStationRepository = noaaStationRepository;
     }
 
-    public NOAAStation getById(String id) throws Exception {
-        String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationUrl + id;
-        String requestResult = Utils.sendRequest(stationsUrl,null);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult);
-        return mapper.readerFor(NOAAStation.class).readValue(rootNode);
+    public List<NOAAStationDto> getAll() {
+        return noaaStationRepository.findAll().stream().map(NOAAStationDto::new).toList();
     }
 
+    public List<NOAAStationDto> getAllRemoteDtos(String locationId) throws Exception {
+        List<NOAAStation> remoteStations = getRemoteByLocationId(locationId);
+        remoteStations.forEach(s -> s.setNoaaLocation(new NOAALocation(locationId)));
+        List<NOAAStationDto> result = remoteStations.stream().map(NOAAStationDto::new).toList();
 
-    public List<NOAAStation> getRemoteByLocationId(String locationId) throws Exception {
-        String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationsUrl;
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("locationid",locationId);
-        requestParams.put("limit",1000);
+        List<String> localStationsIds = noaaStationRepository.findAllById(
+                remoteStations.stream().map(NOAAStation::getId).toList()
+        ).stream().map(NOAAStation::getId).toList();
 
-        String requestResult = Utils.sendRequest(stationsUrl,requestParams);
+        result.forEach(s -> s.setLoaded(localStationsIds.contains(s.getId())));
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        JsonNode rootNode = mapper.readTree(requestResult);
-        JsonNode resultsNode = rootNode.path("results");
-
-        return mapper.readerForListOf(NOAAStation.class).readValue(resultsNode);
+        return result;
     }
 
-    public void loadDataTypesAndCategoriesForStations(List<String> stationIds){
-        List<NOAAStation> stations = noaaStationRepository.findAllById(stationIds);
-
-        for(NOAAStation station : stations){
-
-        }
-    }
-
-    public List<NOAAStation> getAll() {
-        return noaaStationRepository.findAll();
-    }
-
-    public void loadByIdsAndLocationId(String locationId, List<String> stationIds) throws Exception {
+    public void loadByIds(String locationId, List<String> stationIds) throws Exception {
         List<NOAAStation> remoteByLocationId = getRemoteByLocationId(locationId);
-        List<NOAAStation> stationsToLoad = remoteByLocationId.stream().filter(station -> stationIds.contains(station.getId())).toList();
+        List<NOAAStation> stationsToLoad = remoteByLocationId.stream()
+                .filter(station -> stationIds.contains(station.getId())).toList();
+
         for(NOAAStation station : stationsToLoad){
             station.setNoaaLocation(new NOAALocation(locationId));
         }
+
         noaaStationRepository.saveAll(stationsToLoad);
     }
 
     public void deleteByIds(List<String> stationIds) {
         noaaStationRepository.deleteAllById(stationIds);
+    }
+
+
+    private List<NOAAStation> getRemoteByLocationId(String locationId) throws Exception {
+        Map<String,Object> requestParams = Utils.getBasicParams();
+        requestParams.put("locationid",locationId);
+
+        String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationsUrl;
+
+        return Utils.getRemoteData(stationsUrl,requestParams,NOAAStation.class);
     }
 }
