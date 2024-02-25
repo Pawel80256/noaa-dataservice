@@ -30,12 +30,6 @@ export const DataTypesLoaderView = () => {
 
     const [tablePagination, setTablePagination] = useState({current: 1, pageSize: 5});
 
-    const updateSelectedRemoteDataTypes = (keys: React.Key[]) => {
-        setSelectedRemoteDataTypes(keys)
-    }
-    const updateSelectedLocalDataTypes = (keys: React.Key[]) => {
-        setSelectedLocalDataTypes(keys)
-    }
 
     const selectAllLocal = () => {
         if (selectedLocalDataTypes.length === localDataTypes.length) {
@@ -180,7 +174,7 @@ export const DataTypesLoaderView = () => {
                             columns={remoteColumns}
                             data={remoteDataTypes}
                             selectedData={selectedRemoteDataTypes}
-                            updateSelectedData={updateSelectedRemoteDataTypes}
+                            updateSelectedData={setSelectedRemoteDataTypes}
                             pagination={tablePagination}
                             setPagination={setTablePagination}
                             searchableColumns={searchableColumns}
@@ -224,7 +218,7 @@ export const DataTypesLoaderView = () => {
                         columns={localColumns}
                         data={localDataTypes}
                         selectedData={selectedLocalDataTypes}
-                        updateSelectedData={updateSelectedLocalDataTypes}
+                        updateSelectedData={setSelectedLocalDataTypes}
                         pagination={tablePagination}
                         setPagination={setTablePagination}
                         searchableColumns={searchableColumns}
