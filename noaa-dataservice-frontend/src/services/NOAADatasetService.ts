@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {NOAADataset} from "../models/NOAADataset";
-import {initialPaginationWrapper, PaginationWrapper} from "../models/PaginationWrapper";
 
 const apiPath = 'http://localhost:8080'
 

@@ -1,23 +1,15 @@
 import {useTranslation} from "react-i18next";
 import {Button, Col, Divider, Flex, notification, Row, Space, Typography} from "antd";
 import {useState} from "react";
-import {NOAADataType} from "../models/NOAADataType";
 import {NOAALocationCategory} from "../models/NOAALocationCategory";
-import {
-    deleteLocalDataTypesByIds,
-    getAllLocalDataTypes,
-    getAllRemoteDataTypes,
-    loadAllDataTypes,
-    loadDataTypesByIds
-} from "../services/NOAADataTypeService";
 import {showErrorNotification, showSuccessNotification, showWarningNotification} from "../services/Utils";
 import {
-    deleteLocalLocationCategoriesByIds, getAllLocalLocationCategories,
+    deleteLocalLocationCategoriesByIds,
+    getAllLocalLocationCategories,
     getAllRemoteLocationCategories,
     loadAllLocationCategories,
     loadLocationCategoriesByIds
 } from "../services/NOAALocationCategoriesService";
-import {DataTypesTable} from "../components/data_loader/data_types/DataTypesTable";
 import {DownloadOutlined} from "@ant-design/icons";
 import {LocationCategoriesTable} from "../components/data_loader/location_categories/LocationCategoriesTable";
 

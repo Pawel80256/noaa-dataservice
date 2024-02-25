@@ -1,5 +1,6 @@
 import {NOAADataDto} from "../models/NOAADataDto";
 import axios from "axios";
+
 const apiPath = 'http://localhost:8080'
 
 export const getRemoteMeasurements = async(startDate:string | string[], endDate:string| string[], stationId: string) : Promise<NOAADataDto[]> => {

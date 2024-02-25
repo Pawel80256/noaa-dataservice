@@ -1,10 +1,8 @@
-import {NOAALocation} from "../../../models/NOAALocation";
 import {NOAADataDto} from "../../../models/NOAADataDto";
 import {useTranslation} from "react-i18next";
 import {useEffect, useState} from "react";
 import {Table, TableProps} from "antd";
-import {NOAADataType} from "../../../models/NOAADataType";
-import {CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined} from "@ant-design/icons";
+import {CheckCircleOutlined, CloseCircleOutlined} from "@ant-design/icons";
 
 export interface MeasurementsTableProps {
     measurements: NOAADataDto[],

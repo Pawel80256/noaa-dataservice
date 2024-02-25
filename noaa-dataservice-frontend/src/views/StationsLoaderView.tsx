@@ -13,7 +13,6 @@ import {
     getRemoteStationsByLocationId,
     loadByIdsAndLocationId
 } from "../services/NOAAStationService";
-import Title from "antd/es/skeleton/Title";
 import {StationsTable} from "../components/data_loader/stations/StationsTable";
 
 export const StationsLoaderView = () => {

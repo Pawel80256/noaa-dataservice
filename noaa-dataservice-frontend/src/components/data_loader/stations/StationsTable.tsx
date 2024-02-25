@@ -2,7 +2,6 @@ import {NOAAStation} from "../../../models/NOAAStation";
 import {useTranslation} from "react-i18next";
 import {useEffect, useState} from "react";
 import {Table, TableProps} from "antd";
-import {NOAADataType} from "../../../models/NOAADataType";
 import {CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 
 export interface StationsTableProps {

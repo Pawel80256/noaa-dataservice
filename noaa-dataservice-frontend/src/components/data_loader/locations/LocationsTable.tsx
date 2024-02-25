@@ -2,7 +2,7 @@ import {NOAADataType} from "../../../models/NOAADataType";
 import {NOAALocation} from "../../../models/NOAALocation";
 import {useTranslation} from "react-i18next";
 import {useEffect, useState} from "react";
-import {Input, Space, Table, TableProps} from "antd";
+import {Input, Table, TableProps} from "antd";
 import {CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 
 export interface LocationsTableProps {
@@ -84,7 +84,7 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
         type: multiSelect ? 'checkbox' as const : 'radio' as const,
     };
 
-    const columns: TableProps<NOAADataType>['columns'] = [
+    const columns: TableProps<NOAALocation>['columns'] = [
         {
             title: t('INDEX_COLUMN'),
             key: 'index',

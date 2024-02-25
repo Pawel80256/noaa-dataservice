@@ -1,4 +1,3 @@
-import {NOAADataType} from "../../../models/NOAADataType";
 import {NOAALocationCategory} from "../../../models/NOAALocationCategory";
 import {useTranslation} from "react-i18next";
 import {useEffect, useState} from "react";

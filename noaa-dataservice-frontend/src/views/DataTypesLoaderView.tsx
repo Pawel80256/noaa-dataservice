@@ -1,18 +1,17 @@
 import {useTranslation} from "react-i18next";
-import {Button, Col, Divider, Flex, notification, Row, Space, Typography} from "antd";
+import {Button, Col, Divider, Flex, notification, Row, Space, TableProps, Typography} from "antd";
 import {useState} from "react";
 import {NOAADataType} from "../models/NOAADataType";
-import {showErrorNotification, showSuccessNotification, showWarningNotification} from "../services/Utils";
+import {showErrorNotification, showSuccessNotification} from "../services/Utils";
 import {
     deleteLocalDataTypesByIds,
     getAllLocalDataTypes,
-    getAllRemoteDataTypes, loadAllDataTypes,
+    getAllRemoteDataTypes,
+    loadAllDataTypes,
     loadDataTypesByIds
 } from "../services/NOAADataTypeService";
 import {DownloadOutlined} from "@ant-design/icons";
-import {DataTypesTable} from "../components/data_loader/data_types/DataTypesTable";
-import Column from "antd/es/table/Column";
-import {loadByIds} from "../services/NOAADatasetService";
+import {DataTable} from "../components/common/DataTable";
 
 export const DataTypesLoaderView = () => {
     const {t} = useTranslation();
@@ -29,6 +28,8 @@ export const DataTypesLoaderView = () => {
 
     const [selectedRemoteDataTypes, setSelectedRemoteDataTypes] = useState<React.Key[]>([]);
     const [selectedLocalDataTypes, setSelectedLocalDataTypes] = useState<React.Key[]>([]);
+
+    const [tablePagination, setTablePagination] = useState({ current: 1, pageSize: 5 });
 
     const updateSelectedRemoteDataTypes = (keys: React.Key[]) => {
         setSelectedRemoteDataTypes(keys)
@@ -128,6 +129,41 @@ export const DataTypesLoaderView = () => {
         })
     }
 
+    const columns: TableProps<NOAADataType>['columns'] = [
+        {
+            title: t('INDEX_COLUMN'),
+            key: 'index',
+            render: (value, item, index) => (tablePagination.current - 1) * tablePagination.pageSize + index + 1
+        },
+        {
+            title: t('IDENTIFIER_COLUMN'),
+            dataIndex:'id',
+            key:'id'
+        },
+        {
+            title: t('NAME_COLUMN'),
+            dataIndex:'name',
+            key:'name'
+        },
+        {
+            title: t('DATA_COVERAGE_COLUMN'),
+            dataIndex:'dataCoverage',
+            key:'dataCoverage',
+        },
+        {
+            title: t('MIN_DATE_COLUMN'),
+            dataIndex:'minDate',
+            key:'minDate',
+            render: (text, record) => record && record.minDate ? new Date(record.minDate).toISOString().split('T')[0] : ''
+        },
+        {
+            title: t('MAX_DATE_COLUMN'),
+            dataIndex:'maxDate',
+            key:'maxDate',
+            render: (text, record) => record && record.maxDate ? new Date(record.maxDate).toISOString().split('T')[0] : ''
+        }
+    ]
+
     return(
         <>
             {contextHolder}
@@ -141,12 +177,20 @@ export const DataTypesLoaderView = () => {
                         <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
                     </Row>
                     <Row>
-                        <DataTypesTable
-                            dataTypes={remoteDataTypes}
-                            updateSelectedDataTypes={updateSelectedRemoteDataTypes}
-                            localDataTypes={localDataTypes}
-                            selectedDataTypes={selectedRemoteDataTypes}
-                            showStatusColumn={true}/>
+                        <DataTable
+                            columns={columns}
+                            data={remoteDataTypes}
+                            selectedData={selectedRemoteDataTypes}
+                            updateSelectedData={updateSelectedLocalDataTypes}
+                            pagination={tablePagination}
+                            setPagination={setTablePagination}
+                        />
+                        {/*<DataTypesTable*/}
+                        {/*    dataTypes={remoteDataTypes}*/}
+                        {/*    updateSelectedDataTypes={updateSelectedRemoteDataTypes}*/}
+                        {/*    localDataTypes={localDataTypes}*/}
+                        {/*    selectedDataTypes={selectedRemoteDataTypes}*/}
+                        {/*    showStatusColumn={true}/>*/}
                     </Row>
                     {remoteDataTypes.length === 0 &&    <Row>
                         <Button
@@ -175,14 +219,14 @@ export const DataTypesLoaderView = () => {
                     <Row>
                         <Typography.Title level={2}>{t('DATABASE_CONTENT')}</Typography.Title>
                     </Row>
-                    <Row>
-                        <DataTypesTable
-                            dataTypes={localDataTypes}
-                            updateSelectedDataTypes={updateSelectedLocalDataTypes}
-                            localDataTypes={[]}
-                            selectedDataTypes={selectedLocalDataTypes}
-                            showStatusColumn={false}/>
-                    </Row>
+                    {/*<Row>*/}
+                    {/*    <DataTypesTable*/}
+                    {/*        dataTypes={localDataTypes}*/}
+                    {/*        updateSelectedDataTypes={updateSelectedLocalDataTypes}*/}
+                    {/*        localDataTypes={[]}*/}
+                    {/*        selectedDataTypes={selectedLocalDataTypes}*/}
+                    {/*        showStatusColumn={false}/>*/}
+                    {/*</Row>*/}
                     {localDataTypes.length === 0 &&    <Row>
                         <Button
                             style={{marginTop:'25px'}}

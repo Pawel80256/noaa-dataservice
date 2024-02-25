@@ -1,7 +1,7 @@
 export interface NOAADataType {
     id:string
-    mindate:Date,
-    maxdate:Date,
+    minDate:Date,
+    maxDate:Date,
     name:string,
-    datacoverage:number
+    dataCoverage:number
 }
