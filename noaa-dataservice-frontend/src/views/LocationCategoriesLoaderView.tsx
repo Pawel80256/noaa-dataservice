@@ -1,6 +1,6 @@
 import {useTranslation} from "react-i18next";
-import {Button, Col, Divider, Flex, notification, Row, Space, Typography} from "antd";
-import {useState} from "react";
+import {Button, Col, Divider, Flex, notification, Row, Space, TableProps, Typography} from "antd";
+import {useEffect, useState} from "react";
 import {NOAALocationCategory} from "../models/NOAALocationCategory";
 import {showErrorNotification, showSuccessNotification, showWarningNotification} from "../services/Utils";
 import {
@@ -10,32 +10,31 @@ import {
     loadAllLocationCategories,
     loadLocationCategoriesByIds
 } from "../services/NOAALocationCategoriesService";
-import {DownloadOutlined} from "@ant-design/icons";
+import {CheckCircleOutlined, CloseCircleOutlined, DownloadOutlined} from "@ant-design/icons";
 import {LocationCategoriesTable} from "../components/data_loader/location_categories/LocationCategoriesTable";
+import {DataTable} from "../components/common/DataTable";
 
-export const LocationCategoriesLoaderView = () =>{
+export const LocationCategoriesLoaderView = () => {
     const {t} = useTranslation();
     const [api, contextHolder] = notification.useNotification();
 
     const [remoteLocationCategories, setRemoteLocationCategories] = useState<NOAALocationCategory[]>([]);
     const [localLocationCategories, setLocalLocationCategories] = useState<NOAALocationCategory[]>([]);
 
-    const [isRemoteLocationCategoriesLoading, setIsRemoteLocationCategoriesLoading] = useState(false);
-    const [isLocalLocationCategoriesLoading, setIsLocalLocationCategoriesLoading] = useState(false)
-    const [isLoadingSelectedLocationCategoriesLoading, setIsLoadingSelectedLocationCategoriesLoading] = useState(false)
-    const [isLoadingAllLocationsCategoriesLoading, setIsLoadingAllLocationsCategoriesLoading] = useState(false)
-    const [isDeletingLocationCategoriesLoading, setIsDeletingLocationCategoriesLoading] = useState(false)
+    const [isRemoteFetchLoading, setIsRemoteFetchLoading] = useState(false);
+    const [isLocalFetchLoading, setIsLocalFetchLoading] = useState(false)
+    const [isLoadingLoading, setIsLoadingLoading] = useState(false)
+    const [isDeletingLoading, setIsDeletingLoading] = useState(false)
+    const [isAnyLoading, setIsAnyLoading] = useState(false);
 
     const [selectedRemoteLocationCategories, setSelectedRemoteLocationCategories] = useState<React.Key[]>([]);
     const [selectedLocalLocationCategories, setSelectedLocalLocationCategories] = useState<React.Key[]>([]);
 
-    const updateSelectedRemoteLocationCategories = (keys: React.Key[]) => {
-        setSelectedRemoteLocationCategories(keys);
-    }
+    const [tablePagination, setTablePagination] = useState({current: 1, pageSize: 5});
 
-    const updateSelectedLocalLocationCategories = (keys: React.Key[]) => {
-        setSelectedLocalLocationCategories(keys);
-    }
+    useEffect(() => {
+        setIsAnyLoading(isRemoteFetchLoading || isLocalFetchLoading || isLoadingLoading || isDeletingLoading);
+    }, [isRemoteFetchLoading || isLocalFetchLoading || isLoadingLoading || isDeletingLoading]);
 
     const selectAllLocal = () => {
         if (selectedLocalLocationCategories.length === localLocationCategories.length) {
@@ -55,153 +54,184 @@ export const LocationCategoriesLoaderView = () =>{
         }
     };
 
-    const fetchRemoteLocationCategories = () => {
-        setIsRemoteLocationCategoriesLoading(true);
+    const fetchRemote = () => {
+        setIsRemoteFetchLoading(true);
         getAllRemoteLocationCategories().then(response => {
             setRemoteLocationCategories(response);
-            setIsRemoteLocationCategoriesLoading(false);
+            setIsRemoteFetchLoading(false);
             showSuccessNotification(t('REMOTE_FETCH_SUCCESS_LABEL'));
         }).catch(() => {
-            setIsRemoteLocationCategoriesLoading(false);
+            setIsRemoteFetchLoading(false);
             showErrorNotification(t('REMOTE_FETCH_ERROR_LABEL'));
         });
     };
 
-    const fetchLocalLocationCategories = () => {
-        setIsLocalLocationCategoriesLoading(true);
+    const fetchLocal = () => {
+        setIsLocalFetchLoading(true);
         getAllLocalLocationCategories().then(response => {
             setLocalLocationCategories(response);
-            setIsLocalLocationCategoriesLoading(false);
+            setIsLocalFetchLoading(false);
             showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'))
-        }).catch(()=>{
-            setIsLocalLocationCategoriesLoading(false);
+        }).catch(() => {
+            setIsLocalFetchLoading(false);
             showErrorNotification(t('LOCAL_FETCH_ERROR_LABEL'))
         })
     }
 
-    const handleLoadingSelectedLocationCategories = () => {
-        const ids:string[] = selectedRemoteLocationCategories.map(key => key.toString());
+    const loadSelected = () => {
+        const ids: string[] = selectedRemoteLocationCategories.map(key => key.toString());
 
         if (ids.length > 60) {
             showWarningNotification(t('LOAD_LIMIT_EXCEEDED_LABEL'))
             return;
         }
 
-        setIsLoadingSelectedLocationCategoriesLoading(true);
+        setIsLoadingLoading(true);
         loadLocationCategoriesByIds(ids, false).then(() => {
-            fetchLocalLocationCategories();
-            setIsLoadingSelectedLocationCategoriesLoading(false);
+            fetchLocal();
+            fetchRemote()
+            setIsLoadingLoading(false);
             showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
-        }).catch(()=>{
-            setIsLoadingSelectedLocationCategoriesLoading(false);
+        }).catch(() => {
+            setIsLoadingLoading(false);
             showErrorNotification(t('LOAD_ERROR_LABEL'))
         })
     }
 
-    const handleLoadingAllLocationCategories = () =>{
-        setIsLoadingAllLocationsCategoriesLoading(true);
-        loadAllLocationCategories().then(()=>{
-            fetchLocalLocationCategories();
-            setIsLoadingAllLocationsCategoriesLoading(false);
-            showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
-        }).catch(()=>{
-            setIsLoadingAllLocationsCategoriesLoading(false);
-            showErrorNotification(t('LOAD_ERROR_LABEL'))
-        })
-    }
-
-    const deleteSelectedDataTypes = () => {
-        const ids:string[] = selectedLocalLocationCategories.map(key => key.toString());
-        setIsDeletingLocationCategoriesLoading(true);
+    const deleteSelected = () => {
+        const ids: string[] = selectedLocalLocationCategories.map(key => key.toString());
+        setIsDeletingLoading(true);
         deleteLocalLocationCategoriesByIds(ids).then(() => {
             const updatedSelectedDatasets = selectedLocalLocationCategories.filter(key => !ids.includes(key.toString()));
             setSelectedLocalLocationCategories(updatedSelectedDatasets);
-
-            fetchLocalLocationCategories(/*boolean showNotification*/);
-            setIsDeletingLocationCategoriesLoading(false);
+            fetchLocal(/*boolean showNotification*/);
+            fetchRemote()
+            setIsDeletingLoading(false);
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
-        }).catch(()=>{
-            setIsDeletingLocationCategoriesLoading(false);
+        }).catch(() => {
+            setIsDeletingLoading(false);
             showErrorNotification(t('DELETE_ERROR_LABEL'))
         })
     }
 
-    return(
+    const localColumns: TableProps<NOAALocationCategory>['columns'] = [
+        {
+            title: t('INDEX_COLUMN'),
+            key: 'index',
+            render: (value, item, index) => (tablePagination.current - 1) * tablePagination.pageSize + index + 1
+        },
+        {
+            title: t('IDENTIFIER_COLUMN'),
+            dataIndex: 'id',
+            key: 'id'
+        },
+        {
+            title: t('NAME_COLUMN'),
+            dataIndex: 'name',
+            key: 'name'
+        }
+    ]
+
+    const remoteColumns: TableProps<NOAALocationCategory>['columns'] = [
+        ...localColumns,
+        {
+            title: t('STATUS_COLUMN'),
+            dataIndex: 'loaded',
+            key: 'loaded',
+            render: (text, record) => record && record.loaded ? <CheckCircleOutlined style={{color: 'green'}}/> :
+                <CloseCircleOutlined style={{color: 'red'}}/>
+        }
+    ]
+
+    const searchableColumns: string [] = ["id", "name"];
+
+    return (
         <>
             {contextHolder}
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                <Flex style={{ flex: 1, minWidth: '50vh' }} align={'center'} justify={'flex-start'} vertical>
+            <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
+                <Flex style={{flex: 1, minWidth: '50vh'}} align={'center'} justify={'flex-start'} vertical>
                     <Row>
                         <Typography.Title>{t('LOCATION_CATEGORIES')}</Typography.Title>
                     </Row>
-                    <Divider />
+                    <Divider/>
                     <Row>
                         <Typography.Title level={2}>{t('REMOTE_CONTENT')}</Typography.Title>
                     </Row>
                     <Row>
-                        <LocationCategoriesTable
-                            locationCategories={remoteLocationCategories}
-                            updateSelectedLocationCategories={updateSelectedRemoteLocationCategories}
-                            localLocationCategories={localLocationCategories}
-                            selectedLocationCategories={selectedRemoteLocationCategories}
-                            showStatusColumn={true}/>
+                        <DataTable
+                            columns={remoteColumns}
+                            data={remoteLocationCategories}
+                            selectedData={selectedRemoteLocationCategories}
+                            updateSelectedData={setSelectedRemoteLocationCategories}
+                            pagination={tablePagination}
+                            setPagination={setTablePagination}
+                            isAnyLoading={isAnyLoading}/>
                     </Row>
-                    {remoteLocationCategories.length === 0 &&    <Row>
-                        <Button
-                            style={{marginTop:'25px'}}
-                            type="primary" icon={<DownloadOutlined />}
-                            onClick={fetchRemoteLocationCategories}
-                            loading={isRemoteLocationCategoriesLoading}>{t('FETCH_REMOTE_LABEL')}</Button>
-                    </Row>}
-                    {remoteLocationCategories.length > 0 &&    <Row>
+                    <Row>
                         <Col>
                             <Space>
                                 <Button
-                                    style={{marginTop:'25px'}}
-                                    type="primary" icon={<DownloadOutlined />}
-                                    onClick={selectAllRemote}
-                                    loading={isLoadingAllLocationsCategoriesLoading}>{t('SELECT_ALL_LABEL')}</Button>
-                                <Button
-                                    style={{marginTop:'25px'}}
-                                    type="primary" icon={<DownloadOutlined />}
-                                    onClick={handleLoadingSelectedLocationCategories}
-                                    loading={isLoadingSelectedLocationCategoriesLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
+                                    style={{marginTop: '25px'}}
+                                    type="primary" icon={<DownloadOutlined/>}
+                                    onClick={fetchRemote}
+                                    loading={isRemoteFetchLoading}>{t('FETCH_REMOTE_LABEL')}
+                                </Button>
+                                {remoteLocationCategories.length > 0 &&
+                                    <>
+                                        <Button
+                                            style={{marginTop: '25px'}}
+                                            type="primary" icon={<DownloadOutlined/>}
+                                            onClick={selectAllRemote}
+                                        >{t('SELECT_ALL_LABEL')}
+                                        </Button>
+                                        <Button
+                                            style={{marginTop: '25px'}}
+                                            type="primary" icon={<DownloadOutlined/>}
+                                            onClick={loadSelected}
+                                            loading={isLoadingLoading}>{t('LOAD_SELECTED_LABEL')}
+                                        </Button>
+                                    </>
+                               }
                             </Space>
                         </Col>
-                    </Row>}
+
+                    </Row>
+
                 </Flex>
-                <Flex style={{ flex: 1, minHeight: '50vh' }} align={'center'} justify={'flex-start'} vertical>
+                <Flex style={{flex: 1, minHeight: '50vh'}} align={'center'} justify={'flex-start'} vertical>
                     <Row>
                         <Typography.Title level={2}>{t('DATABASE_CONTENT')}</Typography.Title>
                     </Row>
                     <Row>
-                        <LocationCategoriesTable
-                            locationCategories={localLocationCategories}
-                            updateSelectedLocationCategories={updateSelectedLocalLocationCategories}
-                            localLocationCategories={localLocationCategories}
-                            selectedLocationCategories={selectedLocalLocationCategories}
-                            showStatusColumn={false}/>
+                        <DataTable
+                            columns={localColumns}
+                            data={localLocationCategories}
+                            selectedData={selectedLocalLocationCategories}
+                            updateSelectedData={setSelectedLocalLocationCategories}
+                            pagination={tablePagination}
+                            setPagination={setTablePagination}
+                            isAnyLoading={isAnyLoading}/>
                     </Row>
-                    {localLocationCategories.length === 0 &&    <Row>
+                    {localLocationCategories.length === 0 && <Row>
                         <Button
-                            style={{marginTop:'25px'}}
-                            type="primary" icon={<DownloadOutlined />}
-                            onClick={fetchLocalLocationCategories}
-                            loading={isLocalLocationCategoriesLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
+                            style={{marginTop: '25px'}}
+                            type="primary" icon={<DownloadOutlined/>}
+                            onClick={fetchLocal}
+                            loading={isLocalFetchLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
                     </Row>}
-                    {localLocationCategories.length > 0 &&    <Row>
+                    {localLocationCategories.length > 0 && <Row>
                         <Col>
                             <Space>
                                 <Button
-                                    style={{marginTop:'25px'}}
-                                    type="primary" icon={<DownloadOutlined />}
+                                    style={{marginTop: '25px'}}
+                                    type="primary" icon={<DownloadOutlined/>}
                                     onClick={selectAllLocal}
-                                    loading={isDeletingLocationCategoriesLoading}>{t('SELECT_ALL_LABEL')}</Button>
+                                    loading={isDeletingLoading}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
-                                    style={{marginTop:'25px'}}
-                                    type="primary" icon={<DownloadOutlined />}
-                                    onClick={deleteSelectedDataTypes}
-                                    loading={isDeletingLocationCategoriesLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
+                                    style={{marginTop: '25px'}}
+                                    type="primary" icon={<DownloadOutlined/>}
+                                    onClick={deleteSelected}
+                                    loading={isDeletingLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
                             </Space>
                         </Col>
                     </Row>}

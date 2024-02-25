@@ -20,10 +20,10 @@ export const DataTypesLoaderView = () => {
     const [remoteDataTypes, setRemoteDataTypes] = useState<NOAADataType[]>([]);
     const [localDataTypes, setLocalDataTypes] = useState<NOAADataType[]>([]);
 
-    const [isRemoteDataTypesLoading, setIsRemoteDataTypesLoading] = useState(false);
-    const [isLocalDataTypesLoading, setIsLocalDataTypesLoading] = useState(false)
-    const [isLoadingSelectedDataTypesLoading, setIsLoadingSelectedDataTypesLoading] = useState(false)
-    const [isDeletingDataTypesLoading, setIsDeletingDataTypesLoading] = useState(false)
+    const [isRemoteFetchLoading, setIsRemoteFetchLoading] = useState(false);
+    const [isLocalFetchLoading, setIsLocalFetchLoading] = useState(false)
+    const [isLoadingLoading, setIsLoadingLoading] = useState(false)
+    const [isDeletingLoading, setIsDeletingLoading] = useState(false)
     const [isAnyLoading, setIsAnyLoading] = useState(false);
 
     const [selectedRemoteDataTypes, setSelectedRemoteDataTypes] = useState<React.Key[]>([]);
@@ -33,8 +33,9 @@ export const DataTypesLoaderView = () => {
 
 
     useEffect(() => {
-        setIsAnyLoading(isRemoteDataTypesLoading || isLocalDataTypesLoading || isLoadingSelectedDataTypesLoading || isDeletingDataTypesLoading);
-    }, [isRemoteDataTypesLoading || isLocalDataTypesLoading || isLoadingSelectedDataTypesLoading || isDeletingDataTypesLoading]); // dodaj inne stany ładowania jako zależności
+        setIsAnyLoading(isRemoteFetchLoading || isLocalFetchLoading || isLoadingLoading || isDeletingLoading);
+    }, [isRemoteFetchLoading || isLocalFetchLoading || isLoadingLoading || isDeletingLoading]);
+
     const selectAllLocal = () => {
         if (selectedLocalDataTypes.length === localDataTypes.length) {
             setSelectedLocalDataTypes([]);
@@ -53,57 +54,57 @@ export const DataTypesLoaderView = () => {
         }
     };
 
-    const fetchRemoteDataTypes = () => {
-        setIsRemoteDataTypesLoading(true);
+    const fetchRemote = () => {
+        setIsRemoteFetchLoading(true);
         getAllRemoteDataTypes().then(response => {
             setRemoteDataTypes(response);
-            setIsRemoteDataTypesLoading(false);
+            setIsRemoteFetchLoading(false);
             showSuccessNotification(t('REMOTE_FETCH_SUCCESS_LABEL'));
         }).catch(() => {
-            setIsRemoteDataTypesLoading(false);
+            setIsRemoteFetchLoading(false);
             showErrorNotification(t('REMOTE_FETCH_ERROR_LABEL'));
         });
     };
 
-    const fetchLocalDataTypes = () => {
-        setIsLocalDataTypesLoading(true);
+    const fetchLocal = () => {
+        setIsLocalFetchLoading(true);
         getAllLocalDataTypes().then(response => {
             setLocalDataTypes(response);
-            setIsLocalDataTypesLoading(false);
+            setIsLocalFetchLoading(false);
             showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'))
         }).catch(() => {
-            setIsLocalDataTypesLoading(false);
+            setIsLocalFetchLoading(false);
             showErrorNotification(t('LOCAL_FETCH_ERROR_LABEL'))
         })
     }
 
-    const handleLoadingSelectedDataTypes = () => {
+    const loadSelected = () => {
         const ids: string[] = selectedRemoteDataTypes.map(key => key.toString());
-        setIsLoadingSelectedDataTypesLoading(true);
+        setIsLoadingLoading(true);
         loadDataTypesByIds(ids).then(() => {
-            fetchLocalDataTypes();
-            fetchRemoteDataTypes();
-            setIsLoadingSelectedDataTypesLoading(false);
+            fetchLocal();
+            fetchRemote();
+            setIsLoadingLoading(false);
             showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
         }).catch(() => {
-            setIsLoadingSelectedDataTypesLoading(false);
+            setIsLoadingLoading(false);
             showErrorNotification(t('LOAD_ERROR_LABEL'))
         })
     }
 
-    const deleteSelectedDataTypes = () => {
+    const deleteSelected = () => {
         const ids: string[] = selectedLocalDataTypes.map(key => key.toString());
-        setIsDeletingDataTypesLoading(true);
+        setIsDeletingLoading(true);
         deleteLocalDataTypesByIds(ids).then(() => {
             const updatedSelectedDatTypes = selectedLocalDataTypes.filter(key => !ids.includes(key.toString()));
             setSelectedLocalDataTypes(updatedSelectedDatTypes)
 
-            fetchLocalDataTypes(/*boolean showNotification*/);
-            fetchRemoteDataTypes()
-            setIsDeletingDataTypesLoading(false);
+            fetchLocal(/*boolean showNotification*/);
+            fetchRemote()
+            setIsDeletingLoading(false);
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
         }).catch(() => {
-            setIsDeletingDataTypesLoading(false);
+            setIsDeletingLoading(false);
             showErrorNotification(t('DELETE_ERROR_LABEL'))
         })
     }
@@ -191,8 +192,8 @@ export const DataTypesLoaderView = () => {
                                 <Button
                                     style={{marginTop: '25px'}}
                                     type="primary" icon={<DownloadOutlined/>}
-                                    onClick={fetchRemoteDataTypes}
-                                    loading={isRemoteDataTypesLoading}>{t('FETCH_REMOTE_LABEL')}</Button>
+                                    onClick={fetchRemote}
+                                    loading={isRemoteFetchLoading}>{t('FETCH_REMOTE_LABEL')}</Button>
                                 {remoteDataTypes.length > 0 &&
                                     <>
                                         <Button
@@ -202,8 +203,8 @@ export const DataTypesLoaderView = () => {
                                         <Button
                                             style={{marginTop: '25px'}}
                                             type="primary" icon={<DownloadOutlined/>}
-                                            onClick={handleLoadingSelectedDataTypes}
-                                            loading={isLoadingSelectedDataTypesLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
+                                            onClick={loadSelected}
+                                            loading={isLoadingLoading}>{t('LOAD_SELECTED_LABEL')}</Button>
 
                                     </>
 
@@ -233,8 +234,8 @@ export const DataTypesLoaderView = () => {
                         <Button
                             style={{marginTop: '25px'}}
                             type="primary" icon={<DownloadOutlined/>}
-                            onClick={fetchLocalDataTypes}
-                            loading={isLocalDataTypesLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
+                            onClick={fetchLocal}
+                            loading={isLocalFetchLoading}>{t('FETCH_LOCAL_LABEL')}</Button>
                     </Row>}
                     {localDataTypes.length > 0 && <Row>
                         <Col>
@@ -243,12 +244,12 @@ export const DataTypesLoaderView = () => {
                                     style={{marginTop: '25px'}}
                                     type="primary" icon={<DownloadOutlined/>}
                                     onClick={selectAllLocal}
-                                    loading={isDeletingDataTypesLoading}>{t('SELECT_ALL_LABEL')}</Button>
+                                    loading={isDeletingLoading}>{t('SELECT_ALL_LABEL')}</Button>
                                 <Button
                                     style={{marginTop: '25px'}}
                                     type="primary" icon={<DownloadOutlined/>}
-                                    onClick={deleteSelectedDataTypes}
-                                    loading={isDeletingDataTypesLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
+                                    onClick={deleteSelected}
+                                    loading={isDeletingLoading}>{t('DELETE_SELECTED_LABEL')}</Button>
                             </Space>
                         </Col>
                     </Row>}
