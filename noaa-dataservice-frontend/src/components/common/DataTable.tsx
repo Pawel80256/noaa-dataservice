@@ -1,5 +1,6 @@
 import {Input, Table, TableProps} from "antd";
 import {useEffect, useState} from "react";
+import {isDisabled} from "@testing-library/user-event/dist/utils";
 
 export interface DataTableProps {
     columns: TableProps<any>['columns'],
@@ -8,10 +9,11 @@ export interface DataTableProps {
     updateSelectedData: (keys: React.Key[]) => void,
     pagination: { current: number, pageSize: number },
     setPagination: (pagination: { current: number, pageSize: number }) => void,
-    searchableColumns?: string[]
+    searchableColumns?: string[],
+    isAnyLoading:boolean
 }
 
-export const DataTable = ({columns,data,selectedData,updateSelectedData, searchableColumns = []} : DataTableProps) => {
+export const DataTable = ({columns,data,selectedData,updateSelectedData, searchableColumns = [], isAnyLoading} : DataTableProps) => {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
 
@@ -90,6 +92,8 @@ export const DataTable = ({columns,data,selectedData,updateSelectedData, searcha
                 pagination={paginationConfig}
                 onChange={handleTableChange}
                 rowSelection={rowSelection}
+                style={{ opacity: isAnyLoading ? 0.5 : 1 }}
+                onRow={isAnyLoading ? () => ({ style: { pointerEvents: 'none' } }) : undefined}
             />
         </>
     )

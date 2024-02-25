@@ -1,6 +1,6 @@
 import {useTranslation} from "react-i18next";
 import {Button, Col, Divider, Flex, notification, Row, Space, TableProps, Typography} from "antd";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {NOAADataType} from "../models/NOAADataType";
 import {showErrorNotification, showSuccessNotification} from "../services/Utils";
 import {
@@ -24,6 +24,7 @@ export const DataTypesLoaderView = () => {
     const [isLocalDataTypesLoading, setIsLocalDataTypesLoading] = useState(false)
     const [isLoadingSelectedDataTypesLoading, setIsLoadingSelectedDataTypesLoading] = useState(false)
     const [isDeletingDataTypesLoading, setIsDeletingDataTypesLoading] = useState(false)
+    const [isAnyLoading, setIsAnyLoading] = useState(false);
 
     const [selectedRemoteDataTypes, setSelectedRemoteDataTypes] = useState<React.Key[]>([]);
     const [selectedLocalDataTypes, setSelectedLocalDataTypes] = useState<React.Key[]>([]);
@@ -31,6 +32,9 @@ export const DataTypesLoaderView = () => {
     const [tablePagination, setTablePagination] = useState({current: 1, pageSize: 5});
 
 
+    useEffect(() => {
+        setIsAnyLoading(isRemoteDataTypesLoading || isLocalDataTypesLoading || isLoadingSelectedDataTypesLoading || isDeletingDataTypesLoading);
+    }, [isRemoteDataTypesLoading || isLocalDataTypesLoading || isLoadingSelectedDataTypesLoading || isDeletingDataTypesLoading]); // dodaj inne stany ładowania jako zależności
     const selectAllLocal = () => {
         if (selectedLocalDataTypes.length === localDataTypes.length) {
             setSelectedLocalDataTypes([]);
@@ -178,6 +182,7 @@ export const DataTypesLoaderView = () => {
                             pagination={tablePagination}
                             setPagination={setTablePagination}
                             searchableColumns={searchableColumns}
+                            isAnyLoading={isAnyLoading}
                         />
                     </Row>
                     <Row>
@@ -222,6 +227,7 @@ export const DataTypesLoaderView = () => {
                         pagination={tablePagination}
                         setPagination={setTablePagination}
                         searchableColumns={searchableColumns}
+                        isAnyLoading={isAnyLoading}
                     />
                     {localDataTypes.length === 0 && <Row>
                         <Button
