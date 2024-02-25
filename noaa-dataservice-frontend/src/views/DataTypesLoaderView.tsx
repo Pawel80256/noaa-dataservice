@@ -10,7 +10,7 @@ import {
     loadAllDataTypes,
     loadDataTypesByIds
 } from "../services/NOAADataTypeService";
-import {DownloadOutlined} from "@ant-design/icons";
+import {CheckCircleOutlined, CloseCircleOutlined, DownloadOutlined} from "@ant-design/icons";
 import {DataTable} from "../components/common/DataTable";
 
 export const DataTypesLoaderView = () => {
@@ -129,7 +129,7 @@ export const DataTypesLoaderView = () => {
         })
     }
 
-    const columns: TableProps<NOAADataType>['columns'] = [
+    const localColumns: TableProps<NOAADataType>['columns'] = [
         {
             title: t('INDEX_COLUMN'),
             key: 'index',
@@ -164,6 +164,16 @@ export const DataTypesLoaderView = () => {
         }
     ]
 
+    const remoteColumns: TableProps<NOAADataType>['columns'] = [
+        ...localColumns,
+        {
+            title:t('STATUS_COLUMN'),
+            dataIndex:'loaded',
+            key:'loaded',
+            render: (text, record) => record && record.loaded ? <CheckCircleOutlined style={{ color: 'green' }} /> : <CloseCircleOutlined style={{ color: 'red' }} />
+        }
+    ]
+
     return(
         <>
             {contextHolder}
@@ -178,19 +188,13 @@ export const DataTypesLoaderView = () => {
                     </Row>
                     <Row>
                         <DataTable
-                            columns={columns}
+                            columns={remoteColumns}
                             data={remoteDataTypes}
                             selectedData={selectedRemoteDataTypes}
                             updateSelectedData={updateSelectedLocalDataTypes}
                             pagination={tablePagination}
                             setPagination={setTablePagination}
                         />
-                        {/*<DataTypesTable*/}
-                        {/*    dataTypes={remoteDataTypes}*/}
-                        {/*    updateSelectedDataTypes={updateSelectedRemoteDataTypes}*/}
-                        {/*    localDataTypes={localDataTypes}*/}
-                        {/*    selectedDataTypes={selectedRemoteDataTypes}*/}
-                        {/*    showStatusColumn={true}/>*/}
                     </Row>
                     {remoteDataTypes.length === 0 &&    <Row>
                         <Button
@@ -219,14 +223,14 @@ export const DataTypesLoaderView = () => {
                     <Row>
                         <Typography.Title level={2}>{t('DATABASE_CONTENT')}</Typography.Title>
                     </Row>
-                    {/*<Row>*/}
-                    {/*    <DataTypesTable*/}
-                    {/*        dataTypes={localDataTypes}*/}
-                    {/*        updateSelectedDataTypes={updateSelectedLocalDataTypes}*/}
-                    {/*        localDataTypes={[]}*/}
-                    {/*        selectedDataTypes={selectedLocalDataTypes}*/}
-                    {/*        showStatusColumn={false}/>*/}
-                    {/*</Row>*/}
+                    <DataTable
+                        columns={localColumns}
+                        data={localDataTypes}
+                        selectedData={selectedLocalDataTypes}
+                        updateSelectedData={updateSelectedLocalDataTypes}
+                        pagination={tablePagination}
+                        setPagination={setTablePagination}
+                    />
                     {localDataTypes.length === 0 &&    <Row>
                         <Button
                             style={{marginTop:'25px'}}

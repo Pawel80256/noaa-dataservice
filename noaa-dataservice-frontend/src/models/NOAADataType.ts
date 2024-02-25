@@ -4,4 +4,5 @@ export interface NOAADataType {
     maxDate:Date,
     name:string,
     dataCoverage:number
+    loaded:boolean
 }

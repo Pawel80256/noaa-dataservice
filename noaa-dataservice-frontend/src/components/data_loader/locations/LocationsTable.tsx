@@ -20,7 +20,6 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
     const [filteredData, setFilteredData] = useState<NOAALocation[]>(locations);
-    const [searchText, setSearchText] = useState<string>('');
 
     const [filters, setFilters] = useState({
         id: '',

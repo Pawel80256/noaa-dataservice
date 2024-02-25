@@ -64,7 +64,7 @@ public class NOAADataTypeDto {
         return isLoaded;
     }
 
-    public void setLoaded(Boolean loaded) {
-        isLoaded = loaded;
+    public void setLoaded(Boolean isLoaded) {
+        this.isLoaded = isLoaded;
     }
 }
