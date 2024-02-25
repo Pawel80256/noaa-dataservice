@@ -50,7 +50,7 @@ public class NOAADataTypeService {
         noaaDataTypeRepository.deleteAllById(ids);
     }
 
-    public void loadByIds(List<String> dataTypesIds, boolean singly) throws Exception {
+    public void loadByIds(List<String> dataTypesIds) throws Exception {
         List<NOAADataType> dataTypes = getAllRemote().stream()
                 .filter(dataType -> dataTypesIds.contains(dataType.getId()))
                 .toList();
