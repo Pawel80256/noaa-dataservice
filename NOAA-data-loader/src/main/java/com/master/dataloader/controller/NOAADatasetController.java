@@ -29,14 +29,8 @@ public class NOAADatasetController {
     }
 
     @PutMapping("/load")
-    public ResponseEntity<Void> loadAll() throws Exception {
-        noaaDatasetService.loadAll();
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/loadByIds")
-    public ResponseEntity<Void> loadByIds(@RequestBody List<String> ids, @RequestParam(name = "singly", defaultValue = "false") boolean singly) throws Exception {
-        noaaDatasetService.loadByIds(ids, singly);
+    public ResponseEntity<Void> loadByIds(@RequestBody List<String> datasetsIds) throws Exception {
+        noaaDatasetService.loadByIds(datasetsIds);
         return ResponseEntity.ok().build();
     }
 

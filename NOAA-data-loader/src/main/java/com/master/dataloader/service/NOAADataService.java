@@ -69,11 +69,8 @@ public class NOAADataService {
 
     private List<NOAAData> getAllRemote(String datasetId, String dataTypeId,
                                         String locationId, String stationId, LocalDate startDate, LocalDate endDate) throws Exception {
-        List<NOAAData> result = new ArrayList<>();
 
-        Map<String,Object> requestParams = new HashMap<>();
-        requestParams.put("limit",1000);
-        requestParams.put("offset", 1);
+        Map<String,Object> requestParams = Utils.getBasicParams();
         requestParams.put("datasetid", datasetId);
         requestParams.put("datatypeid", dataTypeId);
         requestParams.put("locationid", locationId);
@@ -82,33 +79,13 @@ public class NOAADataService {
         requestParams.put("enddate", endDate);
 
         String dataUrl = Constants.baseNoaaApiUrl + Constants.dataUrl;
-        String requestResult = Utils.sendRequest(dataUrl,requestParams);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        JsonNode rootNode = mapper.readTree(requestResult);
-
-        JsonNode paginationDataNode = rootNode.path("metadata").path("resultset");
-        PaginationData paginationData = mapper.readerFor(PaginationData.class).readValue(paginationDataNode);
-        JsonNode resultsNode = rootNode.path("results");
-        result.addAll(
-                (mapper.readerForListOf(NOAAData.class).readValue(resultsNode))//.stream().map(NOAADataDto::new).toList()
-        );
-
-        if(paginationData.getCount() > 1000){
-            for (int i=1001; i<paginationData.getCount() ; i+=1000){
-                requestParams.put("offset",i);
-                String additionalRequestResult = Utils.sendRequest(dataUrl,requestParams);
-                JsonNode additionalRootNode = mapper.readTree(additionalRequestResult);
-                result.addAll(
-                        (mapper.readerForListOf(NOAAData.class).readValue(additionalRootNode.path("results")))//.stream().map(NOAADataDto::new).toList()
-                );
-            }
-        }
+        List<NOAAData> result = Utils.getRemoteData(dataUrl,requestParams,NOAAData.class);
 
         result.forEach(measurement -> {
             measurement.setId(measurement.getDataType().getId() + measurement.getDate().toString() + measurement.getStation().getId());
         });
+
         return result;
     }
 

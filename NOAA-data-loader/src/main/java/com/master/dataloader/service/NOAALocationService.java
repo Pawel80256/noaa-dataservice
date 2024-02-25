@@ -72,8 +72,6 @@ public class NOAALocationService {
         return result;
     }
 
-
-
     private void filterIncorrectCities(List<NOAALocation> remoteCities) throws Exception {
         List<String> remoteCountriesIds = getAllRemote("CNTRY").stream()
                 .map(NOAALocation::getId)
