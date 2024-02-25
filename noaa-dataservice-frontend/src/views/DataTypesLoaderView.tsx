@@ -138,29 +138,34 @@ export const DataTypesLoaderView = () => {
         {
             title: t('IDENTIFIER_COLUMN'),
             dataIndex:'id',
-            key:'id'
+            key:'id',
+            sorter: (a, b) => a.id.localeCompare(b.id)
         },
         {
             title: t('NAME_COLUMN'),
             dataIndex:'name',
-            key:'name'
+            key:'name',
+            sorter: (a, b) => a.name.localeCompare(b.name)
         },
         {
             title: t('DATA_COVERAGE_COLUMN'),
             dataIndex:'dataCoverage',
             key:'dataCoverage',
+            sorter: (a, b) => a.dataCoverage - b.dataCoverage,
         },
         {
             title: t('MIN_DATE_COLUMN'),
             dataIndex:'minDate',
             key:'minDate',
-            render: (text, record) => record && record.minDate ? new Date(record.minDate).toISOString().split('T')[0] : ''
+            render: (text, record) => record && record.minDate ? new Date(record.minDate).toISOString().split('T')[0] : '',
+            sorter: (a, b) => new Date(a.minDate).getTime() - new Date(b.minDate).getTime(),
         },
         {
             title: t('MAX_DATE_COLUMN'),
             dataIndex:'maxDate',
             key:'maxDate',
-            render: (text, record) => record && record.maxDate ? new Date(record.maxDate).toISOString().split('T')[0] : ''
+            render: (text, record) => record && record.maxDate ? new Date(record.maxDate).toISOString().split('T')[0] : '',
+            sorter: (a, b) => new Date(a.maxDate).getTime() - new Date(b.maxDate).getTime(),
         }
     ]
 
@@ -173,6 +178,8 @@ export const DataTypesLoaderView = () => {
             render: (text, record) => record && record.loaded ? <CheckCircleOutlined style={{ color: 'green' }} /> : <CloseCircleOutlined style={{ color: 'red' }} />
         }
     ]
+
+    const searchableColumns: string [] = ["id","name","dataCoverage","minDate","maxDate"];
 
     return(
         <>
@@ -194,6 +201,7 @@ export const DataTypesLoaderView = () => {
                             updateSelectedData={updateSelectedLocalDataTypes}
                             pagination={tablePagination}
                             setPagination={setTablePagination}
+                            searchableColumns={searchableColumns}
                         />
                     </Row>
                     {remoteDataTypes.length === 0 &&    <Row>
@@ -230,6 +238,7 @@ export const DataTypesLoaderView = () => {
                         updateSelectedData={updateSelectedLocalDataTypes}
                         pagination={tablePagination}
                         setPagination={setTablePagination}
+                        searchableColumns={searchableColumns}
                     />
                     {localDataTypes.length === 0 &&    <Row>
                         <Button
