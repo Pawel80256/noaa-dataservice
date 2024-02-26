@@ -24,6 +24,7 @@
   "ELEVATION_UNIT_COLUMN": "Jednostka wysokości",
   "LATITUDE_COLUMN": "Szerokość geogr.",
   "LONGITUDE_COLUMN": "Długość geogr.",
+  "PARENT_COLUMN": "Rodzic",
 
   "FETCH_REMOTE_LABEL": "Pobierz zdalne rekordy",
   "FETCH_LOCAL_LABEL": "Pobierz lokalne rekordy",
@@ -48,11 +49,13 @@
   "SEARCH_CITIES_LABEL": "Wyszukaj miasta",
   "SEARCH_STATES_LABEL": "Wyszukaj stany (USA)",
   "FIND_STATIONS_LABEL": "Znajdź stacje",
+  "SEARCH_MEASUREMENTS_LABEL": "Znajdź pomiary",
 
   "LANGUAGE": "Język",
   "REMOTE_CONTENT": "Zdalna Zawartość",
   "REMOTE_STATIONS_LABEL": "Zdalne rekordy stacji badawczych",
   "LOCAL_STATIONS_LABEL": "Lokalne rekordy stacji badawczych",
+  "REMOTE_LOCATIONS_LABEL": "Zdalne rekordy lokacji",
 
   "DATABASE_CONTENT": "Zawartość Bazy Danych"
 }

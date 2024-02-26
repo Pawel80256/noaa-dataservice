@@ -4,6 +4,6 @@ export interface NOAALocation{
     minDate:Date,
     maxDate:Date,
     dataCoverage:number,
-    parent:string,
+    parentId:string,
     loaded:boolean
 }

@@ -24,6 +24,7 @@
   "ELEVATION_UNIT_COLUMN": "Elevation unit",
   "LATITUDE_COLUMN": "Latitude",
   "LONGITUDE_COLUMN": "Longitude",
+  "PARENT_COLUMN": "Parent",
 
   "FETCH_REMOTE_LABEL": "Fetch remote data",
   "FETCH_LOCAL_LABEL": "Fetch local data",
@@ -48,11 +49,13 @@
   "SEARCH_CITIES_LABEL": "Search cities",
   "SEARCH_STATES_LABEL": "Search states (USA)",
   "FIND_STATIONS_LABEL": "Find stations",
+  "SEARCH_MEASUREMENTS_LABEL": "Search measurements",
 
   "REMOTE_CONTENT": "Remote Content",
   "DATABASE_CONTENT": "Database Content",
   "REMOTE_STATIONS_LABEL": "Remote stations data",
   "LOCAL_STATIONS_LABEL": "Local stations data",
+  "REMOTE_LOCATIONS_LABEL":"Remote locations data",
 
   "LANGUAGE": "Language"
 }

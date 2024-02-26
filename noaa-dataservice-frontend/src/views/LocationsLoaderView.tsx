@@ -67,8 +67,6 @@ export const LocationsLoaderView = ({locationCategoryId}: LocationsLoaderViewPro
     };
     const fetchRemote = () => {
         setIsRemoteFetchLoading(true);
-        console.log("here")
-        console.log(locationCategoryId)
         getRemoteLocations(locationCategoryId).then(response => {
             setRemoteData(response);
             setIsRemoteFetchLoading(false);
@@ -142,8 +140,8 @@ export const LocationsLoaderView = ({locationCategoryId}: LocationsLoaderViewPro
         },
         {
             title: t('DATA_COVERAGE_COLUMN'),
-            dataIndex: 'datacoverage',
-            key: 'datacoverage',
+            dataIndex: 'dataCoverage',
+            key: 'dataCoverage',
             sorter: (a, b) => a.dataCoverage - b.dataCoverage,
         },
         {
@@ -162,9 +160,9 @@ export const LocationsLoaderView = ({locationCategoryId}: LocationsLoaderViewPro
         },
         {
             title: t('PARENT_COLUMN'),
-            dataIndex: 'parent',
-            key: 'parent',
-            sorter: (a, b) => a.parent.localeCompare(b.parent),
+            dataIndex: 'parentId',
+            key: 'parentId',
+            sorter: (a, b) => a.parentId.localeCompare(b.parentId),
         },
     ];
 
@@ -179,15 +177,15 @@ export const LocationsLoaderView = ({locationCategoryId}: LocationsLoaderViewPro
         }
     ]
 
-    const searchableColumns: string [] = ["id", "name", "dataCoverage", "minDate", "maxDate", "parent"];
+    const searchableColumns: string [] = ["id", "name", "dataCoverage", "mindate", "maxdate", "parentId", "loaded"];
     const getTitleLabel = () => {
         switch (locationCategoryId){
             case "CNTRY":
-                return t('COUNTRIES_LABEL');
+                return t('COUNTRIES');
             case "CITY":
-                return t('CITIES_LABEL');
+                return t('CITIES');
             case "ST":
-                return t("STATES_LABEL");
+                return t("STATES");
         }
         return "ERROR"
     }
