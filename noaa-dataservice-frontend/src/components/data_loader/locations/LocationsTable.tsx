@@ -39,9 +39,9 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
         const filtered = locations.filter(location =>
             location.id.toLowerCase().includes(filters.id.toLowerCase()) &&
             location.name.toLowerCase().includes(filters.name.toLowerCase()) &&
-            location.datacoverage.toString().toLowerCase().includes(filters.datacoverage.toLowerCase()) &&
-            new Date(location.mindate).toISOString().toLowerCase().includes(filters.mindate.toLowerCase()) &&
-            new Date(location.maxdate).toISOString().toLowerCase().includes(filters.maxdate.toLowerCase())
+            location.dataCoverage.toString().toLowerCase().includes(filters.datacoverage.toLowerCase()) &&
+            new Date(location.minDate).toISOString().toLowerCase().includes(filters.mindate.toLowerCase()) &&
+            new Date(location.maxDate).toISOString().toLowerCase().includes(filters.maxdate.toLowerCase())
         );
         setFilteredData(filtered);
     }, [filters, locations]);
@@ -108,23 +108,23 @@ export const LocationsTable = ({locations,updateSelectedLocations,localLocations
             title: t('DATA_COVERAGE_COLUMN'),
             dataIndex: 'datacoverage',
             key: 'datacoverage',
-            sorter: (a, b) => a.datacoverage - b.datacoverage,
+            sorter: (a, b) => a.dataCoverage - b.dataCoverage,
             ...getColumnSearchProps('datacoverage')
         },
         {
             title: t('MIN_DATE_COLUMN'),
             dataIndex: 'mindate',
             key: 'mindate',
-            render: (text, record) => record && record.mindate ? new Date(record.mindate).toISOString().split('T')[0] : '',
-            sorter: (a, b) => new Date(a.mindate).getTime() - new Date(b.mindate).getTime(),
+            render: (text, record) => record && record.minDate ? new Date(record.minDate).toISOString().split('T')[0] : '',
+            sorter: (a, b) => new Date(a.minDate).getTime() - new Date(b.minDate).getTime(),
             ...getColumnSearchProps('mindate')
         },
         {
             title: t('MAX_DATE_COLUMN'),
             dataIndex: 'maxdate',
             key: 'maxdate',
-            render: (text, record) => record && record.maxdate ? new Date(record.maxdate).toISOString().split('T')[0] : '',
-            sorter: (a, b) => new Date(a.maxdate).getTime() - new Date(b.maxdate).getTime(),
+            render: (text, record) => record && record.maxDate ? new Date(record.maxDate).toISOString().split('T')[0] : '',
+            sorter: (a, b) => new Date(a.maxDate).getTime() - new Date(b.maxDate).getTime(),
             ...getColumnSearchProps('maxdate')
         }
         // Pozostałe definicje kolumn

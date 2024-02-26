@@ -14,6 +14,7 @@ import {CitiesLoaderView} from "./views/CitiesLoaderView";
 import {StatesLoaderView} from "./views/StatesLoaderView";
 import {StationsLoaderView} from "./views/StationsLoaderView";
 import {MeasurementsLoaderView} from "./views/MeasurementsLoaderView";
+import {LocationsLoaderView} from "./views/LocationsLoaderView";
 
 const Content = () => (
     <Row style={{ width: '100%', height: '100vh' }}>
@@ -35,9 +36,9 @@ const router = createBrowserRouter([
             { path: "dataloader/datasets", element: <DatasetLoaderView /> },
             { path: "dataloader/datatypes", element: <DataTypesLoaderView /> },
             { path: "dataloader/locationcategories", element: <LocationCategoriesLoaderView /> },
-            { path: "dataloader/locations/countries", element: <CountriesLoaderView /> },
-            { path: "dataloader/locations/cities", element: <CitiesLoaderView /> },
-            { path: "dataloader/locations/states", element: <StatesLoaderView /> },
+            { path: "dataloader/locations/countries", element: <LocationsLoaderView locationCategoryId={"CNTRY"}/> },
+            { path: "dataloader/locations/cities", element:<LocationsLoaderView locationCategoryId={"CITY"}/>},
+            { path: "dataloader/locations/states", element: <LocationsLoaderView locationCategoryId={"ST"}/>},
             { path: "dataloader/stations", element: <StationsLoaderView /> },
             { path: "dataloader/measurements", element: <MeasurementsLoaderView /> },
         ],

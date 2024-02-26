@@ -4,7 +4,6 @@ import {BankOutlined, DownloadOutlined, GlobalOutlined, TableOutlined} from "@an
 import {useState} from "react";
 import {NOAALocation} from "../models/NOAALocation";
 import {LocationsTable} from "../components/data_loader/locations/LocationsTable";
-import {getAllLocalCities, getAllLocalCountries, getAllLocalStates} from "../services/NOAALocationService";
 import {showErrorNotification, showSuccessNotification} from "../services/Utils";
 import {NOAAStation} from "../models/NOAAStation";
 import {
@@ -14,6 +13,7 @@ import {
     loadByIdsAndLocationId
 } from "../services/NOAAStationService";
 import {StationsTable} from "../components/data_loader/stations/StationsTable";
+import {getLocalLocations} from "../services/NOAALocationService";
 
 export const StationsLoaderView = () => {
     //wybieranie kategorii lokalizacji do szukania (kraje / miasta / stany)
@@ -81,42 +81,12 @@ export const StationsLoaderView = () => {
     }
 
     const fetchLocalLocations = (locationCategory: string) => {
-        switch (locationCategory) {
-
-            case "CNTRY": {
-                getAllLocalCountries().then(res => {
-                    setLocalLocations(res);
-                    showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'));
-                }).catch(() => {
-                    showErrorNotification(t('LOCAL_FETCH_ERROR_LABEL'));
-                });
-                break;
-            }
-
-            case "CITY": {
-                getAllLocalCities().then(res => {
-                    setLocalLocations(res);
-                    showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'));
-                }).catch(() => {
-                    showErrorNotification(t('LOCAL_FETCH_ERROR_LABEL'));
-                });
-                break;
-            }
-
-            case "ST": {
-                getAllLocalStates().then(res => {
-                    setLocalLocations(res);
-                    showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'));
-                }).catch(() => {
-                    showErrorNotification(t('LOCAL_FETCH_ERROR_LABEL'));
-                });
-                break;
-            }
-
-            default: {
-                console.log("Incorrect Location Category");
-            }
-        }
+        getLocalLocations(locationCategory).then(res => {
+            setLocalLocations(res);
+            showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'));
+        }).catch(() => {
+            showErrorNotification(t('LOCAL_FETCH_ERROR_LABEL'));
+        });
     }
 
     const handleLoading = () => {
