@@ -182,6 +182,9 @@ export const StationsLoaderView = () => {
         },
     ];
 
+    const searchableLocationsColumns: string [] = ["id", "name", "dataCoverage", "mindate", "maxdate", "parentId"];
+
+
     const localStationsColumns: TableProps<NOAAStation>['columns'] = [
         {
             title: t('INDEX_COLUMN'),
@@ -191,54 +194,64 @@ export const StationsLoaderView = () => {
         {
             title: t('IDENTIFIER_COLUMN'),
             dataIndex:'id',
-            key:'id'
+            key:'id',
+            sorter: (a, b) => a.id.localeCompare(b.id)
         },
         {
             title: t('NAME_COLUMN'),
             dataIndex:'name',
-            key:'name'
+            key:'name',
+            sorter: (a, b) => a.name.localeCompare(b.name)
         },
         {
             title: t('DATA_COVERAGE_COLUMN'),
             dataIndex:'dataCoverage',
             key:'dataCoverage',
+            sorter: (a, b) => a.dataCoverage - b.dataCoverage,
         },
         {
             title: t('MIN_DATE_COLUMN'),
-            dataIndex:'mindate',
-            key:'mindate',
-            render: (text, record) => record && record.minDate ? new Date(record.minDate).toISOString().split('T')[0] : ''
+            dataIndex:'minDate',
+            key:'minDate',
+            render: (text, record) => record && record.minDate ? new Date(record.minDate).toISOString().split('T')[0] : '',
+            sorter: (a, b) => new Date(a.minDate).getTime() - new Date(b.minDate).getTime(),
         },
         {
             title: t('MAX_DATE_COLUMN'),
-            dataIndex:'maxdate',
-            key:'maxdate',
-            render: (text, record) => record && record.maxDate ? new Date(record.maxDate).toISOString().split('T')[0] : ''
+            dataIndex:'maxDate',
+            key:'maxDate',
+            render: (text, record) => record && record.maxDate ? new Date(record.maxDate).toISOString().split('T')[0] : '',
+            sorter: (a, b) => new Date(a.maxDate).getTime() - new Date(b.maxDate).getTime(),
         },
         {
             title: t('ELEVATION_COLUMN'),
             dataIndex: 'elevation',
-            key: 'elevation'
+            key: 'elevation',
+            sorter: (a, b) => a.elevation - b.elevation,
         },
         {
             title: t('ELEVATION_UNIT_COLUMN'),
             dataIndex: 'elevationUnit',
-            key: 'elevationUnit'
+            key: 'elevationUnit',
+            sorter:(a,b) => a.elevationUnit.localeCompare(b.elevationUnit)
         },
         {
             title: t('LATITUDE_COLUMN'),
             dataIndex: 'latitude',
-            key: 'latitude'
+            key: 'latitude',
+            sorter:(a,b) => a.latitude - b.latitude
         },
         {
             title: t('LONGITUDE_COLUMN'),
             dataIndex: 'longitude',
-            key: 'longitude'
+            key: 'longitude',
+            sorter:(a,b) => a.longitude - b.longitude
         },
         {
             title: t('LOCATION_COLUMN'),
             dataIndex: 'locationId',
-            key: 'locationId'
+            key: 'locationId',
+            sorter:(a,b) => a.locationId.localeCompare(b.locationId)
         },
     ]
 
@@ -253,6 +266,7 @@ export const StationsLoaderView = () => {
         }
     ]
 
+    const searchableStationColumns = ["id","name","dataCoverage","minDate","maxDate","elevation","elevationUnit","latitude","longitude","locationId","loaded"]
 
     return (
         <>
@@ -293,6 +307,7 @@ export const StationsLoaderView = () => {
                             setPagination={setTablePagination}
                             singleSelect={true}
                             isAnyLoading={isAnyLoading}
+                            searchableColumns={searchableLocationsColumns}
                             />
                     </Row>
                     {localLocations.length > 0 &&
@@ -323,6 +338,7 @@ export const StationsLoaderView = () => {
                             pagination={tablePagination}
                             setPagination={setTablePagination}
                             isAnyLoading={isAnyLoading}
+                            searchableColumns={searchableStationColumns}
                             />
                     </Row>
                     {remoteStations.length > 0 &&
@@ -353,7 +369,8 @@ export const StationsLoaderView = () => {
                             pagination={tablePagination}
                             setPagination={setTablePagination}
                             isAnyLoading={isAnyLoading}
-                            />
+                            searchableColumns={searchableStationColumns}
+                        />
                     </Row>
                     <Row>
                         <Space>

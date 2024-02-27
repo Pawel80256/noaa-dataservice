@@ -8,5 +8,6 @@ export interface NOAAStation{
     longitude:number,
     dataCoverage:number,
     elevationUnit:string,
+    locationId:string,
     loaded:boolean
 }
