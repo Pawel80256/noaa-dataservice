@@ -68,13 +68,13 @@ export const StationsTable = (
             title: t('MIN_DATE_COLUMN'),
             dataIndex:'mindate',
             key:'mindate',
-            render: (text, record) => record && record.mindate ? new Date(record.mindate).toISOString().split('T')[0] : ''
+            render: (text, record) => record && record.minDate ? new Date(record.minDate).toISOString().split('T')[0] : ''
         },
         {
             title: t('MAX_DATE_COLUMN'),
             dataIndex:'maxdate',
             key:'maxdate',
-            render: (text, record) => record && record.maxdate ? new Date(record.maxdate).toISOString().split('T')[0] : ''
+            render: (text, record) => record && record.maxDate ? new Date(record.maxDate).toISOString().split('T')[0] : ''
         },
         {
             title: t('ELEVATION_COLUMN'),

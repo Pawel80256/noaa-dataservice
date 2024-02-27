@@ -4,7 +4,7 @@ import {NOAAStation} from "../models/NOAAStation";
 const apiPath = 'http://localhost:8080'
 
 export const getRemoteStationsByLocationId = async (locationId:string): Promise<NOAAStation[]> =>{
-    const response = await axios.get<NOAAStation[]>(`${apiPath}/NOAA/station/location/` + locationId)
+    const response = await axios.get<NOAAStation[]>(`${apiPath}/NOAA/station/remote`, {params:{locationId}})
     return response.data;
 }
 
@@ -14,7 +14,7 @@ export const getAllLocalStations = async (): Promise<NOAAStation[]> =>{
 }
 
 export const loadByIdsAndLocationId = async (locationId:string, stationIds:string[]) => {
-    await axios.put(`${apiPath}/NOAA/station/load/` + locationId, stationIds)
+    await axios.put(`${apiPath}/NOAA/station/load`, stationIds, {params:{locationId}})
 }
 
 export const deleteStationsByIds = async (stationsIds: string[]) => {

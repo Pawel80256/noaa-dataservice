@@ -1,7 +1,14 @@
 import {Button, Col, Divider, Flex, Row, Space, TableProps, Typography} from "antd";
 import {useTranslation} from "react-i18next";
-import {BankOutlined, DownloadOutlined, GlobalOutlined, TableOutlined} from "@ant-design/icons";
-import {useState} from "react";
+import {
+    BankOutlined,
+    CheckCircleOutlined,
+    CloseCircleOutlined,
+    DownloadOutlined,
+    GlobalOutlined,
+    TableOutlined
+} from "@ant-design/icons";
+import {useEffect, useState} from "react";
 import {NOAALocation} from "../models/NOAALocation";
 import {LocationsTable} from "../components/data_loader/locations/LocationsTable";
 import {showErrorNotification, showSuccessNotification} from "../services/Utils";
@@ -28,12 +35,18 @@ export const StationsLoaderView = () => {
     const [selectedLocalStations, setSelectedLocalStations] = useState<React.Key[]>([]);
     const [selectedRemoteStations, setSelectedRemoteStations] = useState<React.Key[]>([]);
 
+    const [isLocalLocationsLoading, setIsLocalLocationsLoading] = useState<boolean>(false)
     const [isRemoteStationsLoading, setIsRemoteStationsLoading] = useState<boolean>(false);
     const [isLocalStationsLoading, setIsLocalStationsLoading] = useState<boolean>(false);
     const [isLoadingLoading, setIsLoadingLoading] = useState<boolean>(false);
     const [isDeletingLoading, setIsDeletingLoading] = useState<boolean>(false);
+    const [isAnyLoading, setIsAnyLoading] = useState<boolean>(false)
 
     const [tablePagination, setTablePagination] = useState({current: 1, pageSize: 5});
+
+    useEffect(() => {
+        setIsAnyLoading(isRemoteStationsLoading || isLocalStationsLoading || isLoadingLoading || isDeletingLoading);
+    }, [isRemoteStationsLoading || isRemoteStationsLoading || isLoadingLoading || isDeletingLoading]);
 
     const selectAllLocal = () => {
         if (selectedLocalStations.length === localStations.length) {
@@ -78,10 +91,13 @@ export const StationsLoaderView = () => {
     }
 
     const fetchLocalLocations = (locationCategory: string) => {
+        setIsLocalLocationsLoading(true);
         getLocalLocations(locationCategory).then(res => {
             setLocalLocations(res);
+            setIsLocalLocationsLoading(false);
             showSuccessNotification(t('LOCAL_FETCH_SUCCESS_LABEL'));
         }).catch(() => {
+            setIsLocalLocationsLoading(false);
             showErrorNotification(t('LOCAL_FETCH_ERROR_LABEL'));
         });
     }
@@ -93,6 +109,7 @@ export const StationsLoaderView = () => {
         setIsLoadingLoading(true);
         loadByIdsAndLocationId(locationId,ids).then(() => {
             fetchLocalStations();
+            fetchRemoteStationsByLocationId(locationId);
             setIsLoadingLoading(false);
             showSuccessNotification(t('LOAD_SUCCESS_LABEL'))
         }).catch(() => {
@@ -103,13 +120,14 @@ export const StationsLoaderView = () => {
 
     const deleteSelectedLocalStations = () => {
         const ids:string[] = selectedLocalStations.map(key => key.toString());
+        const locationId = selectedLocation!.toString();
 
         setIsDeletingLoading(true);
         deleteStationsByIds(ids).then(() => {
             const updatedSelectedStations = selectedLocalStations.filter(key => !ids.includes(key.toString()));
             setSelectedLocalStations(updatedSelectedStations);
-
             fetchLocalStations();
+            fetchRemoteStationsByLocationId(locationId);
             setIsDeletingLoading(false);
             showSuccessNotification(t('DELETE_SUCCESS_LABEL'))
         }).catch(()=>{
@@ -164,6 +182,73 @@ export const StationsLoaderView = () => {
         },
     ];
 
+    const localStationsColumns: TableProps<NOAAStation>['columns'] = [
+        {
+            title: t('INDEX_COLUMN'),
+            key: 'index',
+            render: (value, item, index) => (tablePagination.current - 1) * tablePagination.pageSize + index + 1
+        },
+        {
+            title: t('IDENTIFIER_COLUMN'),
+            dataIndex:'id',
+            key:'id'
+        },
+        {
+            title: t('NAME_COLUMN'),
+            dataIndex:'name',
+            key:'name'
+        },
+        {
+            title: t('DATA_COVERAGE_COLUMN'),
+            dataIndex:'dataCoverage',
+            key:'dataCoverage',
+        },
+        {
+            title: t('MIN_DATE_COLUMN'),
+            dataIndex:'mindate',
+            key:'mindate',
+            render: (text, record) => record && record.minDate ? new Date(record.minDate).toISOString().split('T')[0] : ''
+        },
+        {
+            title: t('MAX_DATE_COLUMN'),
+            dataIndex:'maxdate',
+            key:'maxdate',
+            render: (text, record) => record && record.maxDate ? new Date(record.maxDate).toISOString().split('T')[0] : ''
+        },
+        {
+            title: t('ELEVATION_COLUMN'),
+            dataIndex: 'elevation',
+            key: 'elevation'
+        },
+        {
+            title: t('ELEVATION_UNIT_COLUMN'),
+            dataIndex: 'elevationUnit',
+            key: 'elevationUnit'
+        },
+        {
+            title: t('LATITUDE_COLUMN'),
+            dataIndex: 'latitude',
+            key: 'latitude'
+        },
+        {
+            title: t('LONGITUDE_COLUMN'),
+            dataIndex: 'longitude',
+            key: 'longitude'
+        },
+    ]
+
+    const remoteStationsColumns: TableProps<NOAAStation>['columns'] = [
+        ...localStationsColumns,
+        {
+            title: t('STATUS_COLUMN'),
+            dataIndex: 'loaded',
+            key: 'loaded',
+            render: (text, record) => record && record.loaded ? <CheckCircleOutlined style={{color: 'green'}}/> :
+                <CloseCircleOutlined style={{color: 'red'}}/>
+        }
+    ]
+
+
     return (
         <>
             <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
@@ -202,6 +287,7 @@ export const StationsLoaderView = () => {
                             pagination={tablePagination}
                             setPagination={setTablePagination}
                             singleSelect={true}
+                            isAnyLoading={isAnyLoading}
                             />
                     </Row>
                     {localLocations.length > 0 &&
@@ -225,12 +311,14 @@ export const StationsLoaderView = () => {
                         <Typography.Title level={2}>{t('REMOTE_STATIONS_LABEL')}</Typography.Title>
                     </Row>
                     <Row>
-                        <StationsTable
-                            stations={remoteStations}
-                            updateSelectedLocations={setSelectedRemoteStations}
-                            localStations={localStations}
-                            selectedStations={selectedRemoteStations}
-                            showStatusColumn={true}/>
+                        <DataTable
+                            columns={remoteStationsColumns}
+                            data={remoteStations}
+                            updateSelectedData={setSelectedRemoteStations}
+                            pagination={tablePagination}
+                            setPagination={setTablePagination}
+                            isAnyLoading={isAnyLoading}
+                            />
                     </Row>
                     {remoteStations.length > 0 &&
                         <Row>
@@ -253,11 +341,14 @@ export const StationsLoaderView = () => {
                         <Typography.Title level={2}>{t('LOCAL_STATIONS_LABEL')}</Typography.Title>
                     </Row>
                     <Row>
-                        <StationsTable
-                            stations={localStations}
-                            updateSelectedLocations={setSelectedLocalStations}
-                            localStations={localStations}
-                            selectedStations={selectedLocalStations}/>
+                        <DataTable
+                            columns={localStationsColumns}
+                            data={localStations}
+                            updateSelectedData={setSelectedLocalStations}
+                            pagination={tablePagination}
+                            setPagination={setTablePagination}
+                            isAnyLoading={isAnyLoading}
+                            />
                     </Row>
                     <Row>
                         <Space>
