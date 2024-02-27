@@ -25,6 +25,7 @@
   "LATITUDE_COLUMN": "Szerokość geogr.",
   "LONGITUDE_COLUMN": "Długość geogr.",
   "PARENT_COLUMN": "Rodzic",
+  "LOCATION_COLUMN": "Lokalizacja",
 
   "FETCH_REMOTE_LABEL": "Pobierz zdalne rekordy",
   "FETCH_LOCAL_LABEL": "Pobierz lokalne rekordy",

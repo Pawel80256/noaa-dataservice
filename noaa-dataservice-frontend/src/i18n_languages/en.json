@@ -25,6 +25,7 @@
   "LATITUDE_COLUMN": "Latitude",
   "LONGITUDE_COLUMN": "Longitude",
   "PARENT_COLUMN": "Parent",
+  "LOCATION_COLUMN": "Location",
 
   "FETCH_REMOTE_LABEL": "Fetch remote data",
   "FETCH_LOCAL_LABEL": "Fetch local data",

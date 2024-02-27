@@ -235,6 +235,11 @@ export const StationsLoaderView = () => {
             dataIndex: 'longitude',
             key: 'longitude'
         },
+        {
+            title: t('LOCATION_COLUMN'),
+            dataIndex: 'locationId',
+            key: 'locationId'
+        },
     ]
 
     const remoteStationsColumns: TableProps<NOAAStation>['columns'] = [
