@@ -1,4 +1,4 @@
-export interface NOAADataDto {
+export interface NOAAData {
     id:string,//custom
     datatype:string,
     station:string,

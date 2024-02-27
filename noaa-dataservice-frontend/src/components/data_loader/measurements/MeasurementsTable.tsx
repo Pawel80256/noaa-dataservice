@@ -1,13 +1,13 @@
-import {NOAADataDto} from "../../../models/NOAADataDto";
+import {NOAAData} from "../../../models/NOAADataDto";
 import {useTranslation} from "react-i18next";
 import {useEffect, useState} from "react";
 import {Table, TableProps} from "antd";
 import {CheckCircleOutlined, CloseCircleOutlined} from "@ant-design/icons";
 
 export interface MeasurementsTableProps {
-    measurements: NOAADataDto[],
+    measurements: NOAAData[],
     updateSelectedMeasurements?: (keys: React.Key[]) => void,
-    localMeasurements?: NOAADataDto[],
+    localMeasurements?: NOAAData[],
     selectedMeasurements?: React.Key[],
     showStatusColumn?: boolean,
 }
@@ -49,7 +49,7 @@ export const MeasurementsTable = ({
         onChange: onSelectChange,
     };
 
-    const columns: TableProps<NOAADataDto>['columns'] = [
+    const columns: TableProps<NOAAData>['columns'] = [
         {
             title: t('INDEX_COLUMN'),
             key: 'index',

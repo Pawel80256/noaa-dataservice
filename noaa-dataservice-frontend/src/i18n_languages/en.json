@@ -26,6 +26,11 @@
   "LONGITUDE_COLUMN": "Longitude",
   "PARENT_COLUMN": "Parent",
   "LOCATION_COLUMN": "Location",
+  "DATA_TYPE_COLUMN": "Data type",
+  "DATE_COLUMN": "Date",
+  "VALUE_COLUMN": "Value",
+  "ATTRIBUTES_COLUMN": "Attributes",
+  "STATION_COLUMN": "Station",
 
   "FETCH_REMOTE_LABEL": "Fetch remote data",
   "FETCH_LOCAL_LABEL": "Fetch local data",

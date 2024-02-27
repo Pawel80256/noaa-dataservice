@@ -26,6 +26,11 @@
   "LONGITUDE_COLUMN": "Długość geogr.",
   "PARENT_COLUMN": "Rodzic",
   "LOCATION_COLUMN": "Lokalizacja",
+  "DATA_TYPE_COLUMN": "Typ danych",
+  "DATE_COLUMN": "Data",
+  "VALUE_COLUMN": "Wartość",
+  "ATTRIBUTES_COLUMN": "Atrybuty",
+  "STATION_COLUMN": "Stacja",
 
   "FETCH_REMOTE_LABEL": "Pobierz zdalne rekordy",
   "FETCH_LOCAL_LABEL": "Pobierz lokalne rekordy",

@@ -6,7 +6,7 @@ export interface DataTableProps {
     columns: TableProps<any>['columns'],
     data: any[],
     selectedData?: React.Key[],
-    updateSelectedData: (keys: React.Key[]) => void,
+    updateSelectedData?: (keys: React.Key[]) => void,
     pagination: { current: number, pageSize: number },
     setPagination: (pagination: { current: number, pageSize: number }) => void,
     searchableColumns?: string[],
@@ -68,8 +68,10 @@ export const DataTable = ({columns,data,selectedData,updateSelectedData, searcha
     };
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        setSelectedRowKeys(newSelectedRowKeys);
-        updateSelectedData(newSelectedRowKeys)
+        if(updateSelectedData){
+            setSelectedRowKeys(newSelectedRowKeys);
+            updateSelectedData(newSelectedRowKeys);
+        }
     };
 
     const rowSelection = {
@@ -81,7 +83,7 @@ export const DataTable = ({columns,data,selectedData,updateSelectedData, searcha
     const paginationConfig = {
         defaultPageSize: 5,
         showSizeChanger: true,
-        pageSizeOptions: ['5', '10', '15'],
+        pageSizeOptions: ['5', '10', '15', '50'],
         current: pagination.current,
         pageSize: pagination.pageSize
     }
