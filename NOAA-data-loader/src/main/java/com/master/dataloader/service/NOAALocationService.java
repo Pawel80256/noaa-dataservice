@@ -68,6 +68,9 @@ public class NOAALocationService {
             setParentCountries(result);
             filterIncorrectCities(result);
         }
+        if(locationCategoryId.equals("ST")){
+            result.forEach(l -> l.setParent(new NOAALocation("FIPS:US")));
+        }
 
         return result;
     }

@@ -1,4 +1,4 @@
-import {Button, Col, Divider, Flex, Row, Space, Typography} from "antd";
+import {Button, Col, Divider, Flex, Row, Space, TableProps, Typography} from "antd";
 import {useTranslation} from "react-i18next";
 import {BankOutlined, DownloadOutlined, GlobalOutlined, TableOutlined} from "@ant-design/icons";
 import {useState} from "react";
@@ -14,6 +14,7 @@ import {
 } from "../services/NOAAStationService";
 import {StationsTable} from "../components/data_loader/stations/StationsTable";
 import {getLocalLocations} from "../services/NOAALocationService";
+import {DataTable} from "../components/common/DataTable";
 
 export const StationsLoaderView = () => {
     //wybieranie kategorii lokalizacji do szukania (kraje / miasta / stany)
@@ -31,12 +32,8 @@ export const StationsLoaderView = () => {
     const [isLocalStationsLoading, setIsLocalStationsLoading] = useState<boolean>(false);
     const [isLoadingLoading, setIsLoadingLoading] = useState<boolean>(false);
     const [isDeletingLoading, setIsDeletingLoading] = useState<boolean>(false);
-    const updateSelectedRemoteStations = (keys: React.Key[]) => {
-        setSelectedRemoteStations(keys)
-    }
-    const updateSelectedLocalStations = (keys: React.Key[]) => {
-        setSelectedLocalStations(keys)
-    }
+
+    const [tablePagination, setTablePagination] = useState({current: 1, pageSize: 5});
 
     const selectAllLocal = () => {
         if (selectedLocalStations.length === localStations.length) {
@@ -121,12 +118,58 @@ export const StationsLoaderView = () => {
         })
     }
 
+    const localLocationColumns: TableProps<NOAALocation>['columns'] = [
+        {
+            title: t('INDEX_COLUMN'),
+            key: 'index',
+            render: (value, item, index) => (tablePagination.current - 1) * tablePagination.pageSize + index + 1
+        },
+        {
+            title: t('IDENTIFIER_COLUMN'),
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id.localeCompare(b.id),
+        },
+        {
+            title: t('NAME_COLUMN'),
+            dataIndex: 'name',
+            key: 'name',
+            sorter: (a, b) => a.name.localeCompare(b.name),
+        },
+        {
+            title: t('DATA_COVERAGE_COLUMN'),
+            dataIndex: 'dataCoverage',
+            key: 'dataCoverage',
+            sorter: (a, b) => a.dataCoverage - b.dataCoverage,
+        },
+        {
+            title: t('MIN_DATE_COLUMN'),
+            dataIndex: 'mindate',
+            key: 'mindate',
+            render: (text, record) => record && record.minDate ? new Date(record.minDate).toISOString().split('T')[0] : '',
+            sorter: (a, b) => new Date(a.minDate).getTime() - new Date(b.minDate).getTime(),
+        },
+        {
+            title: t('MAX_DATE_COLUMN'),
+            dataIndex: 'maxdate',
+            key: 'maxdate',
+            render: (text, record) => record && record.maxDate ? new Date(record.maxDate).toISOString().split('T')[0] : '',
+            sorter: (a, b) => new Date(a.maxDate).getTime() - new Date(b.maxDate).getTime(),
+        },
+        {
+            title: t('PARENT_COLUMN'),
+            dataIndex: 'parentId',
+            key: 'parentId',
+            sorter: (a, b) => a.parentId.localeCompare(b.parentId),
+        },
+    ];
+
     return (
         <>
             <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
                 <Flex style={{flex: 1, minWidth: '50vh'}} align={'center'} justify={'flex-start'} vertical>
                     <Row>
-                        <Typography.Title level={2}>{t('REMOTE_LOCATIONS_LABEL')}</Typography.Title>
+                        <Typography.Title level={2}>{t('LOCAL_LOCATIONS_LABEL')}</Typography.Title>
                     </Row>
                     <Row style={{marginTop: "2%"}}>
                         <Col>
@@ -150,13 +193,16 @@ export const StationsLoaderView = () => {
                         </Col>
                     </Row>
                     <Row style={{marginTop: "5%"}}>
-                        <LocationsTable
-                            locations={localLocations}
-                            multiSelect={false}
-                            updateSelectedLocations={(keys) => {
+                        <DataTable
+                            columns={localLocationColumns}
+                            data={localLocations}
+                            updateSelectedData={(keys) => {
                                 setSelectedLocation(keys.length > 0 ? keys[0] : null);
                             }}
-                        />
+                            pagination={tablePagination}
+                            setPagination={setTablePagination}
+                            singleSelect={true}
+                            />
                     </Row>
                     {localLocations.length > 0 &&
                         <Row>
@@ -181,7 +227,7 @@ export const StationsLoaderView = () => {
                     <Row>
                         <StationsTable
                             stations={remoteStations}
-                            updateSelectedLocations={updateSelectedRemoteStations}
+                            updateSelectedLocations={setSelectedRemoteStations}
                             localStations={localStations}
                             selectedStations={selectedRemoteStations}
                             showStatusColumn={true}/>
@@ -209,7 +255,7 @@ export const StationsLoaderView = () => {
                     <Row>
                         <StationsTable
                             stations={localStations}
-                            updateSelectedLocations={updateSelectedLocalStations}
+                            updateSelectedLocations={setSelectedLocalStations}
                             localStations={localStations}
                             selectedStations={selectedLocalStations}/>
                     </Row>

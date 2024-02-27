@@ -5,15 +5,16 @@ import {isDisabled} from "@testing-library/user-event/dist/utils";
 export interface DataTableProps {
     columns: TableProps<any>['columns'],
     data: any[],
-    selectedData: React.Key[],
+    selectedData?: React.Key[],
     updateSelectedData: (keys: React.Key[]) => void,
     pagination: { current: number, pageSize: number },
     setPagination: (pagination: { current: number, pageSize: number }) => void,
     searchableColumns?: string[],
-    isAnyLoading:boolean
+    isAnyLoading?:boolean,
+    singleSelect?:boolean
 }
 
-export const DataTable = ({columns,data,selectedData,updateSelectedData, searchableColumns = [], isAnyLoading} : DataTableProps) => {
+export const DataTable = ({columns,data,selectedData,updateSelectedData, searchableColumns = [], isAnyLoading, singleSelect} : DataTableProps) => {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [pagination, setPagination] = useState<{current:number,pageSize:number}>({ current: 1, pageSize: 5 });
 
@@ -54,7 +55,9 @@ export const DataTable = ({columns,data,selectedData,updateSelectedData, searcha
     });
 
     useEffect(()=>{
-        setSelectedRowKeys(selectedData)
+        if(selectedData){
+            setSelectedRowKeys(selectedData)
+        }
     }, [selectedData])
 
     const handleTableChange = (newPagination:any) => {
@@ -72,6 +75,7 @@ export const DataTable = ({columns,data,selectedData,updateSelectedData, searcha
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
+        type: singleSelect  ? 'radio' as const : 'checkbox' as const,
     };
 
     const paginationConfig = {
