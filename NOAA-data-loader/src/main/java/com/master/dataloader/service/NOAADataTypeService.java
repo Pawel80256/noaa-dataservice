@@ -3,6 +3,7 @@ package com.master.dataloader.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.master.dataloader.aspects.Loggable;
 import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.dto.PaginationWrapper;
@@ -30,6 +31,7 @@ public class NOAADataTypeService {
         this.noaaDataTypeRepository = noaaDataTypeRepository;
     }
 
+    @Loggable
     public List<NOAADataTypeDto> getAll() {
         return noaaDataTypeRepository.findAll().stream().map(NOAADataTypeDto::new).toList();
     }
