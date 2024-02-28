@@ -39,14 +39,6 @@ public class NOAALocationCategoryService {
         return result;
     }
 
-
-
-
-    public void loadAll() throws Exception {
-        List<NOAALocationCategory> locationCategories = getAllRemote();
-        noaaLocationCategoryRepository.saveAll(locationCategories);
-    }
-
     public void loadByIds(List<String> ids) throws Exception {
         List<NOAALocationCategory> locationCategories =
                     getAllRemote().stream()

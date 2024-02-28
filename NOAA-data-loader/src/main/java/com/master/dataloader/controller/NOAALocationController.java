@@ -1,7 +1,6 @@
 package com.master.dataloader.controller;
 
 import com.master.dataloader.dtos.NOAALocationDto;
-import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.service.NOAALocationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +41,7 @@ public class NOAALocationController {
     }
 
     @DeleteMapping("/deleteByIds")
-    public ResponseEntity<Void> deleteLocationsByIds(@RequestBody List<String> locationsIds){
+    public ResponseEntity<Void> deleteByIds(@RequestBody List<String> locationsIds){
         noaaLocationService.deleteLocationsByIds(locationsIds);
         return ResponseEntity.ok().build();
     }

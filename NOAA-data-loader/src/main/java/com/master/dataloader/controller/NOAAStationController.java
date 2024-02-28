@@ -25,11 +25,9 @@ import java.util.Map;
 @RequestMapping("NOAA/station")
 public class NOAAStationController {
 
-    private final NOAAStationRepository noaaStationRepository;
     private final NOAAStationService noaaStationService;
 
-    public NOAAStationController(NOAAStationRepository noaaStationRepository, NOAAStationService noaaStationService) {
-        this.noaaStationRepository = noaaStationRepository;
+    public NOAAStationController(NOAAStationService noaaStationService) {
         this.noaaStationService = noaaStationService;
     }
 

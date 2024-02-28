@@ -30,12 +30,6 @@ public class NOAALocationCategoryController {
         );
     }
 
-    @PutMapping("/load")
-    public ResponseEntity<Void> loadAll() throws Exception {
-        noaaLocationCategoryService.loadAll();
-        return ResponseEntity.ok().build();
-    }
-
     @PutMapping("/loadByIds")
     public ResponseEntity<Void> loadByIds(@RequestBody List<String> ids) throws Exception {
         noaaLocationCategoryService.loadByIds(ids);
