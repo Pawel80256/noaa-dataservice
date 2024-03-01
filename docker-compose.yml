@@ -20,6 +20,8 @@ services:
       - "5005:5005" 
     depends_on:
       - postgres
-
+    volumes:
+      - ./NOAA-data-loader/logs:/logs
+      
 volumes:
   postgres_data:

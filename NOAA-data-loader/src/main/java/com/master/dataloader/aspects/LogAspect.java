@@ -28,6 +28,5 @@ public class LogAspect {
     public void logInfo(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().toShortString();
         log.info(methodName + " executed successfully");
-        System.out.println("test");
     }
 }
