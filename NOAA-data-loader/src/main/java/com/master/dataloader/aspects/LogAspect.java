@@ -13,8 +13,11 @@ public class LogAspect {
     @Pointcut("within(com.master.dataloader.controller..*)")
     public void controllers() {
     }
-
-    @Around("controllers()")
+    @Pointcut("execution(* com.master.dataloader.controller..*.*(..))")
+    public void controllerMethods(){}
+//&& !execution(public *.new(..))
+//     && !(execution(*.new(..)))
+    @Around("controllerMethods()")
     public Object logEndpointExecutionTime(ProceedingJoinPoint joinPoint) {
         log.info("starting " + joinPoint.getSignature().toShortString());
         Object result;
