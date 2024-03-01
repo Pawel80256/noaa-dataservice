@@ -1,23 +1,12 @@
 package com.master.dataloader.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.constant.Constants;
-import com.master.dataloader.dto.PaginationData;
-import com.master.dataloader.dto.PaginationWrapper;
-import com.master.dataloader.dtos.NOAADataDto;
 import com.master.dataloader.dtos.NOAADataTypeDto;
-import com.master.dataloader.models.NOAAData;
 import com.master.dataloader.models.NOAADataType;
 import com.master.dataloader.repository.NOAADataTypeRepository;
 import com.master.dataloader.utils.Utils;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

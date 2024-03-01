@@ -1,32 +1,29 @@
 package com.master.dataloader.aspects;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Aspect
 public class LogAspect {
-        private final Logger log = LoggerFactory.getLogger(LogAspect.class);
+    private final Logger log = LoggerFactory.getLogger(LogAspect.class);
 
-//    @Pointcut("execution(* com.master.dataloader..*.*(..))")
-//    public void testPointcut(){
-//
-//    }
-//
-//    @After("testPointcut()")
-//    public void elo(){
-//        System.out.println("test");
-//    }
-    @Pointcut("execution(public * com.master.dataloader.service..*.*(..))")
-    public void publicServiceMethod() {
+    @Pointcut("within(com.master.dataloader.controller..*)")
+    public void controllers() {
     }
 
-    @After("publicServiceMethod()")
-    public void logInfo(JoinPoint joinPoint) {
-        String methodName = joinPoint.getSignature().toShortString();
-        log.info(methodName + " executed successfully");
+    @Around("controllers()")
+    public Object logEndpointExecutionTime(ProceedingJoinPoint joinPoint) {
+        log.info("starting " + joinPoint.getSignature().toShortString());
+        Object result;
+        try {
+            result = joinPoint.proceed();
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+        log.info("executed " + joinPoint.getSignature().toShortString());
+        return result;
     }
 }

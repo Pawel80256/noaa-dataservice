@@ -3,13 +3,10 @@ package com.master.dataloader.service;
 import com.master.dataloader.constant.Constants;
 import com.master.dataloader.dtos.NOAADataCategoryDto;
 import com.master.dataloader.models.NOAADataCategory;
-import com.master.dataloader.models.NOAADataType;
 import com.master.dataloader.repository.NOAADataCategoryRepository;
 import com.master.dataloader.utils.Utils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

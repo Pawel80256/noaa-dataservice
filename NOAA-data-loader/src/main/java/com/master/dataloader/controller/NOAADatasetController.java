@@ -1,7 +1,6 @@
 package com.master.dataloader.controller;
 
 import com.master.dataloader.dtos.NOAADatasetDto;
-import com.master.dataloader.models.NOAADataset;
 import com.master.dataloader.service.NOAADatasetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

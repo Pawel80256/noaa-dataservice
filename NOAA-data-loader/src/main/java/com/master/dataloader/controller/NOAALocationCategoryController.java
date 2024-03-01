@@ -1,7 +1,6 @@
 package com.master.dataloader.controller;
 
 import com.master.dataloader.dtos.NoaaLocationCategoryDto;
-import com.master.dataloader.models.NOAALocationCategory;
 import com.master.dataloader.service.NOAALocationCategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
