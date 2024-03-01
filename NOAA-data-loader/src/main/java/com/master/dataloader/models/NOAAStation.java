@@ -59,6 +59,9 @@ public class NOAAStation {
     @JsonIgnore
     private List<NOAADataType> dataTypes;
 
+    @Column(name = "source")
+    private String source;
+
     public NOAAStation(String id) {
         this.id = id;
     }
@@ -153,5 +156,13 @@ public class NOAAStation {
 
     public void setNoaaLocation(NOAALocation noaaLocation) {
         this.noaaLocation = noaaLocation;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

@@ -55,6 +55,7 @@ public class NOAADataService {
         station.setDataTypes(distinctDataTypesForData);
 
 //        if(dataRecords.getCount() <= 1000){
+            dataRecords.forEach(d -> d.setSource("NOAA"));
             noaaDataRepository.saveAll(dataRecords);
 //        }else {
 //            System.out.println("More than 1000 records to load, aborting");

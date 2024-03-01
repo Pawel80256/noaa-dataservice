@@ -33,6 +33,8 @@ public class NOAAData {
     @Column(name = "value")
     private Integer value;
 
+    @Column(name = "source")
+    private String source;
 
     public String getId() {
         return id;
@@ -77,5 +79,13 @@ public class NOAAData {
     }
     public void setAttributes(String attributes) {
         this.attributes = attributes;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

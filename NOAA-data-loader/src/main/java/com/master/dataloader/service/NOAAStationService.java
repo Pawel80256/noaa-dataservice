@@ -45,6 +45,7 @@ public class NOAAStationService {
 
         for(NOAAStation station : stationsToLoad){
             station.setNoaaLocation(new NOAALocation(locationId));
+            station.setSource("NOAA");
         }
 
         noaaStationRepository.saveAll(stationsToLoad);
