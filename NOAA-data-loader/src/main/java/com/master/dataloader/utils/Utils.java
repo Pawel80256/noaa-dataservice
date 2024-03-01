@@ -68,8 +68,14 @@ public class Utils {
         return result;
     }
 
-    //todo:private
-    public static String sendRequest(String urlString, Map<String,Object> params) throws Exception {
+    public static Map<String, Object> getBasicParams(){
+        Map<String,Object> result = new HashMap<>();
+        result.put("limit", 1000);
+        result.put("offset",1);
+        return result;
+    }
+
+    private static String sendRequest(String urlString, Map<String,Object> params) throws Exception {
         StringBuilder result = new StringBuilder();
         URL url = new URL(
                 Utils.buildUrlWithParams(urlString,params)
@@ -87,10 +93,5 @@ public class Utils {
         return result.toString();
     }
 
-    public static Map<String, Object> getBasicParams(){
-        Map<String,Object> result = new HashMap<>();
-        result.put("limit", 1000);
-        result.put("offset",1);
-        return result;
-    }
+
 }
