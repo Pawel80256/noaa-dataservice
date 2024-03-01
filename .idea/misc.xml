@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/NOAA-data-loader/pom.xml" />
+        <option value="$PROJECT_DIR$/noaa-data-manager/pom.xml" />
       </list>
     </option>
     <option name="workspaceImportForciblyTurnedOn" value="true" />

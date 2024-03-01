@@ -5,12 +5,12 @@
     <option name="delegateToJavac" value="true" />
   </component>
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="ajc" />
     <annotationProcessing>
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="noaa-data-manager" />
         <module name="NOAA-data-loader" />
       </profile>
     </annotationProcessing>
@@ -18,6 +18,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="NOAA-data-loader" options="-parameters" />
+      <module name="noaa-data-manager" options="-parameters" />
     </option>
   </component>
 </project>
