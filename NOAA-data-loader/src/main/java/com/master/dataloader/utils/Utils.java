@@ -3,12 +3,13 @@ package com.master.dataloader.utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.master.dataloader.configuration.ApiProperties;
 import com.master.dataloader.dto.PaginationData;
 import com.master.dataloader.models.NOAAData;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
@@ -17,7 +18,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Utils {
-    public static String buildUrlWithParams(String baseUrl, Map<String, Object> params) throws Exception {
+    public static String buildUrlWithParams(String baseUrl, Map<String, Object> params) throws UnsupportedEncodingException {
         if(params == null){
             params = new HashMap<>();
         }
@@ -31,8 +32,7 @@ public class Utils {
     }
 
     public static void addTokenHeader(HttpURLConnection connection){
-        //move to file
-        connection.setRequestProperty("token","kSwPNBVuPrfrjOIXXGllzYQSrVWCfTec");
+        connection.setRequestProperty("token", ApiProperties.getInstance().getToken());
     }
 
     public static <T> List<T> getRemoteData(String url, Map<String, Object> params, Class<T> tClass) throws Exception {
@@ -75,23 +75,33 @@ public class Utils {
         return result;
     }
 
-    private static String sendRequest(String urlString, Map<String,Object> params) throws Exception {
+    private static String sendRequest(String urlString, Map<String,Object> params) throws IOException {
         StringBuilder result = new StringBuilder();
-        URL url = new URL(
-                Utils.buildUrlWithParams(urlString,params)
-        );
+        URL url = new URL(Utils.buildUrlWithParams(urlString, params));
 
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         Utils.addTokenHeader(connection);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+
+        int responseCode = connection.getResponseCode(); //todo: maybe create afterReturning aspect?
+        InputStream inputStream;
+
+        if (responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
+            inputStream = connection.getInputStream();
+        } else {
+            inputStream = connection.getErrorStream();
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 result.append(line);
             }
         }
+
         return result.toString();
     }
+
 
 
 }
