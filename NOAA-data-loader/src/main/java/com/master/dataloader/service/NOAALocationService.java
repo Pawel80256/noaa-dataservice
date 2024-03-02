@@ -44,11 +44,11 @@ public class NOAALocationService {
     }
 
     public void loadByIds(String locationCategoryId, List<String> locationIds) throws Exception {
-        List<NOAALocation> locationsToLoad = getAllRemote(locationCategoryId).stream()
-                .filter(l -> locationIds.contains(l.getId()))
-                .toList();
+            List<NOAALocation> locationsToLoad = getAllRemote(locationCategoryId).stream()
+                    .filter(l -> locationIds.contains(l.getId()))
+                    .toList();
 
-        noaaLocationRepository.saveAll(locationsToLoad);
+            noaaLocationRepository.saveAll(locationsToLoad);
     }
 
     //todo: zrobic aspekt ktory bedzie wylapywal DataIntegrityViolationException z metod serwisowych ktorych nazwa zaczyna się od "delete"

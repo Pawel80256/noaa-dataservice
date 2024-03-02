@@ -1,5 +1,6 @@
 package com.master.dataloader.aspects;
 
+import com.master.dataloader.exceptions.MissingRelatedResourceException;
 import com.master.dataloader.exceptions.ResourceInUseException;
 import com.master.dataloader.service.*;
 import org.aspectj.lang.JoinPoint;
@@ -9,6 +10,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,5 +52,13 @@ public class ExceptionsAspect {
         }
 
         throw new ResourceInUseException(violatingResource,violatingId);
+    }
+
+    @Pointcut("execution(* com.master.dataloader.service.*.load*(..))")
+    public void loadOperation() {}
+
+    @AfterThrowing(pointcut = "loadOperation()", throwing = "ex")
+    public void handleJpaObjectRetrievalFailureException(JoinPoint joinPoint, JpaObjectRetrievalFailureException ex){
+        throw new MissingRelatedResourceException(ex.getMessage());
     }
 }
