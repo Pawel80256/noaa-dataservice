@@ -1,7 +1,7 @@
 package com.master.dataloader.aspects;
 
 import com.master.dataloader.exceptions.ResourceInUseException;
-import com.master.dataloader.service.NOAALocationService;
+import com.master.dataloader.service.*;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,6 +35,18 @@ public class ExceptionsAspect {
 
         if(NOAALocationService.class.getName().equals(sourceService)){
             violatingResource = "LOCATION";
+        }
+        if(NOAAStationService.class.getName().equals(sourceService)){
+            violatingResource = "STATION";
+        }
+        if(NOAADataTypeService.class.getName().equals(sourceService)){
+            violatingResource = "DATA_TYPE";
+        }
+        if(NOAADataCategoryService.class.getName().equals(sourceService)){
+            violatingResource = "DATA_CATEGORY";
+        }
+        if(NOAADatasetService.class.getName().equals(sourceService)){
+            violatingResource = "DATASET";
         }
 
         throw new ResourceInUseException(violatingResource,violatingId);

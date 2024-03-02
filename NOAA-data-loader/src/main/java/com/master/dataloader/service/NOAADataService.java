@@ -44,7 +44,7 @@ public class NOAADataService {
         NOAAStation station = noaaStationRepository.findById(stationId).orElseThrow(()-> new RuntimeException("station not found"));
 
         //todo: handle when there are no records in timeframe for station -> this can be checked by station.getMaxDate & minDate, compare with parameters
-        //todo: handle when station does not support provided dataset
+        //todo: obsluzyc case kiedy podczas ladowania danych okaze sie ze datatype jest nieobecny,
         List<NOAAData> dataRecords = getAllRemote(datasetId,dataTypeId,null,stationId,startDate,endDate);
 
         List<NOAADataType> distinctDataTypesForData = dataRecords.stream().map(NOAAData::getDataType)
