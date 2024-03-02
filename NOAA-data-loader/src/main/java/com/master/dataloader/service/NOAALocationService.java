@@ -51,7 +51,6 @@ public class NOAALocationService {
             noaaLocationRepository.saveAll(locationsToLoad);
     }
 
-    //todo: zrobic aspekt ktory bedzie wylapywal DataIntegrityViolationException z metod serwisowych ktorych nazwa zaczyna się od "delete"
     public void deleteLocationsByIds(List<String> locationIds) {
             noaaLocationRepository.deleteAllById(locationIds);
     }

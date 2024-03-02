@@ -16,8 +16,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Aspect
-public class ExceptionsAspect {
-    private final Logger log = LoggerFactory.getLogger(ExceptionsAspect.class);
+public class ExceptionHandlingAspect {
+    private final Logger log = LoggerFactory.getLogger(ExceptionHandlingAspect.class);
 
     @Pointcut("execution(* com.master.dataloader.service.*.delete*(..))")
     public void deleteOperation() {}
@@ -50,8 +50,9 @@ public class ExceptionsAspect {
         if(NOAADatasetService.class.getName().equals(sourceService)){
             violatingResource = "DATASET";
         }
-
-        throw new ResourceInUseException(violatingResource,violatingId);
+        ResourceInUseException resourceInUseException = new ResourceInUseException(violatingResource,violatingId);
+        log.error(resourceInUseException.getMessage(),resourceInUseException);
+        throw resourceInUseException;
     }
 
     @Pointcut("execution(* com.master.dataloader.service.*.load*(..))")
@@ -59,6 +60,8 @@ public class ExceptionsAspect {
 
     @AfterThrowing(pointcut = "loadOperation()", throwing = "ex")
     public void handleJpaObjectRetrievalFailureException(JoinPoint joinPoint, JpaObjectRetrievalFailureException ex){
-        throw new MissingRelatedResourceException(ex.getMessage());
+        MissingRelatedResourceException missingRelatedResourceException = new MissingRelatedResourceException(ex.getMessage());
+        log.error(missingRelatedResourceException.getMessage(),missingRelatedResourceException);
+        throw missingRelatedResourceException;
     }
 }

@@ -1,6 +1,5 @@
 package com.master.dataloader.aspects;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
@@ -9,8 +8,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Aspect
-public class LogAspect {
-    private final Logger log = LoggerFactory.getLogger(LogAspect.class);
+public class CommonLogsAspect {
+    private final Logger log = LoggerFactory.getLogger(CommonLogsAspect.class);
 
     @Pointcut("execution(* com.master.dataloader.controller..*.*(..))")
     public void controllerMethods() {
