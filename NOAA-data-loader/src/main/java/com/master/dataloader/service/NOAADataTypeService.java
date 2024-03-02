@@ -1,6 +1,6 @@
 package com.master.dataloader.service;
 
-import com.master.dataloader.constant.Constants;
+import com.master.dataloader.constant.URLs;
 import com.master.dataloader.dtos.NOAADataTypeDto;
 import com.master.dataloader.models.NOAADataType;
 import com.master.dataloader.repository.NOAADataTypeRepository;
@@ -50,7 +50,7 @@ public class NOAADataTypeService {
     private List<NOAADataType> getAllRemote() throws Exception {
         Map<String, Object> requestParams = Utils.getBasicParams();
 
-        String datasetsUrl = Constants.baseNoaaApiUrl + Constants.dataTypesUrl;
+        String datasetsUrl = URLs.baseNoaaApiUrl + URLs.dataTypesUrl;
 
         return Utils.getRemoteData(datasetsUrl,requestParams, NOAADataType.class);
     }

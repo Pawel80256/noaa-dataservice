@@ -1,6 +1,6 @@
 package com.master.dataloader.service;
 
-import com.master.dataloader.constant.Constants;
+import com.master.dataloader.constant.URLs;
 import com.master.dataloader.dtos.NOAADataDto;
 import com.master.dataloader.models.NOAAData;
 import com.master.dataloader.models.NOAADataType;
@@ -73,7 +73,7 @@ public class NOAADataService {
         requestParams.put("startdate", startDate);
         requestParams.put("enddate", endDate);
 
-        String dataUrl = Constants.baseNoaaApiUrl + Constants.dataUrl;
+        String dataUrl = URLs.baseNoaaApiUrl + URLs.dataUrl;
 
         List<NOAAData> result = Utils.getRemoteData(dataUrl,requestParams,NOAAData.class);
 

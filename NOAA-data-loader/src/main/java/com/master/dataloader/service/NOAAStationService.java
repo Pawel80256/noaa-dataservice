@@ -1,6 +1,6 @@
 package com.master.dataloader.service;
 
-import com.master.dataloader.constant.Constants;
+import com.master.dataloader.constant.URLs;
 import com.master.dataloader.dtos.NOAAStationDto;
 import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.models.NOAAStation;
@@ -60,7 +60,7 @@ public class NOAAStationService {
         Map<String,Object> requestParams = Utils.getBasicParams();
         requestParams.put("locationid",locationId);
 
-        String stationsUrl = Constants.baseNoaaApiUrl + Constants.stationsUrl;
+        String stationsUrl = URLs.baseNoaaApiUrl + URLs.stationsUrl;
 
         return Utils.getRemoteData(stationsUrl,requestParams,NOAAStation.class);
     }

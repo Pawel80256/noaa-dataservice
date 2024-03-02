@@ -1,16 +1,13 @@
 package com.master.dataloader.service;
 
-import com.master.dataloader.constant.Constants;
+import com.master.dataloader.constant.URLs;
 import com.master.dataloader.dtos.NOAALocationDto;
-import com.master.dataloader.exceptions.ResourceInUseException;
 import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.models.NOAALocationCategory;
 import com.master.dataloader.repository.NOAALocationRepository;
 import com.master.dataloader.utils.Utils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +56,7 @@ public class NOAALocationService {
         Map<String,Object> requestParams = Utils.getBasicParams();
         requestParams.put("locationcategoryid",locationCategoryId);
 
-        String locationsUrl = Constants.baseNoaaApiUrl + Constants.locationsUrl;
+        String locationsUrl = URLs.baseNoaaApiUrl + URLs.locationsUrl;
 
         List<NOAALocation> result =  Utils.getRemoteData(locationsUrl, requestParams, NOAALocation.class);
 

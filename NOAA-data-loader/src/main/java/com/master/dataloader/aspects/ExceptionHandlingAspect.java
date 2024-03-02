@@ -1,5 +1,6 @@
 package com.master.dataloader.aspects;
 
+import com.master.dataloader.constant.Resources;
 import com.master.dataloader.exceptions.MissingRelatedResourceException;
 import com.master.dataloader.exceptions.ResourceInUseException;
 import com.master.dataloader.service.*;
@@ -24,34 +25,22 @@ public class ExceptionHandlingAspect {
 
     @AfterThrowing(pointcut = "deleteOperation()", throwing = "ex")
     public void handleDataIntegrityViolationException(JoinPoint joinPoint, DataIntegrityViolationException ex) {
-        String sourceService = joinPoint.getSignature().getDeclaringTypeName();
+        String sourceServiceName = joinPoint.getSignature().getDeclaringTypeName();
 
         Pattern idPattern = Pattern.compile("\\(id\\)=\\((.*?)\\)");
         Matcher matcher = idPattern.matcher(ex.getMessage());
-        String violatingId = "unknown";
-        String violatingResource = "unknown";
+
+        String violatingId = Resources.UNKNOWN;
 
         if(matcher.find()){
             violatingId = matcher.group(1);
         }
 
-        if(NOAALocationService.class.getName().equals(sourceService)){
-            violatingResource = "LOCATION";
-        }
-        if(NOAAStationService.class.getName().equals(sourceService)){
-            violatingResource = "STATION";
-        }
-        if(NOAADataTypeService.class.getName().equals(sourceService)){
-            violatingResource = "DATA_TYPE";
-        }
-        if(NOAADataCategoryService.class.getName().equals(sourceService)){
-            violatingResource = "DATA_CATEGORY";
-        }
-        if(NOAADatasetService.class.getName().equals(sourceService)){
-            violatingResource = "DATASET";
-        }
-        ResourceInUseException resourceInUseException = new ResourceInUseException(violatingResource,violatingId);
+        ResourceInUseException resourceInUseException =
+                new ResourceInUseException(detectResource(sourceServiceName),violatingId);
+
         log.error(resourceInUseException.getMessage(),resourceInUseException);
+
         throw resourceInUseException;
     }
 
@@ -60,8 +49,33 @@ public class ExceptionHandlingAspect {
 
     @AfterThrowing(pointcut = "loadOperation()", throwing = "ex")
     public void handleJpaObjectRetrievalFailureException(JoinPoint joinPoint, JpaObjectRetrievalFailureException ex){
-        MissingRelatedResourceException missingRelatedResourceException = new MissingRelatedResourceException(ex.getMessage());
+        MissingRelatedResourceException missingRelatedResourceException =
+                new MissingRelatedResourceException(ex.getMessage());
+
         log.error(missingRelatedResourceException.getMessage(),missingRelatedResourceException);
+
         throw missingRelatedResourceException;
     }
+
+    private String detectResource(String sourceServiceName){
+        if(sourceServiceName != null && !sourceServiceName.isBlank()) {
+            if (NOAALocationService.class.getName().equals(sourceServiceName)) {
+                return Resources.LOCATION;
+            }
+            if (NOAAStationService.class.getName().equals(sourceServiceName)) {
+                return  Resources.STATION;
+            }
+            if (NOAADataTypeService.class.getName().equals(sourceServiceName)) {
+                return  Resources.DATA_TYPE;
+            }
+            if (NOAADataCategoryService.class.getName().equals(sourceServiceName)) {
+                return  Resources.DATA_CATEGORY;
+            }
+            if (NOAADatasetService.class.getName().equals(sourceServiceName)) {
+                return  Resources.DATASET;
+            }
+        }
+        return Resources.UNKNOWN;
+    }
+
 }
