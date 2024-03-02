@@ -20,6 +20,13 @@ import java.util.regex.Pattern;
 public class ExceptionHandlingAspect {
     private final Logger log = LoggerFactory.getLogger(ExceptionHandlingAspect.class);
 
+//    @Pointcut("execution(* com.master.dataloader..*.*(..))")
+//    public void wholeApplication(){}
+//    @AfterThrowing(pointcut = "wholeApplication()", throwing = "ex")
+//    public void handleUnknownException(JoinPoint joinPoint, Exception ex){
+//        log.error("Error encountered", ex);
+//    }
+
     @Pointcut("execution(* com.master.dataloader.service.*.delete*(..))")
     public void deleteOperation() {}
 
