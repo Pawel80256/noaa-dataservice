@@ -17,7 +17,7 @@ public class LogAspect {
     }
 
     @Around("controllerMethods()")
-    public Object logControllerMethod(ProceedingJoinPoint joinPoint) {
+    public Object logControllerMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         String path = attributes != null ? attributes.getRequest().getRequestURI() : "unknown";
         String methodName = joinPoint.getSignature().toShortString();
@@ -25,16 +25,12 @@ public class LogAspect {
         long startTime = System.currentTimeMillis();
         log.info("Starting {} for path {}", methodName, path);
 
-        try {
-            Object result = joinPoint.proceed();
-            long endTime = System.currentTimeMillis();
+        Object result = joinPoint.proceed();
+        long endTime = System.currentTimeMillis();
 
-            log.debug("Successfully finished {} in {} ms", methodName, (endTime - startTime));
-            return result;
-        } catch (Throwable e) {
-            log.error("Method {} thrown exception: {}", methodName, e.getMessage());
-            throw new RuntimeException(e); //todo: handle
-        }
+        log.debug("Successfully finished {} in {} ms", methodName, (endTime - startTime));
+        return result;
+
     }
 
     @Pointcut("execution(public * com.master.dataloader.service..*.*(..))")
@@ -42,17 +38,12 @@ public class LogAspect {
     }
 
     @Around("publicServiceMethods()")
-    public Object logServiceMethod(ProceedingJoinPoint joinPoint) {
+    public Object logServiceMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         String methodName = joinPoint.getSignature().toShortString();
         log.info("Starting {}", methodName);
-
-        try {
-            Object result = joinPoint.proceed();
-            log.info("Successfully finished {}", methodName);
-            return result;
-        } catch (Throwable e) {
-            throw new RuntimeException(e); //todo: handle
-        }
+        Object result = joinPoint.proceed();
+        log.info("Successfully finished {}", methodName);
+        return result;
     }
 
     @Pointcut("execution(private * com.master.dataloader.utils.Utils.sendRequest(..))")
@@ -60,16 +51,11 @@ public class LogAspect {
     }
 
     @Around("remoteApiCall()")
-    public Object logRemoteApiCall(ProceedingJoinPoint joinPoint) {
+    public Object logRemoteApiCall(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         log.info("Starting remote api call {} with params {} ", args[0], args[1]);
-
-        try {
-            Object result = joinPoint.proceed();
-            log.info("{} {} finished successfully", args[0], args[1]);
-            return result;
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
+        Object result = joinPoint.proceed();
+        log.info("{} {} finished successfully", args[0], args[1]);
+        return result;
     }
 }
