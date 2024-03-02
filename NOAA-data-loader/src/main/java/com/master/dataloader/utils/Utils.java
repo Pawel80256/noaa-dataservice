@@ -4,20 +4,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.master.dataloader.configuration.ApiProperties;
+import com.master.dataloader.dto.ApiResponse;
 import com.master.dataloader.dto.PaginationData;
-import com.master.dataloader.models.NOAAData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class Utils {
+    private static final Logger log = LoggerFactory.getLogger(Utils.class);
+
     public static String buildUrlWithParams(String baseUrl, Map<String, Object> params) throws UnsupportedEncodingException {
         if(params == null){
             params = new HashMap<>();
@@ -37,18 +37,15 @@ public class Utils {
 
     public static <T> List<T> getRemoteData(String url, Map<String, Object> params, Class<T> tClass) throws Exception {
         List<T> result = new ArrayList<>();
-        String requestResult;
-        JsonNode rootNode, resultsNode;
+        JsonNode resultsNode;
 
-        requestResult = sendRequest(url, params);
+        ApiResponse requestResult = sendRequest(url, params);
 
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-        rootNode = mapper.readTree(requestResult);
-
         PaginationData paginationData = mapper.readerFor(PaginationData.class)
-                .readValue(rootNode.path("metadata").path("resultset"));
-        resultsNode = rootNode.path("results");
+                .readValue(requestResult.getResponseData().path("metadata").path("resultset"));
+        resultsNode = requestResult.getResponseData().path("results");
 
         result.addAll(
                 mapper.readerForListOf(tClass).readValue(resultsNode)
@@ -57,8 +54,8 @@ public class Utils {
         if(paginationData.getCount() > 100){
             for (int i=1001; i<paginationData.getCount() ; i+=1000){
                 params.put("offset",i);
-                String additionalRequestResult = Utils.sendRequest(url,params);
-                JsonNode additionalResultsNode = mapper.readTree(additionalRequestResult).path("results");
+                JsonNode additionalRequestResult = Utils.sendRequest(url,params).getResponseData();
+                JsonNode additionalResultsNode = additionalRequestResult.path("results");
                 result.addAll(
                         mapper.readerForListOf(tClass).readValue(additionalResultsNode)
                 );
@@ -75,7 +72,7 @@ public class Utils {
         return result;
     }
 
-    private static String sendRequest(String urlString, Map<String,Object> params) throws IOException {
+    private static ApiResponse sendRequest(String urlString, Map<String,Object> params) throws IOException {
         StringBuilder result = new StringBuilder();
         URL url = new URL(Utils.buildUrlWithParams(urlString, params));
 
@@ -84,6 +81,7 @@ public class Utils {
         Utils.addTokenHeader(connection);
 
         int responseCode = connection.getResponseCode(); //todo: maybe create afterReturning aspect?
+        log.info("response code: " + responseCode);
         InputStream inputStream;
 
         if (responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
@@ -99,9 +97,9 @@ public class Utils {
             }
         }
 
-        return result.toString();
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+        return new ApiResponse(responseCode, mapper.readTree(result.toString()));
     }
-
-
 
 }

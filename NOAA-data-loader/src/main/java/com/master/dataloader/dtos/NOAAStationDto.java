@@ -1,6 +1,5 @@
 package com.master.dataloader.dtos;
 
-import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.models.NOAAStation;
 
 import java.time.LocalDate;

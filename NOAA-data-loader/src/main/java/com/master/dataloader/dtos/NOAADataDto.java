@@ -3,7 +3,6 @@ package com.master.dataloader.dtos;
 import com.master.dataloader.models.NOAAData;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 public class NOAADataDto {
     private String id;
