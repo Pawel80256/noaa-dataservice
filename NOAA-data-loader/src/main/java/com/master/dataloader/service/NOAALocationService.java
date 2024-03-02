@@ -6,6 +6,7 @@ import com.master.dataloader.models.NOAALocation;
 import com.master.dataloader.models.NOAALocationCategory;
 import com.master.dataloader.repository.NOAALocationRepository;
 import com.master.dataloader.utils.Utils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
@@ -48,8 +49,9 @@ public class NOAALocationService {
         noaaLocationRepository.saveAll(locationsToLoad);
     }
 
+    //todo: zrobic aspekt ktory bedzie wylapywal DataIntegrityViolationException z metod serwisowych ktorych nazwa zaczyna się od "delete"
     public void deleteLocationsByIds(List<String> locationIds) {
-        noaaLocationRepository.deleteAllById(locationIds);
+            noaaLocationRepository.deleteAllById(locationIds);
     }
 
     private List<NOAALocation> getAllRemote(String locationCategoryId) throws Exception {
