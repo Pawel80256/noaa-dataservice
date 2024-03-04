@@ -56,7 +56,7 @@ public class CommonLogsAspect {
         Object[] args = joinPoint.getArgs();
         log.info("Starting remote api call {} with params {} ", args[0], args[1]);
         Object result = joinPoint.proceed();
-        log.info("{} {} finished successfully", args[0], args[1]);
+        log.info("{} {} finished", args[0], args[1]);
         return result;
     }
 }

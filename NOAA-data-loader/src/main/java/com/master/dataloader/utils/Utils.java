@@ -80,8 +80,7 @@ public class Utils {
         connection.setRequestMethod("GET");
         Utils.addTokenHeader(connection);
 
-        int responseCode = connection.getResponseCode(); //todo: maybe create afterReturning aspect?
-        log.info("response code: " + responseCode);
+        int responseCode = connection.getResponseCode();
         InputStream inputStream;
 
         if (responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
