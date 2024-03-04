@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class ApiResponse {
     private Integer responseCode;
-    private JsonNode responseData;
+    private String responseData;
 
-    public ApiResponse(Integer responseCode, JsonNode responseData) {
+    public ApiResponse(Integer responseCode, String responseData) {
         this.responseCode = responseCode;
         this.responseData = responseData;
     }
@@ -15,7 +15,7 @@ public class ApiResponse {
         return responseCode;
     }
 
-    public JsonNode getResponseData() {
+    public String getResponseData() {
         return responseData;
     }
 }

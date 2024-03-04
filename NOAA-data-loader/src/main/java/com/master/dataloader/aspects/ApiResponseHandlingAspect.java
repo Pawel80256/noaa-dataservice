@@ -16,13 +16,15 @@ public class ApiResponseHandlingAspect {
     @Pointcut("execution(private * com.master.dataloader.utils.Utils.sendRequest(..))")
     public void sendRequestMethod(){}
 
+    //pointless
     @AfterReturning(pointcut = "sendRequestMethod()", returning = "apiResponse")
     public void afterReturningApiResponse(ApiResponse apiResponse){
         Integer responseCode = apiResponse.getResponseCode();
         log.info(String.format("Remote api call ended with status: %d", responseCode));
 
-        if (!(responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_BAD_REQUEST)){
-            log.info("bad request");
+        if (! (responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_BAD_REQUEST)){
+            log.info(String.format("Reason: %s", apiResponse.getResponseData()));
+            throw new UnsuccessfulRemoteApiCallException(String.format("Api call finished with status: %d",responseCode),apiResponse.getResponseData().toString());
         }
     }
 }

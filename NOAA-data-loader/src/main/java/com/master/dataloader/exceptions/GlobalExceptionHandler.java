@@ -1,5 +1,6 @@
 package com.master.dataloader.exceptions;
 
+import com.master.dataloader.aspects.UnsuccessfulRemoteApiCallException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +28,18 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 "Error while loading data, missing related resource",
                 ex.getMessage(),
+                rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"
+        );
+
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(UnsuccessfulRemoteApiCallException.class)
+    public ResponseEntity<Object> handleUnsuccessfulRemoteApiCallException(UnsuccessfulRemoteApiCallException ex, WebRequest rq){
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                ex.getReason(),
                 rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"
         );
 

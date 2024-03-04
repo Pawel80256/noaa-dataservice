@@ -36,26 +36,25 @@ public class Utils {
     }
 
     public static <T> List<T> getRemoteData(String url, Map<String, Object> params, Class<T> tClass) throws Exception {
-        List<T> result = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         JsonNode resultsNode;
 
         ApiResponse requestResult = sendRequest(url, params);
 
-        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        JsonNode responseJson = mapper.readTree(requestResult.getResponseData());
 
         PaginationData paginationData = mapper.readerFor(PaginationData.class)
-                .readValue(requestResult.getResponseData().path("metadata").path("resultset"));
-        resultsNode = requestResult.getResponseData().path("results");
+                .readValue(responseJson.path("metadata").path("resultset"));
+        resultsNode = responseJson.path("results");
 
-        result.addAll(
-                mapper.readerForListOf(tClass).readValue(resultsNode)
-        );
+        List<T> result = new ArrayList<>(mapper.readerForListOf(tClass).readValue(resultsNode));
 
         if(paginationData.getCount() > 100){
             for (int i=1001; i<paginationData.getCount() ; i+=1000){
                 params.put("offset",i);
-                JsonNode additionalRequestResult = Utils.sendRequest(url,params).getResponseData();
-                JsonNode additionalResultsNode = additionalRequestResult.path("results");
+                String additionalRequestResult = Utils.sendRequest(url,params).getResponseData();
+                JsonNode additionalRequestResultJson = mapper.readTree(additionalRequestResult);
+                JsonNode additionalResultsNode = additionalRequestResultJson.path("results");
                 result.addAll(
                         mapper.readerForListOf(tClass).readValue(additionalResultsNode)
                 );
@@ -96,9 +95,7 @@ public class Utils {
             }
         }
 
-        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-
-        return new ApiResponse(responseCode, mapper.readTree(result.toString()));
+        return new ApiResponse(responseCode, result.toString());
     }
 
 }
