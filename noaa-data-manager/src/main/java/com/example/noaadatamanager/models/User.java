@@ -2,6 +2,8 @@ package com.example.noaadatamanager.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -15,6 +17,14 @@ public class User {
 
     @Column(name = "password")
     private String password;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles;
 
     public User() {}
 
@@ -33,5 +43,9 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
     }
 }

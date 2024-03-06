@@ -6,6 +6,8 @@ import com.example.noaadatamanager.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -26,4 +28,16 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public User authenticateUser(UserInputDto userInputDto){
+        Optional<User> optionalUser = userRepository.findByUsername(userInputDto.getUsername());
+
+        if(optionalUser.isPresent()){
+            User user = optionalUser.get();
+            if(passwordEncoder.matches(userInputDto.getPassword(),user.getPassword())){
+                return user;
+            }
+        }
+
+        return null; //todo: throw some exception
+    }
 }
