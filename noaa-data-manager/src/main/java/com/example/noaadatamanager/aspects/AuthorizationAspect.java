@@ -42,4 +42,12 @@ public class AuthorizationAspect {
         }
     }
 
+    @Pointcut("@annotation(com.example.noaadatamanager.annotations.RequestAuthorization)")
+    public void authorizedMethods() {
+    }
+
+    @Before("authorizedMethods()")
+    public void authorizeRequest() {
+        System.out.println("new aspect test");
+    }
 }

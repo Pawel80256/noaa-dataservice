@@ -1,5 +1,6 @@
 package com.example.noaadatamanager.controller;
 
+import com.example.noaadatamanager.annotations.RequestAuthorization;
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
 import com.example.noaadatamanager.service.NOAADataService;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ public class NOAADataController {
     }
 
     @PostMapping
+    @RequestAuthorization(roles = {"ADMIN", "MEASUREMENT_MANAGER"})
     public ResponseEntity<Void> create(@RequestBody MeasurementInputDto measurementInputDto){
         noaaDataService.create(measurementInputDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
