@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -16,8 +17,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
-    private final SecretKey key = Jwts.SIG.HS256.key().build();
+//    private final SecretKey key = Jwts.SIG.HS256.key().build();
 
+    private static final String SECRET_KEY = "mojBardzoTajnyKluczDoGenerowaniaTokenowJWT...";
+    private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     public String generateToken(User user) {
         long nowMillis = System.currentTimeMillis();
