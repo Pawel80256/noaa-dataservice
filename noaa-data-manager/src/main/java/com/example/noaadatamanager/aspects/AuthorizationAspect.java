@@ -54,13 +54,4 @@ public class AuthorizationAspect {
             
         }
     }
-
-    @Pointcut("execution(public * com.example.noaadatamanager.controller.NOAADataController.*(..))")
-    public void measurementControllerMethods() {
-    }
-
-    @After("measurementControllerMethods()")
-    public void test2(JoinPoint joinPoint){
-        System.out.println("xdd");
-    }
 }

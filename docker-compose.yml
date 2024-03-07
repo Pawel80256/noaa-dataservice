@@ -22,6 +22,16 @@ services:
       - postgres
     volumes:
       - ./NOAA-data-loader/logs:/logs
-      
+
+  noaa-data-manager:
+    build:
+      context: ./noaa-data-manager
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+      - "5006:5006"
+    depends_on:
+      - postgres
+
 volumes:
   postgres_data:
