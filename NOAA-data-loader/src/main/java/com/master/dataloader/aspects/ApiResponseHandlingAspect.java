@@ -1,6 +1,7 @@
 package com.master.dataloader.aspects;
 
 import com.master.dataloader.dto.ApiResponse;
+import com.master.dataloader.exceptions.UnsuccessfulRemoteApiCallException;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -24,7 +25,7 @@ public class ApiResponseHandlingAspect {
 
         if (! (responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_BAD_REQUEST)){
             log.info(String.format("Reason: %s", apiResponse.getResponseData()));
-            throw new UnsuccessfulRemoteApiCallException(String.format("Api call finished with status: %d",responseCode),apiResponse.getResponseData().toString());
+            throw new UnsuccessfulRemoteApiCallException(String.format("Api call finished with status: %d",responseCode),apiResponse.getResponseData());
         }
     }
 }

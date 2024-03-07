@@ -18,6 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.crypto.SecretKey;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -45,13 +46,12 @@ public class AuthorizationAspect {
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             Method method = signature.getMethod();
             RequestAuthorization requestAuthorization = method.getAnnotation(RequestAuthorization.class);
-            String[] requiredRoles = requestAuthorization.roles();
+            List<String> requiredRoles = Arrays.stream(requestAuthorization.roles()).toList();
+            List<String> tokenRoles = (List<String>) claims.get("roles");
+
 
             System.out.println("Wymagane role: " + String.join(", ", requiredRoles));
-
-            Object tokenRoles = claims.get("roles");
-            System.out.println("Role użytkownika wykonującego requestt: " + tokenRoles);
-            
+            System.out.println("Role użytkownika wykonującego requestt: " + String.join(", ", tokenRoles));
         }
     }
 }

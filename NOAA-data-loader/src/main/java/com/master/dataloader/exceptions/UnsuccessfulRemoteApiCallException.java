@@ -1,4 +1,4 @@
-package com.master.dataloader.aspects;
+package com.master.dataloader.exceptions;
 
 public class UnsuccessfulRemoteApiCallException extends RuntimeException{
     private final String reason;

@@ -1,4 +1,4 @@
-package com.master.dataloader.exceptions;
+package com.example.noaadatamanager.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,37 +10,13 @@ import org.springframework.web.context.request.WebRequest;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ResourceInUseException.class)
-    public ResponseEntity<Object> handleResourceInUseException(ResourceInUseException ex, WebRequest rq) {
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<Object> handleResourceInUseException(UnauthorizedAccessException ex, WebRequest rq) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST,
                 "Error while deleting data, resource is in use",
                 ex.getMessage(),
                 rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"        );
-
-        return new ResponseEntity<>(apiError, apiError.getStatus());
-    }
-
-    @ExceptionHandler(MissingRelatedResourceException.class)
-    public ResponseEntity<Object> handleMissingRelatedResourceException(MissingRelatedResourceException ex, WebRequest rq) {
-        ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST,
-                "Error while loading data, missing related resource",
-                ex.getMessage(),
-                rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"
-        );
-
-        return new ResponseEntity<>(apiError, apiError.getStatus());
-    }
-
-    @ExceptionHandler(UnsuccessfulRemoteApiCallException.class)
-    public ResponseEntity<Object> handleUnsuccessfulRemoteApiCallException(UnsuccessfulRemoteApiCallException ex, WebRequest rq){
-        ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage(),
-                ex.getReason(),
-                rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"
-        );
 
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
@@ -90,5 +66,4 @@ public class GlobalExceptionHandler {
             this.debugMessage = debugMessage;
         }
     }
-
 }
