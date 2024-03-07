@@ -34,7 +34,7 @@ public class AuthorizationAspect {
 
     private RoleRepository roleRepository;
 
-    public AuthorizationAspect(RoleRepository roleRepository) {
+    public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
