@@ -17,7 +17,7 @@ public class NOAADataController {
     }
 
     @PostMapping
-    @RequestAuthorization(roles = {"ADMIN", "MEASUREMENT_MANAGER"})
+    @RequestAuthorization(roles = {"MEASUREMENT_MANAGER"})
     public ResponseEntity<Void> create(@RequestBody MeasurementInputDto measurementInputDto){
         noaaDataService.create(measurementInputDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
