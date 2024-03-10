@@ -21,6 +21,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Object> handleResourceInUseException(ValidationException ex, WebRequest rq) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST,
+                "Data validation error",
+                ex.getMessage(),
+                rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"        );
+
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
     public static class ApiError {
         private HttpStatus status;
         private String message;

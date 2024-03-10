@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("DATA_MANAGER/measurements")
+@RequestMapping("measurements")
 public class NOAADataController {
     private final NOAADataService noaaDataService;
 

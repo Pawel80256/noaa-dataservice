@@ -27,7 +27,7 @@ import java.util.List;
 
 
 @Aspect
-@Service
+@Component
 public class AuthorizationAspect {
     private static final String SECRET_KEY = "mojBardzoTajnyKluczDoGenerowaniaTokenowJWT...";
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
