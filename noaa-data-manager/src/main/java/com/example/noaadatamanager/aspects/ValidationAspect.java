@@ -64,7 +64,6 @@ public class ValidationAspect {
             throw new RuntimeException("Measurement input data cannot be null");
         }
 
-        //validate existence
         String measurementId = inputDto.getDataTypeId() + inputDto.getDate().toString() + inputDto.getStationId();
         if(noaaDataRepository.existsById(measurementId)){
             throw new ValidationException("Measurement with id \"" + measurementId +"\" already exists");

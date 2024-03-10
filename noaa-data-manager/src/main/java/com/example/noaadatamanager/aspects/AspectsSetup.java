@@ -4,6 +4,7 @@ import com.example.noaadatamanager.repository.NOAADataRepository;
 import com.example.noaadatamanager.repository.NOAADataTypeRepository;
 import com.example.noaadatamanager.repository.NOAAStationRepository;
 import com.example.noaadatamanager.repository.RoleRepository;
+import com.example.noaadatamanager.repository.audit.MeasurementAuditRepository;
 import jakarta.annotation.PostConstruct;
 import org.aspectj.lang.Aspects;
 import org.springframework.stereotype.Component;
@@ -14,12 +15,14 @@ public class AspectsSetup {
     private final NOAADataRepository noaaDataRepository;
     private final NOAADataTypeRepository noaaDataTypeRepository;
     private final NOAAStationRepository noaaStationRepository;
+    private final MeasurementAuditRepository measurementAuditRepository;
 
-    public AspectsSetup(RoleRepository roleRepository, NOAADataRepository noaaDataRepository, NOAADataTypeRepository noaaDataTypeRepository, NOAAStationRepository noaaStationRepository) {
+    public AspectsSetup(RoleRepository roleRepository, NOAADataRepository noaaDataRepository, NOAADataTypeRepository noaaDataTypeRepository, NOAAStationRepository noaaStationRepository, MeasurementAuditRepository measurementAuditRepository) {
         this.roleRepository = roleRepository;
         this.noaaDataRepository = noaaDataRepository;
         this.noaaDataTypeRepository = noaaDataTypeRepository;
         this.noaaStationRepository = noaaStationRepository;
+        this.measurementAuditRepository = measurementAuditRepository;
     }
 
     @PostConstruct
@@ -33,5 +36,7 @@ public class AspectsSetup {
                 .setNoaaDataTypeRepository(this.noaaDataTypeRepository);
         Aspects.aspectOf(ValidationAspect.class)
                 .setNoaaStationRepository(this.noaaStationRepository);
+        Aspects.aspectOf(AuditAspect.class)
+                .setMeasurementAuditRepository(this.measurementAuditRepository);
     }
 }
