@@ -3,6 +3,7 @@ package com.example.noaadatamanager.aspects;
 import com.example.noaadatamanager.annotations.RequestAuthorization;
 import com.example.noaadatamanager.models.Role;
 import com.example.noaadatamanager.repository.RoleRepository;
+import com.example.noaadatamanager.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -33,9 +34,14 @@ public class AuthorizationAspect {
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     private RoleRepository roleRepository;
+    private JwtService jwtService;
 
     public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
+    }
+
+    public void setJwtService(JwtService jwtService) {
+        this.jwtService = jwtService;
     }
 
     @Pointcut("@annotation(com.example.noaadatamanager.annotations.RequestAuthorization)")
@@ -48,22 +54,14 @@ public class AuthorizationAspect {
 
         if (authorizationHeader != null && !authorizationHeader.isBlank() && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
-
-            Claims claims = Jwts.parser()
-                    .verifyWith(key)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
+            List<Role> tokenRoles = jwtService.getRolesFromToken(token);
 
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             Method method = signature.getMethod();
             RequestAuthorization requestAuthorization = method.getAnnotation(RequestAuthorization.class);
 
             List<String> requiredRolesIds = Arrays.stream(requestAuthorization.roles()).toList();
-            List<String> tokenRolesIds = (List<String>) claims.get("roles");
-
             List<Role> requiredRoles = roleRepository.findAllById(requiredRolesIds);
-            List<Role> tokenRoles = roleRepository.findAllById(tokenRolesIds);
 
             System.out.println("Wymagane role: " + String.join(", ", requiredRoles.stream().map(Role::getId).toList()));
             System.out.println("Role użytkownika wykonującego requestt: " + String.join(", ", tokenRoles.stream().map(Role::getId).toList()));

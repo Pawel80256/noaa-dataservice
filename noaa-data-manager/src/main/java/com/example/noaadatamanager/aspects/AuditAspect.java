@@ -3,6 +3,7 @@ package com.example.noaadatamanager.aspects;
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
 import com.example.noaadatamanager.models.audit.MeasurementAudit;
 import com.example.noaadatamanager.repository.audit.MeasurementAuditRepository;
+import com.example.noaadatamanager.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -26,9 +27,14 @@ public class AuditAspect {
     private static final String SECRET_KEY = "mojBardzoTajnyKluczDoGenerowaniaTokenowJWT...";
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     private MeasurementAuditRepository measurementAuditRepository;
+    private JwtService jwtService;
 
     public void setMeasurementAuditRepository(MeasurementAuditRepository measurementAuditRepository) {
         this.measurementAuditRepository = measurementAuditRepository;
+    }
+
+    public void setJwtService(JwtService jwtService) {
+        this.jwtService = jwtService;
     }
 
     @Pointcut("execution(* com.example.noaadatamanager.service.NOAADataService.create(..))")
@@ -45,17 +51,11 @@ public class AuditAspect {
 
         String token = authorizationHeader.substring(7);
 
-        Claims claims = Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-
         MeasurementAudit measurementAudit = new MeasurementAudit.Builder()
                 .recordId(measurementId)
                 .operation("CREATE")
                 .timestamp(LocalDateTime.now())
-                .user(claims.get("sub").toString())
+                .user(jwtService.getSubFromToken(token))
                 .build();
 
         measurementAuditRepository.save(measurementAudit);
