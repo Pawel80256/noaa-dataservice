@@ -21,4 +21,8 @@ public class NOAAStationService {
         noaaStationRepository.save(station);
         return station.getId();
     }
+
+    public void delete(String stationId){
+        noaaStationRepository.deleteById(stationId);
+    }
 }

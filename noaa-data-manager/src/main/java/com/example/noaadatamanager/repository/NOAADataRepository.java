@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface NOAADataRepository extends JpaRepository<NOAAData, String> {
     List<NOAAData> findAllByStationIdAndDateBetween(String stationId, LocalDate startDate, LocalDate endDate);
+
+    Integer countByStationId(String stationId);
 }

@@ -37,14 +37,19 @@ public class AspectsSetup {
         Aspects.aspectOf(AuthorizationAspect.class)
                 .setJwtService(this.jwtService);
 
-        Aspects.aspectOf(ValidationAspect.class)
+        Aspects.aspectOf(MeasurementValidationAspect.class)
                 .setNoaaDataRepository(this.noaaDataRepository);
-        Aspects.aspectOf(ValidationAspect.class)
+        Aspects.aspectOf(MeasurementValidationAspect.class)
                 .setNoaaDataTypeRepository(this.noaaDataTypeRepository);
-        Aspects.aspectOf(ValidationAspect.class)
+        Aspects.aspectOf(MeasurementValidationAspect.class)
                 .setNoaaStationRepository(this.noaaStationRepository);
-        Aspects.aspectOf(ValidationAspect.class)
+
+        Aspects.aspectOf(StationValidationAspect.class)
                 .setNoaaLocationRepository(this.noaaLocationRepository);
+        Aspects.aspectOf(StationValidationAspect.class)
+                .setNoaaStationRepository(this.noaaStationRepository);
+        Aspects.aspectOf(StationValidationAspect.class)
+                .setNoaaDataRepository(this.noaaDataRepository);
 
         Aspects.aspectOf(MeasurementAuditAspect.class)
                 .setMeasurementAuditRepository(this.measurementAuditRepository);

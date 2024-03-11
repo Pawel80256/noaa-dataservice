@@ -1,8 +1,5 @@
 package com.example.noaadatamanager.aspects;
 
-import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
-import com.example.noaadatamanager.dtos.input.StationInputDto;
-import com.example.noaadatamanager.models.audit.MeasurementAudit;
 import com.example.noaadatamanager.models.audit.StationAudit;
 import com.example.noaadatamanager.repository.audit.StationAuditRepository;
 import com.example.noaadatamanager.service.JwtService;
@@ -12,12 +9,12 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.hibernate.mapping.Join;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Aspect
 @Component
@@ -34,13 +31,30 @@ public class StationAuditAspect {
     }
 
     @Pointcut("execution(* com.example.noaadatamanager.service.NOAAStationService.create(..))")
-    public void createMeasurement(){}
+    public void createStation(){}
 
-    @AfterReturning(pointcut = "createMeasurement()", returning = "stationId")
+    @AfterReturning(pointcut = "createStation()", returning = "stationId")
     public void addCreateAudit(JoinPoint joinPoint, String stationId){
         StationAudit stationAudit = new StationAudit.Builder()
                 .recordId(stationId)
                 .operation("CREATE")
+                .timestamp(LocalDateTime.now())
+                .user(jwtService.getSubFromToken(extractTokenFromHeader()))
+                .build();
+
+        stationAuditRepository.save(stationAudit);
+    }
+
+    @Pointcut("execution(* com.example.noaadatamanager.service.NOAAStationService.delete(..))")
+    public void deleteStation(){}
+
+    @AfterReturning("deleteStation()")
+    public void addDeleteAudit(JoinPoint joinPoint){
+        String stationId = joinPoint.getArgs()[0].toString();
+
+        StationAudit stationAudit = new StationAudit.Builder()
+                .recordId(stationId)
+                .operation("DELETE")
                 .timestamp(LocalDateTime.now())
                 .user(jwtService.getSubFromToken(extractTokenFromHeader()))
                 .build();

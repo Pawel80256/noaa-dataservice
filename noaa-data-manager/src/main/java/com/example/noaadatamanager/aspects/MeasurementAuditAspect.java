@@ -50,7 +50,7 @@ public class MeasurementAuditAspect {
     @Pointcut("execution(* com.example.noaadatamanager.service.NOAADataService.delete(..))")
     public void deleteMeasurement(){}
 
-    @After("deleteMeasurement()")
+    @AfterReturning("deleteMeasurement()")
     public void addDeleteAudit(JoinPoint joinPoint){
         String measurementId = joinPoint.getArgs()[0].toString();
 
