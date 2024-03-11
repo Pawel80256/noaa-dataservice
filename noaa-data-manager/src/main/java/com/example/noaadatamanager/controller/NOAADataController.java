@@ -18,9 +18,9 @@ public class NOAADataController {
 
     @PostMapping
     @RequestAuthorization(roles = {"ADMIN","MEASUREMENT_MANAGER"})
-    public ResponseEntity<Void> create(@RequestBody MeasurementInputDto measurementInputDto){
-        noaaDataService.create(measurementInputDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<String> create(@RequestBody MeasurementInputDto measurementInputDto){
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(noaaDataService.create(measurementInputDto));
     }
 
     @DeleteMapping

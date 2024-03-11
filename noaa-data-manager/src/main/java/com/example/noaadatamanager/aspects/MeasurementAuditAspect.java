@@ -8,6 +8,7 @@ import com.example.noaadatamanager.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
@@ -34,11 +35,8 @@ public class MeasurementAuditAspect {
     @Pointcut("execution(* com.example.noaadatamanager.service.NOAADataService.create(..))")
     public void createMeasurement(){}
 
-    @After("createMeasurement()")
-    public void addCreateAudit(JoinPoint joinPoint){
-        MeasurementInputDto inputDto = (MeasurementInputDto) List.of(joinPoint.getArgs()).getFirst();
-        String measurementId = inputDto.getDataTypeId() + inputDto.getDate().toString() + inputDto.getStationId();
-
+    @AfterReturning(pointcut = "createMeasurement()", returning = "measurementId")
+    public void addCreateAudit(JoinPoint joinPoint, String measurementId){
         MeasurementAudit measurementAudit = new MeasurementAudit.Builder()
                 .recordId(measurementId)
                 .operation("CREATE")

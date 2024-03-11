@@ -15,9 +15,10 @@ public class NOAADataService {
         this.measurementMapper = measurementMapper;
     }
 
-    public void create(MeasurementInputDto measurementInputDto){
+    public String create(MeasurementInputDto measurementInputDto){
         NOAAData measurement = measurementMapper.mapToEntity(measurementInputDto);
         noaaDataRepository.save(measurement);
+        return measurement.getId();
     }
 
     public void delete(String measurementId){
