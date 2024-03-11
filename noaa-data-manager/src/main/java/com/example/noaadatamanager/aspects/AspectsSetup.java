@@ -2,6 +2,7 @@ package com.example.noaadatamanager.aspects;
 
 import com.example.noaadatamanager.repository.*;
 import com.example.noaadatamanager.repository.audit.MeasurementAuditRepository;
+import com.example.noaadatamanager.repository.audit.StationAuditRepository;
 import com.example.noaadatamanager.service.JwtService;
 import jakarta.annotation.PostConstruct;
 import org.aspectj.lang.Aspects;
@@ -14,15 +15,17 @@ public class AspectsSetup {
     private final NOAADataTypeRepository noaaDataTypeRepository;
     private final NOAAStationRepository noaaStationRepository;
     private final MeasurementAuditRepository measurementAuditRepository;
+    private final StationAuditRepository stationAuditRepository;
     private final NOAALocationRepository noaaLocationRepository;
     private final JwtService jwtService;
 
-    public AspectsSetup(RoleRepository roleRepository, NOAADataRepository noaaDataRepository, NOAADataTypeRepository noaaDataTypeRepository, NOAAStationRepository noaaStationRepository, MeasurementAuditRepository measurementAuditRepository, NOAALocationRepository noaaLocationRepository, JwtService jwtService) {
+    public AspectsSetup(RoleRepository roleRepository, NOAADataRepository noaaDataRepository, NOAADataTypeRepository noaaDataTypeRepository, NOAAStationRepository noaaStationRepository, MeasurementAuditRepository measurementAuditRepository, StationAuditRepository stationAuditRepository, NOAALocationRepository noaaLocationRepository, JwtService jwtService) {
         this.roleRepository = roleRepository;
         this.noaaDataRepository = noaaDataRepository;
         this.noaaDataTypeRepository = noaaDataTypeRepository;
         this.noaaStationRepository = noaaStationRepository;
         this.measurementAuditRepository = measurementAuditRepository;
+        this.stationAuditRepository = stationAuditRepository;
         this.noaaLocationRepository = noaaLocationRepository;
         this.jwtService = jwtService;
     }
@@ -48,6 +51,9 @@ public class AspectsSetup {
         Aspects.aspectOf(MeasurementAuditAspect.class)
                 .setJwtService(this.jwtService);
 
-
+        Aspects.aspectOf(StationAuditAspect.class)
+                .setJwtService(this.jwtService);
+        Aspects.aspectOf(StationAuditAspect.class)
+                .setStationAuditRepository(this.stationAuditRepository);
     }
 }

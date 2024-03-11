@@ -16,8 +16,9 @@ public class NOAAStationService {
         this.stationMapper = stationMapper;
     }
 
-    public void create(StationInputDto stationInputDto){
+    public String create(StationInputDto stationInputDto){
         NOAAStation station = stationMapper.mapToEntity(stationInputDto);
         noaaStationRepository.save(station);
+        return station.getId();
     }
 }

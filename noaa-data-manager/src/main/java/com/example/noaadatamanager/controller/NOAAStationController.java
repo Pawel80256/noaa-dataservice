@@ -19,9 +19,9 @@ public class NOAAStationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody StationInputDto stationInputDto){
-        noaaStationService.create(stationInputDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<String> create(@RequestBody StationInputDto stationInputDto){
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(noaaStationService.create(stationInputDto));
     }
 
 }

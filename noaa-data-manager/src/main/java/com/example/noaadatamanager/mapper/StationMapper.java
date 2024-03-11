@@ -27,6 +27,7 @@ public class StationMapper {
                 .dataCoverage(input.getDataCoverage())
                 .elevationUnit(input.getElevationUnit())
                 .noaaLocation(noaaLocationRepository.findById(input.getLocationId()).get())
+                .source("DATA_MANAGER")
                 .build();
     }
 }
