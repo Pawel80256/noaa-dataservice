@@ -3,10 +3,9 @@ package com.example.noaadatamanager.aspects;
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
 import com.example.noaadatamanager.exceptions.ValidationException;
 import com.example.noaadatamanager.models.NOAAStation;
-import com.example.noaadatamanager.repository.NOAADataRepository;
-import com.example.noaadatamanager.repository.NOAADataTypeRepository;
-import com.example.noaadatamanager.repository.NOAAStationRepository;
-import com.example.noaadatamanager.service.NOAADataService;
+import com.example.noaadatamanager.repository.MeasurementRepository;
+import com.example.noaadatamanager.repository.DataTypeRepository;
+import com.example.noaadatamanager.repository.StationRepository;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -19,23 +18,23 @@ import java.util.List;
 @Component
 public class MeasurementValidationAspect {
 
-    private NOAADataRepository noaaDataRepository;
-    private NOAADataTypeRepository noaaDataTypeRepository;
-    private NOAAStationRepository noaaStationRepository;
+    private MeasurementRepository measurementRepository;
+    private DataTypeRepository dataTypeRepository;
+    private StationRepository stationRepository;
 
-    public void setNoaaDataRepository(NOAADataRepository noaaDataRepository) {
-        this.noaaDataRepository = noaaDataRepository;
+    public void setNoaaDataRepository(MeasurementRepository measurementRepository) {
+        this.measurementRepository = measurementRepository;
     }
 
-    public void setNoaaDataTypeRepository(NOAADataTypeRepository noaaDataTypeRepository) {
-        this.noaaDataTypeRepository = noaaDataTypeRepository;
+    public void setNoaaDataTypeRepository(DataTypeRepository dataTypeRepository) {
+        this.dataTypeRepository = dataTypeRepository;
     }
 
-    public void setNoaaStationRepository(NOAAStationRepository noaaStationRepository) {
-        this.noaaStationRepository = noaaStationRepository;
+    public void setNoaaStationRepository(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    @Pointcut("execution(* com.example.noaadatamanager.service.NOAADataService.create(..))")
+    @Pointcut("execution(* com.example.noaadatamanager.service.MeasurementService.create(..))")
     public void createMethod(){}
 
     @Before("createMethod()")
@@ -57,26 +56,26 @@ public class MeasurementValidationAspect {
         }
 
         String measurementId = inputDto.getDataTypeId() + inputDto.getDate().toString() + inputDto.getStationId();
-        if(noaaDataRepository.existsById(measurementId)){
+        if(measurementRepository.existsById(measurementId)){
             throw new ValidationException("Measurement with id \"" + measurementId +"\" already exists");
         }
 
-        if(!noaaDataTypeRepository.existsById(inputDto.getDataTypeId())){
+        if(!dataTypeRepository.existsById(inputDto.getDataTypeId())){
             throw new ValidationException("Data type with id \"" + inputDto.getDataTypeId() + "\" does not exist");
         }
 
-        if(!noaaStationRepository.existsById(inputDto.getStationId())){
+        if(!stationRepository.existsById(inputDto.getStationId())){
             throw new ValidationException("Station with id \"" + inputDto.getStationId() + "\" does not exist");
         }
 
-        NOAAStation station = noaaStationRepository.findById(inputDto.getStationId()).get();
+        NOAAStation station = stationRepository.findById(inputDto.getStationId()).get();
 
         if(inputDto.getDate().isAfter(station.getMaxDate()) || inputDto.getDate().isBefore(station.getMinDate())){
             throw new ValidationException("Measurement date for station \"" + inputDto.getStationId() +"\" have to be between " + station.getMinDate() + " - " + station.getMaxDate());
         }
     }
 
-    @Pointcut("execution(* com.example.noaadatamanager.service.NOAADataService.delete(..))")
+    @Pointcut("execution(* com.example.noaadatamanager.service.MeasurementService.delete(..))")
     public void deleteMethod(){}
 
     @Before("deleteMethod()")
@@ -92,7 +91,7 @@ public class MeasurementValidationAspect {
 
         String measurementId = methodArguments.getFirst().toString();
 
-        if(!noaaDataRepository.existsById(measurementId)){
+        if(!measurementRepository.existsById(measurementId)){
             throw new ValidationException("Measurement with id \"" + measurementId + " \" does not exist");
         }
     }

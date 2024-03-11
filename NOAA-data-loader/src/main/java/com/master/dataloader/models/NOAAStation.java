@@ -48,7 +48,7 @@ public class NOAAStation {
     @ManyToOne
     @JoinColumn(name = "location_id")
     @JsonIgnore
-    private NOAALocation noaaLocation;
+    private Location location;
 
     @ManyToMany
     @JoinTable(
@@ -57,7 +57,7 @@ public class NOAAStation {
             inverseJoinColumns = @JoinColumn(name = "data_type_id")
     )
     @JsonIgnore
-    private List<NOAADataType> dataTypes;
+    private List<DataType> dataTypes;
 
     @Column(name = "source")
     private String source;
@@ -106,12 +106,12 @@ public class NOAAStation {
         return longitude;
     }
 
-    public List<NOAADataType> getDataTypes() {
+    public List<DataType> getDataTypes() {
         return dataTypes;
     }
 
-    public NOAALocation getNoaaLocation() {
-        return noaaLocation;
+    public Location getNoaaLocation() {
+        return location;
     }
 
     public void setId(String id) {
@@ -150,12 +150,12 @@ public class NOAAStation {
         this.longitude = longitude;
     }
 
-    public void setDataTypes(List<NOAADataType> dataTypes) {
+    public void setDataTypes(List<DataType> dataTypes) {
         this.dataTypes = dataTypes;
     }
 
-    public void setNoaaLocation(NOAALocation noaaLocation) {
-        this.noaaLocation = noaaLocation;
+    public void setNoaaLocation(Location location) {
+        this.location = location;
     }
 
     public String getSource() {

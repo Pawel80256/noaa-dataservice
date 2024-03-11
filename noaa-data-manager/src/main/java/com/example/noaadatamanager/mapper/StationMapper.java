@@ -2,17 +2,17 @@ package com.example.noaadatamanager.mapper;
 
 import com.example.noaadatamanager.dtos.input.StationInputDto;
 import com.example.noaadatamanager.models.NOAAStation;
-import com.example.noaadatamanager.repository.NOAALocationRepository;
+import com.example.noaadatamanager.repository.LocationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 @Component
 public class StationMapper {
-    private final NOAALocationRepository noaaLocationRepository;
+    private final LocationRepository locationRepository;
 
-    public StationMapper(NOAALocationRepository noaaLocationRepository) {
-        this.noaaLocationRepository = noaaLocationRepository;
+    public StationMapper(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
     }
 
     public NOAAStation mapToEntity(StationInputDto input){
@@ -26,7 +26,7 @@ public class StationMapper {
                 .name(input.getName())
                 .dataCoverage(input.getDataCoverage())
                 .elevationUnit(input.getElevationUnit())
-                .noaaLocation(noaaLocationRepository.findById(input.getLocationId()).get())
+                .noaaLocation(locationRepository.findById(input.getLocationId()).get())
                 .source("DATA_MANAGER")
                 .build();
     }

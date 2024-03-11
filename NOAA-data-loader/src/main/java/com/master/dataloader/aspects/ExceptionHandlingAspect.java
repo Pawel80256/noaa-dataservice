@@ -20,13 +20,6 @@ import java.util.regex.Pattern;
 public class ExceptionHandlingAspect {
     private final Logger log = LoggerFactory.getLogger(ExceptionHandlingAspect.class);
 
-//    @Pointcut("execution(* com.master.dataloader..*.*(..))")
-//    public void wholeApplication(){}
-//    @AfterThrowing(pointcut = "wholeApplication()", throwing = "ex")
-//    public void handleUnknownException(JoinPoint joinPoint, Exception ex){
-//        log.error("Error encountered", ex);
-//    }
-
     @Pointcut("execution(* com.master.dataloader.service.*.delete*(..))")
     public void deleteOperation() {}
 
@@ -66,19 +59,19 @@ public class ExceptionHandlingAspect {
 
     private String detectResource(String sourceServiceName){
         if(sourceServiceName != null && !sourceServiceName.isBlank()) {
-            if (NOAALocationService.class.getName().equals(sourceServiceName)) {
+            if (LocationService.class.getName().equals(sourceServiceName)) {
                 return Resources.LOCATION;
             }
-            if (NOAAStationService.class.getName().equals(sourceServiceName)) {
+            if (StationService.class.getName().equals(sourceServiceName)) {
                 return  Resources.STATION;
             }
-            if (NOAADataTypeService.class.getName().equals(sourceServiceName)) {
+            if (DataTypeService.class.getName().equals(sourceServiceName)) {
                 return  Resources.DATA_TYPE;
             }
-            if (NOAADataCategoryService.class.getName().equals(sourceServiceName)) {
+            if (DataCategoryService.class.getName().equals(sourceServiceName)) {
                 return  Resources.DATA_CATEGORY;
             }
-            if (NOAADatasetService.class.getName().equals(sourceServiceName)) {
+            if (DatasetService.class.getName().equals(sourceServiceName)) {
                 return  Resources.DATASET;
             }
         }

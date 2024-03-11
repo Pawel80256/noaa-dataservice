@@ -11,22 +11,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class AspectsSetup {
     private final RoleRepository roleRepository;
-    private final NOAADataRepository noaaDataRepository;
-    private final NOAADataTypeRepository noaaDataTypeRepository;
-    private final NOAAStationRepository noaaStationRepository;
+    private final MeasurementRepository measurementRepository;
+    private final DataTypeRepository dataTypeRepository;
+    private final StationRepository stationRepository;
     private final MeasurementAuditRepository measurementAuditRepository;
     private final StationAuditRepository stationAuditRepository;
-    private final NOAALocationRepository noaaLocationRepository;
+    private final LocationRepository locationRepository;
     private final JwtService jwtService;
 
-    public AspectsSetup(RoleRepository roleRepository, NOAADataRepository noaaDataRepository, NOAADataTypeRepository noaaDataTypeRepository, NOAAStationRepository noaaStationRepository, MeasurementAuditRepository measurementAuditRepository, StationAuditRepository stationAuditRepository, NOAALocationRepository noaaLocationRepository, JwtService jwtService) {
+    public AspectsSetup(RoleRepository roleRepository, MeasurementRepository measurementRepository, DataTypeRepository dataTypeRepository, StationRepository stationRepository, MeasurementAuditRepository measurementAuditRepository, StationAuditRepository stationAuditRepository, LocationRepository locationRepository, JwtService jwtService) {
         this.roleRepository = roleRepository;
-        this.noaaDataRepository = noaaDataRepository;
-        this.noaaDataTypeRepository = noaaDataTypeRepository;
-        this.noaaStationRepository = noaaStationRepository;
+        this.measurementRepository = measurementRepository;
+        this.dataTypeRepository = dataTypeRepository;
+        this.stationRepository = stationRepository;
         this.measurementAuditRepository = measurementAuditRepository;
         this.stationAuditRepository = stationAuditRepository;
-        this.noaaLocationRepository = noaaLocationRepository;
+        this.locationRepository = locationRepository;
         this.jwtService = jwtService;
     }
 
@@ -38,18 +38,18 @@ public class AspectsSetup {
                 .setJwtService(this.jwtService);
 
         Aspects.aspectOf(MeasurementValidationAspect.class)
-                .setNoaaDataRepository(this.noaaDataRepository);
+                .setNoaaDataRepository(this.measurementRepository);
         Aspects.aspectOf(MeasurementValidationAspect.class)
-                .setNoaaDataTypeRepository(this.noaaDataTypeRepository);
+                .setNoaaDataTypeRepository(this.dataTypeRepository);
         Aspects.aspectOf(MeasurementValidationAspect.class)
-                .setNoaaStationRepository(this.noaaStationRepository);
+                .setNoaaStationRepository(this.stationRepository);
 
         Aspects.aspectOf(StationValidationAspect.class)
-                .setNoaaLocationRepository(this.noaaLocationRepository);
+                .setNoaaLocationRepository(this.locationRepository);
         Aspects.aspectOf(StationValidationAspect.class)
-                .setNoaaStationRepository(this.noaaStationRepository);
+                .setNoaaStationRepository(this.stationRepository);
         Aspects.aspectOf(StationValidationAspect.class)
-                .setNoaaDataRepository(this.noaaDataRepository);
+                .setNoaaDataRepository(this.measurementRepository);
 
         Aspects.aspectOf(MeasurementAuditAspect.class)
                 .setMeasurementAuditRepository(this.measurementAuditRepository);

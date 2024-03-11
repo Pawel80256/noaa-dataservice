@@ -17,7 +17,6 @@ public class ApiResponseHandlingAspect {
     @Pointcut("execution(private * com.master.dataloader.utils.Utils.sendRequest(..))")
     public void sendRequestMethod(){}
 
-    //pointless
     @AfterReturning(pointcut = "sendRequestMethod()", returning = "apiResponse")
     public void afterReturningApiResponse(ApiResponse apiResponse){
         Integer responseCode = apiResponse.getResponseCode();

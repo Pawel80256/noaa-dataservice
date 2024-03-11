@@ -30,7 +30,7 @@ public class StationAuditAspect {
         this.jwtService = jwtService;
     }
 
-    @Pointcut("execution(* com.example.noaadatamanager.service.NOAAStationService.create(..))")
+    @Pointcut("execution(* com.example.noaadatamanager.service.StationService.create(..))")
     public void createStation(){}
 
     @AfterReturning(pointcut = "createStation()", returning = "stationId")
@@ -45,7 +45,7 @@ public class StationAuditAspect {
         stationAuditRepository.save(stationAudit);
     }
 
-    @Pointcut("execution(* com.example.noaadatamanager.service.NOAAStationService.delete(..))")
+    @Pointcut("execution(* com.example.noaadatamanager.service.StationService.delete(..))")
     public void deleteStation(){}
 
     @AfterReturning("deleteStation()")

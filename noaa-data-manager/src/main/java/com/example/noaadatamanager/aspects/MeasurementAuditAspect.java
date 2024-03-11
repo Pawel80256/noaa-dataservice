@@ -32,7 +32,7 @@ public class MeasurementAuditAspect {
         this.jwtService = jwtService;
     }
 
-    @Pointcut("execution(* com.example.noaadatamanager.service.NOAADataService.create(..))")
+    @Pointcut("execution(* com.example.noaadatamanager.service.MeasurementService.create(..))")
     public void createMeasurement(){}
 
     @AfterReturning(pointcut = "createMeasurement()", returning = "measurementId")
@@ -47,7 +47,7 @@ public class MeasurementAuditAspect {
         measurementAuditRepository.save(measurementAudit);
     }
 
-    @Pointcut("execution(* com.example.noaadatamanager.service.NOAADataService.delete(..))")
+    @Pointcut("execution(* com.example.noaadatamanager.service.MeasurementService.delete(..))")
     public void deleteMeasurement(){}
 
     @AfterReturning("deleteMeasurement()")

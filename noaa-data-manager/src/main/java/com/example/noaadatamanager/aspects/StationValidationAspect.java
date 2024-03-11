@@ -2,9 +2,9 @@ package com.example.noaadatamanager.aspects;
 
 import com.example.noaadatamanager.dtos.input.StationInputDto;
 import com.example.noaadatamanager.exceptions.ValidationException;
-import com.example.noaadatamanager.repository.NOAADataRepository;
-import com.example.noaadatamanager.repository.NOAALocationRepository;
-import com.example.noaadatamanager.repository.NOAAStationRepository;
+import com.example.noaadatamanager.repository.MeasurementRepository;
+import com.example.noaadatamanager.repository.LocationRepository;
+import com.example.noaadatamanager.repository.StationRepository;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -16,23 +16,23 @@ import java.util.List;
 @Aspect
 @Component
 public class StationValidationAspect {
-    private NOAALocationRepository noaaLocationRepository;
-    private NOAAStationRepository noaaStationRepository;
-    private NOAADataRepository noaaDataRepository;
+    private LocationRepository locationRepository;
+    private StationRepository stationRepository;
+    private MeasurementRepository measurementRepository;
 
-    public void setNoaaLocationRepository(NOAALocationRepository noaaLocationRepository) {
-        this.noaaLocationRepository = noaaLocationRepository;
+    public void setNoaaLocationRepository(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
     }
 
-    public void setNoaaStationRepository(NOAAStationRepository noaaStationRepository) {
-        this.noaaStationRepository = noaaStationRepository;
+    public void setNoaaStationRepository(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public void setNoaaDataRepository(NOAADataRepository noaaDataRepository) {
-        this.noaaDataRepository = noaaDataRepository;
+    public void setNoaaDataRepository(MeasurementRepository measurementRepository) {
+        this.measurementRepository = measurementRepository;
     }
 
-    @Pointcut("execution(* com.example.noaadatamanager.service.NOAAStationService.create(..))")
+    @Pointcut("execution(* com.example.noaadatamanager.service.StationService.create(..))")
     public void createMethod(){}
 
     @Before("createMethod()")
@@ -69,16 +69,16 @@ public class StationValidationAspect {
             throw new ValidationException("Max date field is necessary");
         }
 
-        if(!noaaLocationRepository.existsById(inputDto.getLocationId())){
+        if(!locationRepository.existsById(inputDto.getLocationId())){
             throw new ValidationException("Location with id \"" + inputDto.getLocationId() + "\" does not exist");
         }
 
-        if(noaaStationRepository.existsByName(inputDto.getName())){
+        if(stationRepository.existsByName(inputDto.getName())){
             throw new ValidationException("Station with name \"" + inputDto.getName() +"\" already exist");
         }
     }
 
-    @Pointcut("execution(* com.example.noaadatamanager.service.NOAAStationService.delete(..))")
+    @Pointcut("execution(* com.example.noaadatamanager.service.StationService.delete(..))")
     public void deleteMethod(){}
 
     @Before("deleteMethod()")
@@ -94,11 +94,11 @@ public class StationValidationAspect {
 
         String stationId = methodArguments.getFirst().toString();
 
-        if(noaaDataRepository.countByStationId(stationId) > 0){
+        if(measurementRepository.countByStationId(stationId) > 0){
             throw new ValidationException("Station \"" + stationId + "\" cannot be deleted because it is used in different resources");
         }
 
-        if(!noaaStationRepository.existsById(stationId)){
+        if(!stationRepository.existsById(stationId)){
             throw new ValidationException("Station with id \"" + stationId + "\" does not exist");
         }
     }
