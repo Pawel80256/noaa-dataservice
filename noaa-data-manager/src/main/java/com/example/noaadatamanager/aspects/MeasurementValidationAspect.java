@@ -12,13 +12,12 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Aspect
 @Component
-public class ValidationAspect {
+public class MeasurementValidationAspect {
 
     private NOAADataRepository noaaDataRepository;
     private NOAADataTypeRepository noaaDataTypeRepository;
@@ -40,10 +39,21 @@ public class ValidationAspect {
     public void createMethods(){}
 
     @Before("createMethods()")
-    public void validateInput(JoinPoint joinPoint){
+    public void validateCreateMethod(JoinPoint joinPoint){
         String callingServiceName = joinPoint.getSignature().getDeclaringType().getName();
         if(callingServiceName.equals(NOAADataService.class.getName())){
             validateMeasurementInput(joinPoint);
+        }
+    }
+
+    @Pointcut("execution(* com.example.noaadatamanager.service.*.delete(..))")
+    public void deleteMethods(){}
+
+    @Before("deleteMethods()")
+    public void validateDeleteMethod(JoinPoint joinPoint){
+        String callingServiceName = joinPoint.getSignature().getDeclaringType().getName();
+        if(callingServiceName.equals(NOAADataService.class.getName())){
+            validateMeasurementId(joinPoint);
         }
     }
 
@@ -81,6 +91,23 @@ public class ValidationAspect {
 
         if(inputDto.getDate().isAfter(station.getMaxDate()) || inputDto.getDate().isBefore(station.getMinDate())){
             throw new ValidationException("Measurement date for station \"" + inputDto.getStationId() +"\" have to be between " + station.getMinDate() + " - " + station.getMaxDate());
+        }
+    }
+
+    private void validateMeasurementId(JoinPoint joinPoint){
+        List<Object> methodArguments = List.of(joinPoint.getArgs());
+        if(methodArguments.size() != 1){
+            //throw excpetion
+        }
+
+        if(!(methodArguments.getFirst() instanceof String)){
+            //throw exception
+        }
+
+        String measurementId = methodArguments.getFirst().toString();
+
+        if(!noaaDataRepository.existsById(measurementId)){
+            throw new ValidationException("Measurement with id \"" + measurementId + " \" does not exist");
         }
     }
 

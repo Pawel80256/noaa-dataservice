@@ -19,4 +19,8 @@ public class NOAADataService {
         NOAAData measurement = measurementMapper.mapToEntity(measurementInputDto);
         noaaDataRepository.save(measurement);
     }
+
+    public void delete(String measurementId){
+        noaaDataRepository.deleteById(measurementId);
+    }
 }

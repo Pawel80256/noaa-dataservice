@@ -22,4 +22,11 @@ public class NOAADataController {
         noaaDataService.create(measurementInputDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @DeleteMapping
+    @RequestAuthorization(roles = {"ADMIN","MEASUREMENT_MANAGER"})
+    public ResponseEntity<Void> delete(@RequestParam(name = "measurementId") String measurementId){
+        noaaDataService.delete(measurementId);
+        return ResponseEntity.ok().build();
+    }
 }
