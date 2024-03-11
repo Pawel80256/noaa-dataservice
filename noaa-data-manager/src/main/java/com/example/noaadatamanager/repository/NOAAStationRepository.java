@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NOAAStationRepository extends JpaRepository<NOAAStation,String> {
+    Boolean existsByName(String name);
 }

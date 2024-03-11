@@ -1,9 +1,6 @@
 package com.example.noaadatamanager.aspects;
 
-import com.example.noaadatamanager.repository.NOAADataRepository;
-import com.example.noaadatamanager.repository.NOAADataTypeRepository;
-import com.example.noaadatamanager.repository.NOAAStationRepository;
-import com.example.noaadatamanager.repository.RoleRepository;
+import com.example.noaadatamanager.repository.*;
 import com.example.noaadatamanager.repository.audit.MeasurementAuditRepository;
 import com.example.noaadatamanager.service.JwtService;
 import jakarta.annotation.PostConstruct;
@@ -17,14 +14,16 @@ public class AspectsSetup {
     private final NOAADataTypeRepository noaaDataTypeRepository;
     private final NOAAStationRepository noaaStationRepository;
     private final MeasurementAuditRepository measurementAuditRepository;
+    private final NOAALocationRepository noaaLocationRepository;
     private final JwtService jwtService;
 
-    public AspectsSetup(RoleRepository roleRepository, NOAADataRepository noaaDataRepository, NOAADataTypeRepository noaaDataTypeRepository, NOAAStationRepository noaaStationRepository, MeasurementAuditRepository measurementAuditRepository, JwtService jwtService) {
+    public AspectsSetup(RoleRepository roleRepository, NOAADataRepository noaaDataRepository, NOAADataTypeRepository noaaDataTypeRepository, NOAAStationRepository noaaStationRepository, MeasurementAuditRepository measurementAuditRepository, NOAALocationRepository noaaLocationRepository, JwtService jwtService) {
         this.roleRepository = roleRepository;
         this.noaaDataRepository = noaaDataRepository;
         this.noaaDataTypeRepository = noaaDataTypeRepository;
         this.noaaStationRepository = noaaStationRepository;
         this.measurementAuditRepository = measurementAuditRepository;
+        this.noaaLocationRepository = noaaLocationRepository;
         this.jwtService = jwtService;
     }
 
@@ -35,17 +34,20 @@ public class AspectsSetup {
         Aspects.aspectOf(AuthorizationAspect.class)
                 .setJwtService(this.jwtService);
 
-        Aspects.aspectOf(MeasurementValidationAspect.class)
+        Aspects.aspectOf(ValidationAspect.class)
                 .setNoaaDataRepository(this.noaaDataRepository);
-        Aspects.aspectOf(MeasurementValidationAspect.class)
+        Aspects.aspectOf(ValidationAspect.class)
                 .setNoaaDataTypeRepository(this.noaaDataTypeRepository);
-        Aspects.aspectOf(MeasurementValidationAspect.class)
+        Aspects.aspectOf(ValidationAspect.class)
                 .setNoaaStationRepository(this.noaaStationRepository);
+        Aspects.aspectOf(ValidationAspect.class)
+                .setNoaaLocationRepository(this.noaaLocationRepository);
 
         Aspects.aspectOf(MeasurementAuditAspect.class)
                 .setMeasurementAuditRepository(this.measurementAuditRepository);
-
         Aspects.aspectOf(MeasurementAuditAspect.class)
                 .setJwtService(this.jwtService);
+
+
     }
 }

@@ -165,4 +165,71 @@ public class NOAAStation {
     public void setSource(String source) {
         this.source = source;
     }
+
+    public static class Builder{
+        private NOAAStation noaaStation;
+
+        public Builder(){
+            noaaStation = new NOAAStation();
+        }
+
+        public Builder id(String id){
+          noaaStation.id = id;
+          return this;
+        }
+
+        public Builder elevation(Double elevation){
+            noaaStation.elevation = elevation;
+            return this;
+        }
+
+        public Builder minDate(LocalDate minDate){
+            noaaStation.minDate = minDate;
+            return this;
+        }
+
+        public Builder maxDate(LocalDate maxDate){
+            noaaStation.maxDate = maxDate;
+            return this;
+        }
+
+        public Builder latitude(Double latitude){
+            noaaStation.latitude = latitude;
+            return this;
+        }
+
+        public Builder name(String name){
+            noaaStation.name = name;
+            return this;
+        }
+
+        public Builder dataCoverage(Double dataCoverage){
+            noaaStation.dataCoverage = dataCoverage;
+            return this;
+        }
+
+        public Builder elevationUnit(String elevationUnit){
+            noaaStation.elevationUnit = elevationUnit;
+            return this;
+        }
+
+        public Builder longitude(Double longitude){
+            noaaStation.longitude = longitude;
+            return this;
+        }
+
+        public Builder noaaLocation(NOAALocation noaaLocation){
+            noaaStation.noaaLocation = noaaLocation;
+            return this;
+        }
+
+        public Builder source(String source){
+            noaaStation.source = source;
+            return this;
+        }
+
+        public NOAAStation build(){
+            return noaaStation;
+        }
+    }
 }
