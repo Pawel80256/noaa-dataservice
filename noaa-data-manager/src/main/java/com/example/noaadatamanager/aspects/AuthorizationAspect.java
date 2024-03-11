@@ -1,6 +1,7 @@
 package com.example.noaadatamanager.aspects;
 
 import com.example.noaadatamanager.annotations.RequestAuthorization;
+import com.example.noaadatamanager.exceptions.UnauthorizedAccessException;
 import com.example.noaadatamanager.models.Role;
 import com.example.noaadatamanager.repository.RoleRepository;
 import com.example.noaadatamanager.service.JwtService;
@@ -24,15 +25,15 @@ import javax.crypto.SecretKey;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Aspect
 @Component
 public class AuthorizationAspect {
-    private static final String SECRET_KEY = "mojBardzoTajnyKluczDoGenerowaniaTokenowJWT...";
-    private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-
     private RoleRepository roleRepository;
     private JwtService jwtService;
 
@@ -63,8 +64,19 @@ public class AuthorizationAspect {
             List<String> requiredRolesIds = Arrays.stream(requestAuthorization.roles()).toList();
             List<Role> requiredRoles = roleRepository.findAllById(requiredRolesIds);
 
-            System.out.println("Wymagane role: " + String.join(", ", requiredRoles.stream().map(Role::getId).toList()));
-            System.out.println("Role użytkownika wykonującego requestt: " + String.join(", ", tokenRoles.stream().map(Role::getId).toList()));
+            if(
+                    Collections.disjoint(
+                            requiredRoles.stream().map(Role::getId).toList(),
+                            tokenRoles.stream().map(Role::getId).toList()
+                    )
+            ){
+                throw new UnauthorizedAccessException("Unauthorized access, required roles: [" +
+                        String.join(", ", requiredRolesIds) +
+                        "], user roles: [" +
+                        String.join(", ", tokenRoles.stream().map(Role::getId).toList()) +
+                        "]");
+            }
+
         }
 
     }

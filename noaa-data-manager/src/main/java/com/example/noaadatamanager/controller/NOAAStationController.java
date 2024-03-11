@@ -1,5 +1,6 @@
 package com.example.noaadatamanager.controller;
 
+import com.example.noaadatamanager.annotations.RequestAuthorization;
 import com.example.noaadatamanager.dtos.input.StationInputDto;
 import com.example.noaadatamanager.service.NOAAStationService;
 import org.springframework.http.HttpStatus;
@@ -16,12 +17,14 @@ public class NOAAStationController {
     }
 
     @PostMapping
+    @RequestAuthorization(roles = {"ADMIN","STATION_MANAGER"})
     public ResponseEntity<String> create(@RequestBody StationInputDto stationInputDto){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(noaaStationService.create(stationInputDto));
     }
 
     @DeleteMapping
+    @RequestAuthorization(roles = {"ADMIN","STATION_MANAGER"})
     public ResponseEntity<Void> delete(@RequestParam(name = "stationId") String stationId){
         noaaStationService.delete(stationId);
         return ResponseEntity.ok().build();

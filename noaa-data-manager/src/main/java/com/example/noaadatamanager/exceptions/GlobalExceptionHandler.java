@@ -11,10 +11,10 @@ import org.springframework.web.context.request.WebRequest;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedAccessException.class)
-    public ResponseEntity<Object> handleResourceInUseException(UnauthorizedAccessException ex, WebRequest rq) {
+    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedAccessException ex, WebRequest rq) {
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST,
-                "Error while deleting data, resource is in use",
+                HttpStatus.UNAUTHORIZED,
+                "Unauthorized access",
                 ex.getMessage(),
                 rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"        );
 
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Object> handleResourceInUseException(ValidationException ex, WebRequest rq) {
+    public ResponseEntity<Object> handleValidationException(ValidationException ex, WebRequest rq) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST,
                 "Data validation error",
