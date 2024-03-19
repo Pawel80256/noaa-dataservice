@@ -11,6 +11,7 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Aspect
@@ -101,5 +102,20 @@ public class StationValidationAspect {
         if(!stationRepository.existsById(stationId)){
             throw new ValidationException("Station with id \"" + stationId + "\" does not exist");
         }
+    }
+
+    @Pointcut("execution(* com.example.noaadatamanager.controller.StationController.*(..))")
+    public void stationControllerMethods(){}
+    @Pointcut("args(String,String)")
+    public void requestParams(){}
+
+    @Before("stationControllerMethods() && requestParams()")
+    public void validateUpdateMethodParams(JoinPoint joinPoint){
+        var args = joinPoint.getArgs();
+        Arrays.stream(args).forEach(arg -> {
+            if(arg == null || arg.toString().isBlank()){
+                throw new ValidationException("Update method params cannot be empty");
+            }
+        });
     }
 }
