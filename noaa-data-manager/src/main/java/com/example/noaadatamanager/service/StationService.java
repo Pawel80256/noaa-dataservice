@@ -25,4 +25,10 @@ public class StationService {
     public void delete(String stationId){
         stationRepository.deleteById(stationId);
     }
+
+    public void updateName(String stationId, String newName){
+        var station = stationRepository.findById(stationId).get(); //moge tak zrobic bo aspekt waliduje id
+        station.setName(newName);
+        stationRepository.save(station);
+    }
 }

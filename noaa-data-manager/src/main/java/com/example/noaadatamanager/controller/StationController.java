@@ -30,4 +30,13 @@ public class StationController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/name")
+    @RequestAuthorization(roles = {"ADMIN","STATION_MANAGER"})
+    public ResponseEntity<Void> updateName(
+            @RequestParam(name = "stationId") String stationId,
+            @RequestParam(name = "newName") String newName
+    ){
+        stationService.updateName(stationId, newName);
+        return ResponseEntity.ok().build();
+    }
 }
