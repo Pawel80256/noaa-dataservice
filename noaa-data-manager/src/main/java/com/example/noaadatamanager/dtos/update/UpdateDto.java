@@ -1,4 +1,4 @@
-package com.example.noaadatamanager.dtos.request;
+package com.example.noaadatamanager.dtos.update;
 
 public interface UpdateDto {
     Object getEntityId();

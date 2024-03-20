@@ -2,6 +2,7 @@ package com.example.noaadatamanager.controller;
 
 import com.example.noaadatamanager.annotations.RequestAuthorization;
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
+import com.example.noaadatamanager.dtos.update.MeasurementUpdateValueDto;
 import com.example.noaadatamanager.service.MeasurementService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,13 @@ public class MeasurementController {
     @RequestAuthorization(roles = {"ADMIN","MEASUREMENT_MANAGER"})
     public ResponseEntity<Void> delete(@RequestParam(name = "measurementId") String measurementId){
         measurementService.delete(measurementId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/value")
+    @RequestAuthorization(roles = {"ADMIN","MEASUREMENT_MANAGER"})
+    public ResponseEntity<Void> updateValue(@RequestBody MeasurementUpdateValueDto dto){
+        measurementService.updateValue(dto);
         return ResponseEntity.ok().build();
     }
 }

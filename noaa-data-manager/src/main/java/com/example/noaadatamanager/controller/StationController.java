@@ -2,7 +2,7 @@ package com.example.noaadatamanager.controller;
 
 import com.example.noaadatamanager.annotations.RequestAuthorization;
 import com.example.noaadatamanager.dtos.input.StationInputDto;
-import com.example.noaadatamanager.dtos.request.StationUpdateNameDto;
+import com.example.noaadatamanager.dtos.update.StationUpdateNameDto;
 import com.example.noaadatamanager.service.StationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
