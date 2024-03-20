@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "station")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NOAAStation {
+public class Station {
     @Id
     @Column(name = "id")
     private String id;
@@ -62,11 +62,11 @@ public class NOAAStation {
     @Column(name = "source")
     private String source;
 
-    public NOAAStation(String id) {
+    public Station(String id) {
         this.id = id;
     }
 
-    public NOAAStation() {
+    public Station() {
 
     }
 

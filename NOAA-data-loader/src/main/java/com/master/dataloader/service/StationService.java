@@ -3,7 +3,7 @@ package com.master.dataloader.service;
 import com.master.dataloader.constant.URLs;
 import com.master.dataloader.dtos.StationDto;
 import com.master.dataloader.models.Location;
-import com.master.dataloader.models.NOAAStation;
+import com.master.dataloader.models.Station;
 import com.master.dataloader.repository.StationRepository;
 import com.master.dataloader.utils.Utils;
 import org.springframework.stereotype.Service;
@@ -25,13 +25,13 @@ public class StationService {
     }
 
     public List<StationDto> getAllRemoteDtos(String locationId) throws Exception {
-        List<NOAAStation> remoteStations = getRemoteByLocationId(locationId);
+        List<Station> remoteStations = getRemoteByLocationId(locationId);
         remoteStations.forEach(s -> s.setNoaaLocation(new Location(locationId)));
         List<StationDto> result = remoteStations.stream().map(StationDto::new).toList();
 
         List<String> localStationsIds = stationRepository.findAllById(
-                remoteStations.stream().map(NOAAStation::getId).toList()
-        ).stream().map(NOAAStation::getId).toList();
+                remoteStations.stream().map(Station::getId).toList()
+        ).stream().map(Station::getId).toList();
 
         result.forEach(s -> s.setLoaded(localStationsIds.contains(s.getId())));
 
@@ -39,11 +39,11 @@ public class StationService {
     }
 
     public void loadByIds(String locationId, List<String> stationIds) throws Exception {
-        List<NOAAStation> remoteByLocationId = getRemoteByLocationId(locationId);
-        List<NOAAStation> stationsToLoad = remoteByLocationId.stream()
+        List<Station> remoteByLocationId = getRemoteByLocationId(locationId);
+        List<Station> stationsToLoad = remoteByLocationId.stream()
                 .filter(station -> stationIds.contains(station.getId())).toList();
 
-        for(NOAAStation station : stationsToLoad){
+        for(Station station : stationsToLoad){
             station.setNoaaLocation(new Location(locationId));
             station.setSource("NOAA");
         }
@@ -56,12 +56,12 @@ public class StationService {
     }
 
 
-    private List<NOAAStation> getRemoteByLocationId(String locationId) throws Exception {
+    private List<Station> getRemoteByLocationId(String locationId) throws Exception {
         Map<String,Object> requestParams = Utils.getBasicParams();
         requestParams.put("locationid",locationId);
 
         String stationsUrl = URLs.baseNoaaApiUrl + URLs.stationsUrl;
 
-        return Utils.getRemoteData(stationsUrl,requestParams,NOAAStation.class);
+        return Utils.getRemoteData(stationsUrl,requestParams, Station.class);
     }
 }

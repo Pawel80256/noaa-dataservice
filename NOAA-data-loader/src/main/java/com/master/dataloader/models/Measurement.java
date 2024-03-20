@@ -22,7 +22,7 @@ public class Measurement {
 
     @ManyToOne
     @JoinColumn(name = "station")
-    private NOAAStation station;
+    private Station station;
 
     @Column(name = "date")
     private LocalDate date;
@@ -45,7 +45,7 @@ public class Measurement {
         return dataType;
     }
 
-    public NOAAStation getStation() {
+    public Station getStation() {
         return station;
     }
 
@@ -65,7 +65,7 @@ public class Measurement {
         this.dataType = dataType;
     }
 
-    public void setStation(NOAAStation station) {
+    public void setStation(Station station) {
         this.station = station;
     }
 

@@ -1,6 +1,7 @@
 package com.example.noaadatamanager.aspects;
 
 import com.example.noaadatamanager.dtos.input.StationInputDto;
+import com.example.noaadatamanager.dtos.request.UpdateDto;
 import com.example.noaadatamanager.exceptions.ValidationException;
 import com.example.noaadatamanager.repository.MeasurementRepository;
 import com.example.noaadatamanager.repository.LocationRepository;
@@ -106,16 +107,26 @@ public class StationValidationAspect {
 
     @Pointcut("execution(* com.example.noaadatamanager.controller.StationController.*(..))")
     public void stationControllerMethods(){}
-    @Pointcut("args(String,String)")
-    public void requestParams(){}
 
-    @Before("stationControllerMethods() && requestParams()")
+    @Pointcut("args(com.example.noaadatamanager.dtos.request.UpdateDto)")
+    public void updateDtoParameter(){}
+
+    @Before("stationControllerMethods() && updateDtoParameter()")
     public void validateUpdateMethodParams(JoinPoint joinPoint){
         var args = joinPoint.getArgs();
-        Arrays.stream(args).forEach(arg -> {
-            if(arg == null || arg.toString().isBlank()){
-                throw new ValidationException("Update method params cannot be empty");
-            }
-        });
+
+        if(args.length != 1 && !(args[0] instanceof UpdateDto)){
+            throw new ValidationException("Incorrect update method parameters");
+        }
+
+        var updateDto = (UpdateDto) args[0];
+
+        if(updateDto.getEntityId() == null || updateDto.getEntityId().toString().isBlank()){
+            throw new ValidationException("Entity id cannot be empty");
+        }
+
+        if(updateDto.getUpdatedFieldValue() == null || updateDto.getUpdatedFieldValue().toString().isBlank()){
+            throw new ValidationException("Updated field value cannot be empty");
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.master.dataloader.dtos;
 
-import com.master.dataloader.models.NOAAStation;
+import com.master.dataloader.models.Station;
 
 import java.time.LocalDate;
 
@@ -17,7 +17,7 @@ public class StationDto {
     private String locationId;
     private Boolean isLoaded;
 
-    public StationDto(NOAAStation entity) {
+    public StationDto(Station entity) {
         this.id = entity.getId();
         this.elevation = entity.getElevation();
         this.minDate = entity.getMinDate();

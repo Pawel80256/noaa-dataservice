@@ -1,10 +1,14 @@
 package com.example.noaadatamanager.service;
 
 import com.example.noaadatamanager.dtos.input.StationInputDto;
+import com.example.noaadatamanager.dtos.request.StationUpdateNameDto;
+import com.example.noaadatamanager.exceptions.ValidationException;
 import com.example.noaadatamanager.mapper.StationMapper;
-import com.example.noaadatamanager.models.NOAAStation;
+import com.example.noaadatamanager.models.Station;
 import com.example.noaadatamanager.repository.StationRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class StationService {
@@ -17,7 +21,7 @@ public class StationService {
     }
 
     public String create(StationInputDto stationInputDto){
-        NOAAStation station = stationMapper.mapToEntity(stationInputDto);
+        Station station = stationMapper.mapToEntity(stationInputDto);
         stationRepository.save(station);
         return station.getId();
     }
@@ -26,9 +30,13 @@ public class StationService {
         stationRepository.deleteById(stationId);
     }
 
-    public void updateName(String stationId, String newName){
-        var station = stationRepository.findById(stationId).get(); //moge tak zrobic bo aspekt waliduje id
-        station.setName(newName);
+    public void updateName(StationUpdateNameDto dto){
+        Optional<Station> optionalStation = stationRepository.findById(dto.getEntityId()); //moge tak zrobic bo aspekt waliduje id
+        if(optionalStation.isEmpty()){
+            throw new ValidationException("Station with id " + dto.getEntityId() + " does not exist");
+        }
+        Station station = optionalStation.get();
+        station.setName(dto.getUpdatedFieldValue());
         stationRepository.save(station);
     }
 }

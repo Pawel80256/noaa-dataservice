@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "station")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NOAAStation {
+public class Station {
     @Id
     @Column(name = "id")
     private String id;
@@ -62,11 +62,11 @@ public class NOAAStation {
     @Column(name = "source")
     private String source;
 
-    public NOAAStation(String id) {
+    public Station(String id) {
         this.id = id;
     }
 
-    public NOAAStation() {
+    public Station() {
 
     }
 
@@ -167,69 +167,69 @@ public class NOAAStation {
     }
 
     public static class Builder{
-        private NOAAStation noaaStation;
+        private Station station;
 
         public Builder(){
-            noaaStation = new NOAAStation();
+            station = new Station();
         }
 
         public Builder id(String id){
-          noaaStation.id = id;
+          station.id = id;
           return this;
         }
 
         public Builder elevation(Double elevation){
-            noaaStation.elevation = elevation;
+            station.elevation = elevation;
             return this;
         }
 
         public Builder minDate(LocalDate minDate){
-            noaaStation.minDate = minDate;
+            station.minDate = minDate;
             return this;
         }
 
         public Builder maxDate(LocalDate maxDate){
-            noaaStation.maxDate = maxDate;
+            station.maxDate = maxDate;
             return this;
         }
 
         public Builder latitude(Double latitude){
-            noaaStation.latitude = latitude;
+            station.latitude = latitude;
             return this;
         }
 
         public Builder name(String name){
-            noaaStation.name = name;
+            station.name = name;
             return this;
         }
 
         public Builder dataCoverage(Double dataCoverage){
-            noaaStation.dataCoverage = dataCoverage;
+            station.dataCoverage = dataCoverage;
             return this;
         }
 
         public Builder elevationUnit(String elevationUnit){
-            noaaStation.elevationUnit = elevationUnit;
+            station.elevationUnit = elevationUnit;
             return this;
         }
 
         public Builder longitude(Double longitude){
-            noaaStation.longitude = longitude;
+            station.longitude = longitude;
             return this;
         }
 
         public Builder noaaLocation(Location location){
-            noaaStation.location = location;
+            station.location = location;
             return this;
         }
 
         public Builder source(String source){
-            noaaStation.source = source;
+            station.source = source;
             return this;
         }
 
-        public NOAAStation build(){
-            return noaaStation;
+        public Station build(){
+            return station;
         }
     }
 }

@@ -4,7 +4,7 @@ import com.master.dataloader.constant.URLs;
 import com.master.dataloader.dtos.MeasurementDto;
 import com.master.dataloader.models.Measurement;
 import com.master.dataloader.models.DataType;
-import com.master.dataloader.models.NOAAStation;
+import com.master.dataloader.models.Station;
 import com.master.dataloader.repository.MeasurementRepository;
 import com.master.dataloader.repository.StationRepository;
 import com.master.dataloader.utils.Utils;
@@ -41,7 +41,7 @@ public class MeasurementService {
 
 
     public void load(String datasetId, String dataTypeId, String stationId, LocalDate startDate, LocalDate endDate) throws Exception {
-        NOAAStation station = stationRepository.findById(stationId).orElseThrow(()-> new RuntimeException("station not found"));
+        Station station = stationRepository.findById(stationId).orElseThrow(()-> new RuntimeException("station not found"));
 
         //todo: handle when there are no records in timeframe for station -> this can be checked by station.getMaxDate & minDate, compare with parameters
         //todo: obsluzyc case kiedy podczas ladowania danych okaze sie ze datatype jest nieobecny,

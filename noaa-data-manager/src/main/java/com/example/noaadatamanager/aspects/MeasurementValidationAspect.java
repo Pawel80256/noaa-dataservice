@@ -2,7 +2,7 @@ package com.example.noaadatamanager.aspects;
 
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
 import com.example.noaadatamanager.exceptions.ValidationException;
-import com.example.noaadatamanager.models.NOAAStation;
+import com.example.noaadatamanager.models.Station;
 import com.example.noaadatamanager.repository.MeasurementRepository;
 import com.example.noaadatamanager.repository.DataTypeRepository;
 import com.example.noaadatamanager.repository.StationRepository;
@@ -68,7 +68,7 @@ public class MeasurementValidationAspect {
             throw new ValidationException("Station with id \"" + inputDto.getStationId() + "\" does not exist");
         }
 
-        NOAAStation station = stationRepository.findById(inputDto.getStationId()).get();
+        Station station = stationRepository.findById(inputDto.getStationId()).get();
 
         if(inputDto.getDate().isAfter(station.getMaxDate()) || inputDto.getDate().isBefore(station.getMinDate())){
             throw new ValidationException("Measurement date for station \"" + inputDto.getStationId() +"\" have to be between " + station.getMinDate() + " - " + station.getMaxDate());

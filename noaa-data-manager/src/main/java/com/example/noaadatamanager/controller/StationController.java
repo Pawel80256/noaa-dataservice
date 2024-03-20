@@ -2,6 +2,7 @@ package com.example.noaadatamanager.controller;
 
 import com.example.noaadatamanager.annotations.RequestAuthorization;
 import com.example.noaadatamanager.dtos.input.StationInputDto;
+import com.example.noaadatamanager.dtos.request.StationUpdateNameDto;
 import com.example.noaadatamanager.service.StationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +33,9 @@ public class StationController {
 
     @PutMapping("/name")
     @RequestAuthorization(roles = {"ADMIN","STATION_MANAGER"})
-    public ResponseEntity<Void> updateName(
-            @RequestParam(name = "stationId") String stationId,
-            @RequestParam(name = "newName") String newName
-    ){
-        stationService.updateName(stationId, newName);
+    public ResponseEntity<Void> updateName(@RequestBody StationUpdateNameDto stationUpdateNameDto){
+        stationService.updateName(stationUpdateNameDto);
         return ResponseEntity.ok().build();
     }
+
 }

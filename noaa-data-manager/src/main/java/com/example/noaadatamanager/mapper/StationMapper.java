@@ -1,7 +1,7 @@
 package com.example.noaadatamanager.mapper;
 
 import com.example.noaadatamanager.dtos.input.StationInputDto;
-import com.example.noaadatamanager.models.NOAAStation;
+import com.example.noaadatamanager.models.Station;
 import com.example.noaadatamanager.repository.LocationRepository;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +15,8 @@ public class StationMapper {
         this.locationRepository = locationRepository;
     }
 
-    public NOAAStation mapToEntity(StationInputDto input){
-        return new NOAAStation.Builder()
+    public Station mapToEntity(StationInputDto input){
+        return new Station.Builder()
                 .id(UUID.randomUUID().toString())
                 .elevation(input.getElevation())
                 .minDate(input.getMinDate())
