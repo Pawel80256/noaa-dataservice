@@ -1,7 +1,9 @@
 package com.example.noaadatamanager.controller;
 
+import com.example.noaadatamanager.annotations.AllowEmptyValue;
 import com.example.noaadatamanager.annotations.RequestAuthorization;
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
+import com.example.noaadatamanager.dtos.update.MeasurementUpdateCommentDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateValueDto;
 import com.example.noaadatamanager.service.MeasurementService;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,14 @@ public class MeasurementController {
     @RequestAuthorization(roles = {"ADMIN","MEASUREMENT_MANAGER"})
     public ResponseEntity<Void> updateValue(@RequestBody MeasurementUpdateValueDto dto){
         measurementService.updateValue(dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/comment")
+    @RequestAuthorization(roles = {"ADMIN","MEASUREMENT_MANAGER"})
+    @AllowEmptyValue
+    public ResponseEntity<Void> updateComment(@RequestBody MeasurementUpdateCommentDto dto){
+        measurementService.updateComment(dto);
         return ResponseEntity.ok().build();
     }
 }

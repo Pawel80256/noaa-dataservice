@@ -36,6 +36,9 @@ public class Measurement {
     @Column(name = "source")
     private String source;
 
+    @Column(name = "comment")
+    private String comment;
+
     public String getId() {
         return id;
     }
@@ -86,6 +89,14 @@ public class Measurement {
     }
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public static class Builder {

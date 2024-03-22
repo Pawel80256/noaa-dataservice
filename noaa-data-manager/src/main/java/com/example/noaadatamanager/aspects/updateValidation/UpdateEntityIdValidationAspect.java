@@ -30,6 +30,9 @@ public class UpdateEntityIdValidationAspect {
     @Pointcut("execution(* com.example.noaadatamanager.controller.StationController.*(..))")
     public void stationControllerMethods(){}
 
+    @Pointcut("execution(* com.example.noaadatamanager.controller.MeasurementController.*(..))")
+    public void measurementControllerMethods(){}
+
     @Before("updateDtoParameter() && stationControllerMethods()")
     public void validateStationUpdate(JoinPoint joinPoint){
         var updateDto = (UpdateDto) joinPoint.getArgs()[0];
@@ -38,4 +41,11 @@ public class UpdateEntityIdValidationAspect {
         }
     }
 
+    @Before("updateDtoParameter() && measurementControllerMethods()")
+    public void validateMeasurementUpdate(JoinPoint joinPoint){
+        var updateDto = (UpdateDto) joinPoint.getArgs()[0];
+        if(!measurementRepository.existsById(updateDto.getEntityId().toString())){
+            throw new ValidationException("Measurement with id \"" + updateDto.getEntityId() + "\" does not exist");
+        }
+    }
 }
