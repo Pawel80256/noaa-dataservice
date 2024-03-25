@@ -1,4 +1,4 @@
-package com.example.noaadatamanager.aspects.updateValidation;
+package com.example.noaadatamanager.aspects.validation.updateValidation;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.DeclarePrecedence;

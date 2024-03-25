@@ -1,6 +1,7 @@
-package com.example.noaadatamanager.aspects;
+package com.example.noaadatamanager.aspects.authorization;
 
 import com.example.noaadatamanager.annotations.RequestAuthorization;
+import com.example.noaadatamanager.aspects.AspectUtils;
 import com.example.noaadatamanager.exceptions.UnauthorizedAccessException;
 import com.example.noaadatamanager.models.Role;
 import com.example.noaadatamanager.repository.RoleRepository;
@@ -50,34 +51,29 @@ public class AuthorizationAspect {
 
     @Before("authorizedMethods()")
     public void test(JoinPoint joinPoint) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String authorizationHeader = request.getHeader("Authorization");
+        String token = AspectUtils.extractTokenFromHeader();
+        List<Role> tokenRoles = jwtService.getRolesFromToken(token);
 
-        if (authorizationHeader != null && !authorizationHeader.isBlank() && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
-            List<Role> tokenRoles = jwtService.getRolesFromToken(token);
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        RequestAuthorization requestAuthorization = method.getAnnotation(RequestAuthorization.class);
 
-            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-            Method method = signature.getMethod();
-            RequestAuthorization requestAuthorization = method.getAnnotation(RequestAuthorization.class);
+        List<String> requiredRolesIds = Arrays.stream(requestAuthorization.roles()).toList();
+        List<Role> requiredRoles = roleRepository.findAllById(requiredRolesIds);
 
-            List<String> requiredRolesIds = Arrays.stream(requestAuthorization.roles()).toList();
-            List<Role> requiredRoles = roleRepository.findAllById(requiredRolesIds);
-
-            if(
-                    Collections.disjoint(
-                            requiredRoles.stream().map(Role::getId).toList(),
-                            tokenRoles.stream().map(Role::getId).toList()
-                    )
-            ){
-                throw new UnauthorizedAccessException("Unauthorized access, required roles: [" +
-                        String.join(", ", requiredRolesIds) +
-                        "], user roles: [" +
-                        String.join(", ", tokenRoles.stream().map(Role::getId).toList()) +
-                        "]");
-            }
-
+        if (
+                Collections.disjoint(
+                        requiredRoles.stream().map(Role::getId).toList(),
+                        tokenRoles.stream().map(Role::getId).toList()
+                )
+        ) {
+            throw new UnauthorizedAccessException("Unauthorized access, required roles: [" +
+                    String.join(", ", requiredRolesIds) +
+                    "], user roles: [" +
+                    String.join(", ", tokenRoles.stream().map(Role::getId).toList()) +
+                    "]");
         }
+
 
     }
 }

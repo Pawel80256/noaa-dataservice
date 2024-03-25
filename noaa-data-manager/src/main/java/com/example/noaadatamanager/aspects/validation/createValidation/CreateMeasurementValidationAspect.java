@@ -1,6 +1,8 @@
-package com.example.noaadatamanager.aspects;
+package com.example.noaadatamanager.aspects.validation.createValidation;
 
+import com.example.noaadatamanager.aspects.AspectUtils;
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
+import com.example.noaadatamanager.dtos.input.StationInputDto;
 import com.example.noaadatamanager.exceptions.ValidationException;
 import com.example.noaadatamanager.models.Station;
 import com.example.noaadatamanager.repository.MeasurementRepository;
@@ -16,7 +18,7 @@ import java.util.List;
 
 @Aspect
 @Component
-public class MeasurementValidationAspect {
+public class CreateMeasurementValidationAspect {
 
     private MeasurementRepository measurementRepository;
     private DataTypeRepository dataTypeRepository;
@@ -41,18 +43,11 @@ public class MeasurementValidationAspect {
     public void validateCreateMethod(JoinPoint joinPoint){
         List<Object> methodArguments = List.of(joinPoint.getArgs());
 
-        if(methodArguments.size() != 1){
-            //throw excpetion
-        }
-
-        if(!(methodArguments.getFirst() instanceof MeasurementInputDto)){
-            //throw exception
-        }
-
-        MeasurementInputDto inputDto = (MeasurementInputDto) methodArguments.getFirst();
-
-        if(inputDto == null){
-            throw new RuntimeException("Measurement input data cannot be null");
+        if(methodArguments.size() != 1 || !(methodArguments.getFirst() instanceof MeasurementInputDto inputDto)){
+            throw new ValidationException(
+                    AspectUtils.getMethodMetadata(joinPoint) + " should consume only one argument of type "
+                            + MeasurementInputDto.class.getSimpleName()
+            );
         }
 
         String measurementId = inputDto.getDataTypeId() + inputDto.getDate().toString() + inputDto.getStationId();
@@ -72,27 +67,6 @@ public class MeasurementValidationAspect {
 
         if(inputDto.getDate().isAfter(station.getMaxDate()) || inputDto.getDate().isBefore(station.getMinDate())){
             throw new ValidationException("Measurement date for station \"" + inputDto.getStationId() +"\" have to be between " + station.getMinDate() + " - " + station.getMaxDate());
-        }
-    }
-
-    @Pointcut("execution(* com.example.noaadatamanager.service.MeasurementService.delete(..))")
-    public void deleteMethod(){}
-
-    @Before("deleteMethod()")
-    public void validateDeleteMethod(JoinPoint joinPoint){
-        List<Object> methodArguments = List.of(joinPoint.getArgs());
-        if(methodArguments.size() != 1){
-            //throw excpetion
-        }
-
-        if(!(methodArguments.getFirst() instanceof String)){
-            //throw exception
-        }
-
-        String measurementId = methodArguments.getFirst().toString();
-
-        if(!measurementRepository.existsById(measurementId)){
-            throw new ValidationException("Measurement with id \"" + measurementId + " \" does not exist");
         }
     }
 

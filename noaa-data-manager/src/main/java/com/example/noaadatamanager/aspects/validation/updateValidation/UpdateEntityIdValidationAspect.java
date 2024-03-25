@@ -1,6 +1,6 @@
-package com.example.noaadatamanager.aspects.updateValidation;
+package com.example.noaadatamanager.aspects.validation.updateValidation;
 
-import com.example.noaadatamanager.dtos.update.UpdateDto;
+import com.example.noaadatamanager.dtos.update.interfaces.UpdateDto;
 import com.example.noaadatamanager.exceptions.ValidationException;
 import com.example.noaadatamanager.repository.MeasurementRepository;
 import com.example.noaadatamanager.repository.StationRepository;
@@ -24,11 +24,14 @@ public class UpdateEntityIdValidationAspect {
         this.stationRepository = stationRepository;
     }
 
-    @Pointcut("args(com.example.noaadatamanager.dtos.update.UpdateDto)")
+    @Pointcut("args(com.example.noaadatamanager.dtos.update.interfaces.UpdateDto)")
     public void updateDtoParameter(){}
 
     @Pointcut("execution(* com.example.noaadatamanager.controller.StationController.*(..))")
     public void stationControllerMethods(){}
+
+    @Pointcut("execution(* com.example.noaadatamanager.controller.MeasurementController.*(..))")
+    public void measurementControllerMethods(){}
 
     @Before("updateDtoParameter() && stationControllerMethods()")
     public void validateStationUpdate(JoinPoint joinPoint){
@@ -38,4 +41,11 @@ public class UpdateEntityIdValidationAspect {
         }
     }
 
+    @Before("updateDtoParameter() && measurementControllerMethods()")
+    public void validateMeasurementUpdate(JoinPoint joinPoint){
+        var updateDto = (UpdateDto) joinPoint.getArgs()[0];
+        if(!measurementRepository.existsById(updateDto.getEntityId().toString())){
+            throw new ValidationException("Measurement with id \"" + updateDto.getEntityId() + "\" does not exist");
+        }
+    }
 }

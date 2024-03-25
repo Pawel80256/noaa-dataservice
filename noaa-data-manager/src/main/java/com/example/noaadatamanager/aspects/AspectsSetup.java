@@ -1,6 +1,13 @@
 package com.example.noaadatamanager.aspects;
 
-import com.example.noaadatamanager.aspects.updateValidation.UpdateEntityIdValidationAspect;
+import com.example.noaadatamanager.aspects.audit.MeasurementAuditAspect;
+import com.example.noaadatamanager.aspects.audit.StationAuditAspect;
+import com.example.noaadatamanager.aspects.authorization.AuthorizationAspect;
+import com.example.noaadatamanager.aspects.validation.createValidation.CreateMeasurementValidationAspect;
+import com.example.noaadatamanager.aspects.validation.createValidation.CreateStationValidationAspect;
+import com.example.noaadatamanager.aspects.validation.deleteValidation.DeleteMeasurementValidationAspect;
+import com.example.noaadatamanager.aspects.validation.deleteValidation.DeleteStationValidationAspect;
+import com.example.noaadatamanager.aspects.validation.updateValidation.UpdateEntityIdValidationAspect;
 import com.example.noaadatamanager.repository.*;
 import com.example.noaadatamanager.repository.audit.MeasurementAuditRepository;
 import com.example.noaadatamanager.repository.audit.StationAuditRepository;
@@ -38,18 +45,18 @@ public class AspectsSetup {
         Aspects.aspectOf(AuthorizationAspect.class)
                 .setJwtService(this.jwtService);
 
-        Aspects.aspectOf(MeasurementValidationAspect.class)
+        Aspects.aspectOf(CreateMeasurementValidationAspect.class)
                 .setNoaaDataRepository(this.measurementRepository);
-        Aspects.aspectOf(MeasurementValidationAspect.class)
+        Aspects.aspectOf(CreateMeasurementValidationAspect.class)
                 .setNoaaDataTypeRepository(this.dataTypeRepository);
-        Aspects.aspectOf(MeasurementValidationAspect.class)
+        Aspects.aspectOf(CreateMeasurementValidationAspect.class)
                 .setNoaaStationRepository(this.stationRepository);
 
-        Aspects.aspectOf(StationValidationAspect.class)
+        Aspects.aspectOf(CreateStationValidationAspect.class)
                 .setNoaaLocationRepository(this.locationRepository);
-        Aspects.aspectOf(StationValidationAspect.class)
+        Aspects.aspectOf(CreateStationValidationAspect.class)
                 .setNoaaStationRepository(this.stationRepository);
-        Aspects.aspectOf(StationValidationAspect.class)
+        Aspects.aspectOf(CreateStationValidationAspect.class)
                 .setNoaaDataRepository(this.measurementRepository);
 
         Aspects.aspectOf(MeasurementAuditAspect.class)
@@ -65,6 +72,14 @@ public class AspectsSetup {
         Aspects.aspectOf(UpdateEntityIdValidationAspect.class)
                 .setStationRepository(this.stationRepository);
         Aspects.aspectOf(UpdateEntityIdValidationAspect.class)
+                .setMeasurementRepository(this.measurementRepository);
+
+        Aspects.aspectOf(DeleteStationValidationAspect.class)
+                .setMeasurementRepository(this.measurementRepository);
+        Aspects.aspectOf(DeleteStationValidationAspect.class)
+                .setStationRepository(this.stationRepository);
+
+        Aspects.aspectOf(DeleteMeasurementValidationAspect.class)
                 .setMeasurementRepository(this.measurementRepository);
     }
 }

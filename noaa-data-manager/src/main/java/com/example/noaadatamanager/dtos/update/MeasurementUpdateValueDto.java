@@ -1,6 +1,8 @@
 package com.example.noaadatamanager.dtos.update;
 
-public class MeasurementUpdateValueDto implements UpdateDto{
+import com.example.noaadatamanager.dtos.update.interfaces.UpdateDto;
+
+public class MeasurementUpdateValueDto implements UpdateDto {
     private String measurementId;
     private Integer newValue;
 

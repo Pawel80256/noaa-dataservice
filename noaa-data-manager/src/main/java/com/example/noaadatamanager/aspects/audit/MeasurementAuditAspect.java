@@ -1,6 +1,8 @@
-package com.example.noaadatamanager.aspects;
+package com.example.noaadatamanager.aspects.audit;
 
+import com.example.noaadatamanager.aspects.AspectUtils;
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
+import com.example.noaadatamanager.exceptions.ValidationException;
 import com.example.noaadatamanager.models.audit.MeasurementAudit;
 import com.example.noaadatamanager.repository.audit.MeasurementAuditRepository;
 import com.example.noaadatamanager.repository.audit.StationAuditRepository;
@@ -41,7 +43,7 @@ public class MeasurementAuditAspect {
                 .recordId(measurementId)
                 .operation("CREATE")
                 .timestamp(LocalDateTime.now())
-                .user(jwtService.getSubFromToken(extractTokenFromHeader()))
+                .user(jwtService.getSubFromToken(AspectUtils.extractTokenFromHeader()))
                 .build();
 
         measurementAuditRepository.save(measurementAudit);
@@ -58,16 +60,11 @@ public class MeasurementAuditAspect {
                 .recordId(measurementId)
                 .operation("DELETE")
                 .timestamp(LocalDateTime.now())
-                .user(jwtService.getSubFromToken(extractTokenFromHeader()))
+                .user(jwtService.getSubFromToken(AspectUtils.extractTokenFromHeader()))
                 .build();
 
         measurementAuditRepository.save(measurementAudit);
     }
 
-    private String extractTokenFromHeader(){
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String authorizationHeader = request.getHeader("Authorization");
 
-        return authorizationHeader.substring(7);
-    }
 }

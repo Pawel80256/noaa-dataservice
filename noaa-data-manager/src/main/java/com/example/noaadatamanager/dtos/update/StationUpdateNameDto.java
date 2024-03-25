@@ -1,6 +1,8 @@
 package com.example.noaadatamanager.dtos.update;
 
-public class StationUpdateNameDto implements UpdateDto{
+import com.example.noaadatamanager.dtos.update.interfaces.UpdateDto;
+
+public class StationUpdateNameDto implements UpdateDto {
 
     private String stationId;
 

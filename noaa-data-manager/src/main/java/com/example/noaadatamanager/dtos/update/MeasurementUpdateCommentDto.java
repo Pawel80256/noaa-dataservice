@@ -1,5 +1,8 @@
 package com.example.noaadatamanager.dtos.update;
 
+import com.example.noaadatamanager.dtos.update.interfaces.AllowedEmptyUpdateValueDto;
+import com.example.noaadatamanager.dtos.update.interfaces.UpdateDto;
+
 public class MeasurementUpdateCommentDto implements UpdateDto, AllowedEmptyUpdateValueDto {
     private String measurementId;
     private String newComment;
