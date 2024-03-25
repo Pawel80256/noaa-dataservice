@@ -52,6 +52,7 @@ public class AuthorizationAspect {
     @Before("authorizedMethods()")
     public void test(JoinPoint joinPoint) {
         String token = AspectUtils.extractTokenFromHeader();
+
         List<Role> tokenRoles = jwtService.getRolesFromToken(token);
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
