@@ -1,6 +1,7 @@
 package com.example.noaadatamanager.service;
 
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
+import com.example.noaadatamanager.dtos.output.MeasurementExtremeValuesDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateCommentDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateValueDto;
 import com.example.noaadatamanager.mapper.MeasurementMapper;
@@ -24,24 +25,6 @@ public class MeasurementService {
         this.restClient = restClient;
     }
 
-    public Double calculateAverage(List<String> measurementIds){
-
-        List<Measurement> measurements = measurementRepository.findAllById(measurementIds);
-        Double averageValue = null;
-        try{
-            averageValue = restClient
-                    .post()
-                    .uri("/measurements/average")
-                    .body(measurements)
-                    .retrieve()
-                    .body(Double.class);
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
-
-        return averageValue;
-    }
-
     public String create(MeasurementInputDto measurementInputDto){
         Measurement measurement = measurementMapper.mapToEntity(measurementInputDto);
         measurementRepository.save(measurement);
@@ -62,5 +45,40 @@ public class MeasurementService {
         Measurement measurement = measurementRepository.findById(dto.getEntityId()).get();
         measurement.setComment(dto.getUpdatedFieldValue());
         measurementRepository.save(measurement);
+    }
+
+    public Double calculateAverage(List<String> measurementIds){
+        List<Measurement> measurements = measurementRepository.findAllById(measurementIds);
+        Double averageValue;
+        try{
+            averageValue = restClient
+                    .post()
+                    .uri("/measurements/average")
+                    .body(measurements)
+                    .retrieve()
+                    .body(Double.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+        return averageValue;
+    }
+
+    public MeasurementExtremeValuesDto calculateExtremeValues(List<String> measurementIds) {
+        List<Measurement> measurements = measurementRepository.findAllById(measurementIds);
+        MeasurementExtremeValuesDto extremeValues;
+
+        try{
+            extremeValues = restClient
+                    .post()
+                    .uri("/measurements/extremes")
+                    .body(measurements)
+                    .retrieve()
+                    .body(MeasurementExtremeValuesDto.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+        return extremeValues;
     }
 }

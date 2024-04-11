@@ -1,5 +1,6 @@
 package com.example.noaadatacalculationmodule.controller;
 
+import com.example.noaadatacalculationmodule.dtos.MeasurementExtremeValuesDto;
 import com.example.noaadatacalculationmodule.models.Measurement;
 import com.example.noaadatacalculationmodule.service.MeasurementCalcService;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,10 @@ public class MeasurementCalcController {
     @PostMapping("/average")
     public ResponseEntity<Double> calculateAverageValue(@RequestBody List<Measurement> measurements){
         return ResponseEntity.ok(measurementCalcService.calculateAverageValue(measurements));
+    }
+
+    @PostMapping("/extremes")
+    public ResponseEntity<MeasurementExtremeValuesDto> getExtremeValues (@RequestBody List<Measurement> measurements){
+        return ResponseEntity.ok(measurementCalcService.calculateExtremeValues(measurements));
     }
 }

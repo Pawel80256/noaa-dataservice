@@ -2,6 +2,7 @@ package com.example.noaadatamanager.controller;
 
 import com.example.noaadatamanager.annotations.RequestAuthorization;
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
+import com.example.noaadatamanager.dtos.output.MeasurementExtremeValuesDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateCommentDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateValueDto;
 import com.example.noaadatamanager.service.MeasurementService;
@@ -49,8 +50,14 @@ public class MeasurementController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/average")
+    @PostMapping("/average")
     public ResponseEntity<Double> calculateAverage(@RequestBody List<String> measurementIds){
         return ResponseEntity.ok(measurementService.calculateAverage(measurementIds));
     }
+
+    @PostMapping("/extremes")
+    public ResponseEntity<MeasurementExtremeValuesDto> calculateExtremeValues(@RequestBody List<String> measurementIds){
+        return ResponseEntity.ok(measurementService.calculateExtremeValues(measurementIds));
+    }
+
 }
