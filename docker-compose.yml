@@ -33,5 +33,17 @@ services:
     depends_on:
       - postgres
 
+  noaa-data-calculation-module:
+    build:
+      context: ./noaa-data-calculation-module
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+      - "5007:5007"
+    depends_on:
+      - noaa-data-manager
+      - noaa-data-loader
+
+
 volumes:
   postgres_data:

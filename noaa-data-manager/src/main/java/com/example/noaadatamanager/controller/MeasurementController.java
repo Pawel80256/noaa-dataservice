@@ -8,14 +8,17 @@ import com.example.noaadatamanager.service.MeasurementService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClient;
 
 @RestController
 @RequestMapping("measurements")
 public class MeasurementController {
     private final MeasurementService measurementService;
+    private final RestClient restClient;
 
-    public MeasurementController(MeasurementService measurementService) {
+    public MeasurementController(MeasurementService measurementService, RestClient restClient) {
         this.measurementService = measurementService;
+        this.restClient = restClient;
     }
 
     @PostMapping
@@ -44,5 +47,16 @@ public class MeasurementController {
     public ResponseEntity<Void> updateComment(@RequestBody MeasurementUpdateCommentDto dto){
         measurementService.updateComment(dto);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/calcModuleTest")
+    public ResponseEntity<String> test(){
+        String result = restClient
+                .get()
+                .uri("/measurements")
+                .retrieve()
+                .body(String.class);
+
+        return ResponseEntity.ok(result);
     }
 }
