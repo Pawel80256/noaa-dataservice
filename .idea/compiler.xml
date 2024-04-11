@@ -13,12 +13,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="noaa-data-manager" />
         <module name="NOAA-data-loader" />
+        <module name="noaa-data-calculation-module" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="NOAA-data-loader" options="-parameters" />
+      <module name="noaa-data-calculation-module" options="-parameters" />
       <module name="noaa-data-manager" options="-parameters" />
     </option>
   </component>
