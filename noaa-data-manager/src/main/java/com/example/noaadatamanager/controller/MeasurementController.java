@@ -10,15 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("measurements")
 public class MeasurementController {
     private final MeasurementService measurementService;
-    private final RestClient restClient;
 
-    public MeasurementController(MeasurementService measurementService, RestClient restClient) {
+    public MeasurementController(MeasurementService measurementService) {
         this.measurementService = measurementService;
-        this.restClient = restClient;
     }
 
     @PostMapping
@@ -49,14 +49,8 @@ public class MeasurementController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/calcModuleTest")
-    public ResponseEntity<String> test(){
-        String result = restClient
-                .get()
-                .uri("/measurements")
-                .retrieve()
-                .body(String.class);
-
-        return ResponseEntity.ok(result);
+    @GetMapping("/average")
+    public ResponseEntity<Double> calculateAverage(@RequestBody List<String> measurementIds){
+        return ResponseEntity.ok(measurementService.calculateAverage(measurementIds));
     }
 }

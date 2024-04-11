@@ -1,6 +1,5 @@
 HELP.md
 target/
-logs/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -34,3 +33,5 @@ build/
 .vscode/
 
 data/
+logs/
+logs/data_loader.log
