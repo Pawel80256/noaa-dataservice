@@ -1,7 +1,7 @@
 package com.example.noaadatamanager.service;
 
 import com.example.noaadatamanager.dtos.input.UserInputDto;
-import com.example.noaadatamanager.models.User;
+import com.example.noaadatamanager.entities.User;
 import com.example.noaadatamanager.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

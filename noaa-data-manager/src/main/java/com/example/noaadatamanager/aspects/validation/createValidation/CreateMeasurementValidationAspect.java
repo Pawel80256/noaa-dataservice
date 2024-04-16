@@ -2,9 +2,8 @@ package com.example.noaadatamanager.aspects.validation.createValidation;
 
 import com.example.noaadatamanager.aspects.AspectUtils;
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
-import com.example.noaadatamanager.dtos.input.StationInputDto;
 import com.example.noaadatamanager.exceptions.ValidationException;
-import com.example.noaadatamanager.models.Station;
+import com.example.noaadatamanager.entities.Station;
 import com.example.noaadatamanager.repository.MeasurementRepository;
 import com.example.noaadatamanager.repository.DataTypeRepository;
 import com.example.noaadatamanager.repository.StationRepository;

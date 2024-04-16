@@ -2,13 +2,10 @@ package com.example.noaadatamanager.service;
 
 import com.example.noaadatamanager.dtos.input.StationInputDto;
 import com.example.noaadatamanager.dtos.update.StationUpdateNameDto;
-import com.example.noaadatamanager.exceptions.ValidationException;
 import com.example.noaadatamanager.mapper.StationMapper;
-import com.example.noaadatamanager.models.Station;
+import com.example.noaadatamanager.entities.Station;
 import com.example.noaadatamanager.repository.StationRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class StationService {

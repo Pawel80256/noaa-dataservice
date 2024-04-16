@@ -1,6 +1,6 @@
 package com.master.dataloader.dtos;
 
-import com.master.dataloader.models.LocationCategory;
+import com.master.dataloader.entities.LocationCategory;
 
 public class LocationCategoryDto {
     private String id;

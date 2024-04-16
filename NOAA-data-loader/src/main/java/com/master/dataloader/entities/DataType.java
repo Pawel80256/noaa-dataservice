@@ -1,4 +1,4 @@
-package com.master.dataloader.models;
+package com.master.dataloader.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

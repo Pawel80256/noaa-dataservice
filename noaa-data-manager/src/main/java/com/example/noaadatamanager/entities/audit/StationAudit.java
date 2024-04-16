@@ -1,4 +1,4 @@
-package com.example.noaadatamanager.models.audit;
+package com.example.noaadatamanager.entities.audit;
 
 import jakarta.persistence.*;
 

@@ -1,16 +1,18 @@
-package com.master.dataloader.models;
+package com.example.noaadatamanager.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "location")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Location {
+@Table(name = "data_type")
+public class DataType {
     @Id
     @Column(name = "id")
     private String id;
@@ -23,27 +25,17 @@ public class Location {
     @JsonProperty("maxdate")
     private LocalDate maxDate;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "data_coverage")
     @JsonProperty("datacoverage")
     private Double dataCoverage;
 
-    @Column(name = "name")
-    private String name;
-
-    @ManyToOne
-    @JoinColumn(name = "location_category")
-    @JsonIgnore
-    private LocationCategory locationCategory;
-
-    @ManyToOne
-    @JoinColumn(name = "parent")
-    @JsonIgnore
-    private Location parent;
-
-    public Location() {
+    public DataType() {
     }
 
-    public Location(String id) {
+    public DataType(String id) {
         this.id = id;
     }
 
@@ -59,20 +51,12 @@ public class Location {
         return maxDate;
     }
 
-    public Double getDataCoverage() {
-        return dataCoverage;
-    }
-
     public String getName() {
         return name;
     }
 
-    public LocationCategory getNoaaLocationCategory() {
-        return locationCategory;
-    }
-
-    public Location getParent() {
-        return parent;
+    public Double getDataCoverage() {
+        return dataCoverage;
     }
 
     public void setId(String id) {
@@ -87,19 +71,11 @@ public class Location {
         this.maxDate = maxDate;
     }
 
-    public void setDataCoverage(Double dataCoverage) {
-        this.dataCoverage = dataCoverage;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setNoaaLocationCategory(LocationCategory locationCategory) {
-        this.locationCategory = locationCategory;
-    }
-
-    public void setParent(Location parent) {
-        this.parent = parent;
+    public void setDataCoverage(Double dataCoverage) {
+        this.dataCoverage = dataCoverage;
     }
 }

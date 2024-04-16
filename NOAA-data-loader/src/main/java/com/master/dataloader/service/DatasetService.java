@@ -2,7 +2,7 @@ package com.master.dataloader.service;
 
 import com.master.dataloader.constant.URLs;
 import com.master.dataloader.dtos.DatasetDto;
-import com.master.dataloader.models.Dataset;
+import com.master.dataloader.entities.Dataset;
 import com.master.dataloader.repository.DatasetRepository;
 import com.master.dataloader.utils.Utils;
 import org.springframework.stereotype.Service;

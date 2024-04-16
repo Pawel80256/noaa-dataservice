@@ -1,5 +1,6 @@
-package com.example.noaadatamanager.models;
+package com.example.noaadatamanager.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
@@ -11,36 +12,42 @@ import java.time.LocalDate;
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Table(name = "data_type")
-public class DataType {
+@Table(name = "dataset")
+public class Dataset {
     @Id
     @Column(name = "id")
     private String id;
 
-    @Column(name = "min_date")
-    @JsonProperty("mindate")
-    private LocalDate minDate;
-
-    @Column(name = "max_date")
-    @JsonProperty("maxdate")
-    private LocalDate maxDate;
-
-    @Column(name = "name")
-    private String name;
+    @Column(name = "uid")
+    private String uid;
 
     @Column(name = "data_coverage")
     @JsonProperty("datacoverage")
     private Double dataCoverage;
 
-    public DataType() {
-    }
+    @Column(name = "min_date")
+    @JsonProperty("mindate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate minDate;
 
-    public DataType(String id) {
-        this.id = id;
-    }
+    @Column(name = "max_date")
+    @JsonProperty("maxdate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate maxDate;
+
+    @Column(name = "name")
+    private String name;
 
     public String getId() {
         return id;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public Double getDataCoverage() {
+        return dataCoverage;
     }
 
     public LocalDate getMinDate() {
@@ -55,12 +62,16 @@ public class DataType {
         return name;
     }
 
-    public Double getDataCoverage() {
-        return dataCoverage;
-    }
-
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public void setDataCoverage(Double dataCoverage) {
+        this.dataCoverage = dataCoverage;
     }
 
     public void setMinDate(LocalDate minDate) {
@@ -73,9 +84,5 @@ public class DataType {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setDataCoverage(Double dataCoverage) {
-        this.dataCoverage = dataCoverage;
     }
 }

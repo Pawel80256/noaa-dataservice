@@ -5,14 +5,12 @@ import com.example.noaadatamanager.dtos.output.MeasurementExtremeValuesDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateCommentDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateValueDto;
 import com.example.noaadatamanager.mapper.MeasurementMapper;
-import com.example.noaadatamanager.models.Measurement;
+import com.example.noaadatamanager.entities.Measurement;
 import com.example.noaadatamanager.repository.MeasurementRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MeasurementService {

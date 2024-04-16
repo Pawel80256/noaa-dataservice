@@ -1,6 +1,6 @@
 package com.master.dataloader.dtos;
 
-import com.master.dataloader.models.DataCategory;
+import com.master.dataloader.entities.DataCategory;
 
 public class DataCategoryDto {
     private String id;

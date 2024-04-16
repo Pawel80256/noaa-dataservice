@@ -1,4 +1,4 @@
-package com.example.noaadatamanager.models;
+package com.master.dataloader.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -67,7 +67,7 @@ public class Location {
         return name;
     }
 
-    public LocationCategory getLocationCategory() {
+    public LocationCategory getNoaaLocationCategory() {
         return locationCategory;
     }
 
@@ -95,7 +95,7 @@ public class Location {
         this.name = name;
     }
 
-    public void setLocationCategory(LocationCategory locationCategory) {
+    public void setNoaaLocationCategory(LocationCategory locationCategory) {
         this.locationCategory = locationCategory;
     }
 

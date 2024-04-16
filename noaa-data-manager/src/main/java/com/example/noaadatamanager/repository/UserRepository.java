@@ -1,6 +1,6 @@
 package com.example.noaadatamanager.repository;
 
-import com.example.noaadatamanager.models.User;
+import com.example.noaadatamanager.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -2,9 +2,9 @@ package com.master.dataloader.service;
 
 import com.master.dataloader.constant.URLs;
 import com.master.dataloader.dtos.MeasurementDto;
-import com.master.dataloader.models.Measurement;
-import com.master.dataloader.models.DataType;
-import com.master.dataloader.models.Station;
+import com.master.dataloader.entities.Measurement;
+import com.master.dataloader.entities.DataType;
+import com.master.dataloader.entities.Station;
 import com.master.dataloader.repository.MeasurementRepository;
 import com.master.dataloader.repository.StationRepository;
 import com.master.dataloader.utils.Utils;

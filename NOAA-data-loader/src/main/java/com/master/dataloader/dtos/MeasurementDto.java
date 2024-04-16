@@ -1,6 +1,6 @@
 package com.master.dataloader.dtos;
 
-import com.master.dataloader.models.Measurement;
+import com.master.dataloader.entities.Measurement;
 
 import java.time.LocalDate;
 

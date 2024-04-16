@@ -3,33 +3,20 @@ package com.example.noaadatamanager.aspects.authorization;
 import com.example.noaadatamanager.annotations.RequestAuthorization;
 import com.example.noaadatamanager.aspects.AspectUtils;
 import com.example.noaadatamanager.exceptions.UnauthorizedAccessException;
-import com.example.noaadatamanager.models.Role;
+import com.example.noaadatamanager.entities.Role;
 import com.example.noaadatamanager.repository.RoleRepository;
 import com.example.noaadatamanager.service.JwtService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.hibernate.annotations.Comment;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.crypto.SecretKey;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Aspect

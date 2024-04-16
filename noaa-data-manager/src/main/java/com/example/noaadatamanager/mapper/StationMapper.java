@@ -1,7 +1,7 @@
 package com.example.noaadatamanager.mapper;
 
 import com.example.noaadatamanager.dtos.input.StationInputDto;
-import com.example.noaadatamanager.models.Station;
+import com.example.noaadatamanager.entities.Station;
 import com.example.noaadatamanager.repository.LocationRepository;
 import org.springframework.stereotype.Component;
 

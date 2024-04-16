@@ -1,6 +1,6 @@
 package com.master.dataloader.repository;
 
-import com.master.dataloader.models.LocationCategory;
+import com.master.dataloader.entities.LocationCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.example.noaadatamanager.models;
+package com.example.noaadatamanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

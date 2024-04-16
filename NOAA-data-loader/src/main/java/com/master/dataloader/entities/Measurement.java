@@ -1,4 +1,4 @@
-package com.master.dataloader.models;
+package com.master.dataloader.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "data")
+@Table(name = "measurement")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Measurement {
 
@@ -21,7 +21,7 @@ public class Measurement {
     private DataType dataType;
 
     @ManyToOne
-    @JoinColumn(name = "station")
+    @JoinColumn(name = "station_id")
     private Station station;
 
     @Column(name = "date")

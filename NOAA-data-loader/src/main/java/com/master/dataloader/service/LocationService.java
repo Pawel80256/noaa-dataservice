@@ -2,8 +2,8 @@ package com.master.dataloader.service;
 
 import com.master.dataloader.constant.URLs;
 import com.master.dataloader.dtos.LocationDto;
-import com.master.dataloader.models.Location;
-import com.master.dataloader.models.LocationCategory;
+import com.master.dataloader.entities.Location;
+import com.master.dataloader.entities.LocationCategory;
 import com.master.dataloader.repository.LocationRepository;
 import com.master.dataloader.utils.Utils;
 import org.springframework.stereotype.Service;

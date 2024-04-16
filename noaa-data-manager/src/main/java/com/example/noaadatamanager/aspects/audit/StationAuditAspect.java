@@ -1,16 +1,13 @@
 package com.example.noaadatamanager.aspects.audit;
 
-import com.example.noaadatamanager.exceptions.ValidationException;
-import com.example.noaadatamanager.models.audit.StationAudit;
+import com.example.noaadatamanager.entities.audit.StationAudit;
 import com.example.noaadatamanager.repository.audit.StationAuditRepository;
 import com.example.noaadatamanager.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.hibernate.mapping.Join;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

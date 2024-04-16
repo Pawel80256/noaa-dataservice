@@ -2,8 +2,8 @@ package com.master.dataloader.service;
 
 import com.master.dataloader.constant.URLs;
 import com.master.dataloader.dtos.StationDto;
-import com.master.dataloader.models.Location;
-import com.master.dataloader.models.Station;
+import com.master.dataloader.entities.Location;
+import com.master.dataloader.entities.Station;
 import com.master.dataloader.repository.StationRepository;
 import com.master.dataloader.utils.Utils;
 import org.springframework.stereotype.Service;

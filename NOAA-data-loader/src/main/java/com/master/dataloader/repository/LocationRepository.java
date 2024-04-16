@@ -1,6 +1,6 @@
 package com.master.dataloader.repository;
 
-import com.master.dataloader.models.Location;
+import com.master.dataloader.entities.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

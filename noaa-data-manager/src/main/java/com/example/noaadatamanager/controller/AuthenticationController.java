@@ -2,7 +2,7 @@ package com.example.noaadatamanager.controller;
 
 import com.example.noaadatamanager.dtos.input.UserInputDto;
 import com.example.noaadatamanager.dtos.output.JwtResponse;
-import com.example.noaadatamanager.models.User;
+import com.example.noaadatamanager.entities.User;
 import com.example.noaadatamanager.service.JwtService;
 import com.example.noaadatamanager.service.UserService;
 import org.springframework.http.ResponseEntity;

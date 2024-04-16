@@ -1,4 +1,4 @@
-package com.example.noaadatamanager.models;
+package com.master.dataloader.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
