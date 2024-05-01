@@ -35,7 +35,7 @@ public class Utils {
         connection.setRequestProperty("token", ApiProperties.getInstance().getToken());
     }
 
-    public static <T> List<T> getRemoteData(String url, Map<String, Object> params, Class<T> tClass) throws Exception {
+    public static <T> List<T> getRemoteData(String url, Map<String, Object> params, Class<T> tClass) throws IOException {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         JsonNode resultsNode;
 
@@ -73,15 +73,17 @@ public class Utils {
 
     private static ApiResponse sendRequest(String urlString, Map<String,Object> params) throws IOException {
         StringBuilder result = new StringBuilder();
+        InputStream inputStream;
+
         URL url = new URL(Utils.buildUrlWithParams(urlString, params));
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
+
         Utils.addTokenHeader(connection);
 
         int responseCode = connection.getResponseCode();
-        InputStream inputStream;
-
+        
         if (responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
             inputStream = connection.getInputStream();
         } else {

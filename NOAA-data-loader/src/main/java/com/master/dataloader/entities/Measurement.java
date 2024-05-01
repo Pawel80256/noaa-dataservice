@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "measurement")
+@Table(name = "measurements")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Measurement {
 

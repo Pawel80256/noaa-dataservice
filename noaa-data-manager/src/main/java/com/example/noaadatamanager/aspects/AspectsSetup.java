@@ -1,5 +1,6 @@
 package com.example.noaadatamanager.aspects;
 
+import com.example.noaadatamanager.aspects.audit.AuditAspect;
 import com.example.noaadatamanager.aspects.audit.MeasurementAuditAspect;
 import com.example.noaadatamanager.aspects.audit.StationAuditAspect;
 import com.example.noaadatamanager.aspects.authorization.AuthorizationAspect;
@@ -81,5 +82,10 @@ public class AspectsSetup {
 
         Aspects.aspectOf(DeleteMeasurementValidationAspect.class)
                 .setMeasurementRepository(this.measurementRepository);
+
+        Aspects.aspectOf(AuditAspect.class)
+                .setMeasurementAuditRepository(measurementAuditRepository);
+        Aspects.aspectOf(AuditAspect.class)
+                .setStationAuditRepository(stationAuditRepository);
     }
 }

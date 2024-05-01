@@ -35,8 +35,7 @@ public class CommonLogsAspect {
     }
 
     @Pointcut("execution(public * com.master.dataloader.service..*.*(..))")
-    public void publicServiceMethods() {
-    }
+    public void publicServiceMethods() {}
 
     @Around("publicServiceMethods()")
     public Object logServiceMethod(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -48,11 +47,10 @@ public class CommonLogsAspect {
     }
 
     @Pointcut("execution(private * com.master.dataloader.utils.Utils.sendRequest(..))")
-    public void remoteApiCall() {
-    }
+    public void sendRequestMethod() {}
 
-    @Around("remoteApiCall()")
-    public Object logRemoteApiCall(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("sendRequestMethod()")
+    public Object logSendRequestMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         log.info("Starting remote api call {} with params {} ", args[0], args[1]);
         Object result = joinPoint.proceed();

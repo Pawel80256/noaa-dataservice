@@ -19,12 +19,12 @@ public class StationController {
 
     @GetMapping
     public ResponseEntity<List<StationDto>> getAll(){
-        return ResponseEntity.ok(stationService.getAll());
+        return ResponseEntity.ok(stationService.getAllLocal());
     }
 
     @GetMapping ("/remote")
     ResponseEntity<List<StationDto>> getAllRemote(@RequestParam(name = "locationId") String locationId) throws Exception {
-        return ResponseEntity.ok(stationService.getAllRemoteDtos(locationId));
+        return ResponseEntity.ok(stationService.getAllRemote(locationId));
     }
 
     @PutMapping("/load")

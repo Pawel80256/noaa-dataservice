@@ -8,6 +8,7 @@ import com.master.dataloader.repository.StationRepository;
 import com.master.dataloader.utils.Utils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,11 +21,11 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public List<StationDto> getAll() {
+    public List<StationDto> getAllLocal() {
         return stationRepository.findAll().stream().map(StationDto::new).toList();
     }
 
-    public List<StationDto> getAllRemoteDtos(String locationId) throws Exception {
+    public List<StationDto> getAllRemote(String locationId) throws IOException {
         List<Station> remoteStations = getRemoteByLocationId(locationId);
         remoteStations.forEach(s -> s.setNoaaLocation(new Location(locationId)));
         List<StationDto> result = remoteStations.stream().map(StationDto::new).toList();
@@ -38,7 +39,7 @@ public class StationService {
         return result;
     }
 
-    public void loadByIds(String locationId, List<String> stationIds) throws Exception {
+    public void loadByIds(String locationId, List<String> stationIds) throws IOException {
         List<Station> remoteByLocationId = getRemoteByLocationId(locationId);
         List<Station> stationsToLoad = remoteByLocationId.stream()
                 .filter(station -> stationIds.contains(station.getId())).toList();
@@ -56,7 +57,7 @@ public class StationService {
     }
 
 
-    private List<Station> getRemoteByLocationId(String locationId) throws Exception {
+    private List<Station> getRemoteByLocationId(String locationId) throws IOException {
         Map<String,Object> requestParams = Utils.getBasicParams();
         requestParams.put("locationid",locationId);
 

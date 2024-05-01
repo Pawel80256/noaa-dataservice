@@ -40,7 +40,7 @@ public class StationAuditAspect {
                 .user(jwtService.getSubFromToken(extractTokenFromHeader()))
                 .build();
 
-        stationAuditRepository.save(stationAudit);
+//        stationAuditRepository.save(stationAudit);
     }
 
     @Pointcut("execution(* com.example.noaadatamanager.service.StationService.delete(..))")
@@ -57,15 +57,12 @@ public class StationAuditAspect {
                 .user(jwtService.getSubFromToken(extractTokenFromHeader()))
                 .build();
 
-        stationAuditRepository.save(stationAudit);
+//        stationAuditRepository.save(stationAudit);
     }
 
     private String extractTokenFromHeader(){
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String authorizationHeader = request.getHeader("Authorization");
-
-
-
         return authorizationHeader.substring(7);
     }
 }

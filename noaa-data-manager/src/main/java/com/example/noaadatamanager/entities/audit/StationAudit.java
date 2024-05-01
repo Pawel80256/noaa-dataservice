@@ -18,7 +18,7 @@ public class StationAudit {
     @Column(name = "operation")
     private String operation;
 
-    @Column(name = "userr")
+    @Column(name = "username")
     private String user;
 
     @Column(name = "timestamp")

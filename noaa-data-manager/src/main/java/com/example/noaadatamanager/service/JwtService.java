@@ -28,7 +28,7 @@ public class JwtService {
 
     public String generateToken(User user) {
         long nowMillis = System.currentTimeMillis();
-        long expMillis = nowMillis + 360;//0000; // 60 minutes
+        long expMillis = nowMillis + 3600000; // 60 minutes
 
         return Jwts.builder()
                 .subject(user.getUsername())
