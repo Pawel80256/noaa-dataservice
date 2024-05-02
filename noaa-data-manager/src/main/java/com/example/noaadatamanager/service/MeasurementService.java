@@ -4,6 +4,7 @@ import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
 import com.example.noaadatamanager.dtos.output.MeasurementExtremeValuesDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateCommentDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateValueDto;
+import com.example.noaadatamanager.exceptions.ValidationException;
 import com.example.noaadatamanager.mapper.MeasurementMapper;
 import com.example.noaadatamanager.entities.Measurement;
 import com.example.noaadatamanager.repository.MeasurementRepository;

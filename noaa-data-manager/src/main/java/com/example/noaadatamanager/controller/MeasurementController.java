@@ -34,6 +34,7 @@ public class MeasurementController {
     public ResponseEntity<Void> delete(@RequestParam(name = "measurementId") String measurementId){
         measurementService.delete(measurementId);
         return ResponseEntity.ok().build();
+//        return ResponseEntity.ok(measurementService.delete(measurementId));
     }
 
     @PutMapping("/value")
