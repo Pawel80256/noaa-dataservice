@@ -34,16 +34,18 @@ public class MeasurementService {
         measurementRepository.deleteById(measurementId);
     }
 
-    public void updateValue(MeasurementUpdateValueDto dto) {
+    public String updateValue(MeasurementUpdateValueDto dto) {
         Measurement measurement = measurementRepository.findById(dto.getEntityId()).get();
         measurement.setValue(dto.getUpdatedFieldValue());
         measurementRepository.save(measurement);
+        return measurement.getId();
     }
 
-    public void updateComment(MeasurementUpdateCommentDto dto) {
+    public String updateComment(MeasurementUpdateCommentDto dto) {
         Measurement measurement = measurementRepository.findById(dto.getEntityId()).get();
         measurement.setComment(dto.getUpdatedFieldValue());
         measurementRepository.save(measurement);
+        return measurement.getId();
     }
 
     public Double calculateAverage(List<String> measurementIds){

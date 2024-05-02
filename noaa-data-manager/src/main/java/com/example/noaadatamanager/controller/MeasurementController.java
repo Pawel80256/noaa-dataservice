@@ -39,16 +39,14 @@ public class MeasurementController {
 
     @PutMapping("/value")
     @RequestAuthorization(roles = {"ADMIN","MEASUREMENT_MANAGER"})
-    public ResponseEntity<Void> updateValue(@RequestBody MeasurementUpdateValueDto dto){
-        measurementService.updateValue(dto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> updateValue(@RequestBody MeasurementUpdateValueDto dto){
+        return ResponseEntity.ok(measurementService.updateValue(dto));
     }
 
     @PutMapping("/comment")
     @RequestAuthorization(roles = {"ADMIN","MEASUREMENT_MANAGER"})
-    public ResponseEntity<Void> updateComment(@RequestBody MeasurementUpdateCommentDto dto){
-        measurementService.updateComment(dto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> updateComment(@RequestBody MeasurementUpdateCommentDto dto){
+        return ResponseEntity.ok(measurementService.updateComment(dto));
     }
 
     @PostMapping("/average")

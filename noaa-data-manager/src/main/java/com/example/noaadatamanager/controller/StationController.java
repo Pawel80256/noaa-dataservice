@@ -33,9 +33,8 @@ public class StationController {
 
     @PutMapping("/name")
     @RequestAuthorization(roles = {"ADMIN","STATION_MANAGER"})
-    public ResponseEntity<Void> updateName(@RequestBody StationUpdateNameDto stationUpdateNameDto){
-        stationService.updateName(stationUpdateNameDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> updateName(@RequestBody StationUpdateNameDto stationUpdateNameDto){
+        return ResponseEntity.ok(stationService.updateName(stationUpdateNameDto));
     }
 
 }

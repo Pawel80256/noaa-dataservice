@@ -40,7 +40,8 @@ public class AuditAspect {
 
     @Pointcut("execution(* com.example.noaadatamanager.service.*.create(..))")
     public void createMethods(){}
-
+    @Pointcut("execution(* com.example.noaadatamanager.service.*.update*(..))")
+    public void updateMethods(){}
     @Pointcut("execution(* com.example.noaadatamanager.service.*.delete(..))")
     public void deleteMethods(){}
 
@@ -73,13 +74,41 @@ public class AuditAspect {
         }
     }
 
+    @AfterReturning(pointcut = "updateMethods()", returning = "entityId")
+    public void addUpdateAudit(JoinPoint joinPoint, String entityId){
+        String sourceServiceName = joinPoint.getSignature().getDeclaringTypeName();
+        String resource = detectResource(sourceServiceName);
+
+        switch (resource){
+            case "STATION" -> {
+                stationAuditRepository.save(
+                        new StationAudit.Builder()
+                                .recordId(entityId)
+                                .operation("UPDATE")
+                                .timestamp(LocalDateTime.now())
+                                .user(jwtService.getSubFromToken(extractTokenFromHeader()))
+                                .build()
+                );
+            }
+            case "MEASUREMENT" -> {
+                measurementAuditRepository.save(
+                        new MeasurementAudit.Builder()
+                                .recordId(entityId)
+                                .operation("UPDATE")
+                                .timestamp(LocalDateTime.now())
+                                .user(jwtService.getSubFromToken(AspectUtils.extractTokenFromHeader()))
+                                .build()
+                );
+            }
+        }
+    }
     @AfterThrowing("deleteMethods()")
     public void handleException(/*JoinPoint joinPoint*/){
         exceptionOccurred = true;
     }
 
     @After("deleteMethods()")
-    public void addDeleteAudit(JoinPoint joinPoint){
+     public void addDeleteAudit(JoinPoint joinPoint){
         try{
             if(!exceptionOccurred){
                 String sourceServiceName = joinPoint.getSignature().getDeclaringTypeName();

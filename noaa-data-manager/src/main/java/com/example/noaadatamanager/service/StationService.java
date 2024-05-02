@@ -27,10 +27,11 @@ public class StationService {
         stationRepository.deleteById(stationId);
     }
 
-    public void updateName(StationUpdateNameDto dto){
+    public String updateName(StationUpdateNameDto dto){
         //moge tak zrobic bo aspekt waliduje id
         Station station  = stationRepository.findById(dto.getEntityId()).get();
         station.setName(dto.getUpdatedFieldValue());
         stationRepository.save(station);
+        return station.getId();
     }
 }
