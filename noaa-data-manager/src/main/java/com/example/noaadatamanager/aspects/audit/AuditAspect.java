@@ -9,13 +9,9 @@ import com.example.noaadatamanager.repository.audit.StationAuditRepository;
 import com.example.noaadatamanager.service.JwtService;
 import com.example.noaadatamanager.service.MeasurementService;
 import com.example.noaadatamanager.service.StationService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDateTime;
 
@@ -26,7 +22,7 @@ public class AuditAspect {
     private MeasurementAuditRepository measurementAuditRepository;
     private JwtService jwtService;
 
-    private Boolean exceptionOccurred = false;
+    private Boolean deleteExceptionOccurred = false;
 
     public void setStationAuditRepository(StationAuditRepository stationAuditRepository) {
         this.stationAuditRepository = stationAuditRepository;
@@ -63,14 +59,14 @@ public class AuditAspect {
         saveAudit(resource,entityId,"UPDATE");
     }
     @AfterThrowing("deleteMethods()")
-    public void handleException(/*JoinPoint joinPoint*/){
-        exceptionOccurred = true;
+    public void handleException(){
+        deleteExceptionOccurred = true;
     }
 
     @After("deleteMethods()")
      public void addDeleteAudit(JoinPoint joinPoint){
         try{
-            if(!exceptionOccurred){
+            if(!deleteExceptionOccurred){
                 String sourceServiceName = joinPoint.getSignature().getDeclaringTypeName();
                 String resource = detectResource(sourceServiceName);
                 String entityId = (String) joinPoint.getArgs()[0];
@@ -78,7 +74,7 @@ public class AuditAspect {
                 saveAudit(resource,entityId,"DELETE");
             }
         }finally {
-            exceptionOccurred = false;
+            deleteExceptionOccurred = false;
         }
     }
 
