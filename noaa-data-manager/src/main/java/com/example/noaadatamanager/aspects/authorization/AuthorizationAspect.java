@@ -40,7 +40,7 @@ public class AuthorizationAspect {
     public void test(JoinPoint joinPoint) {
         String token = AspectUtils.extractTokenFromHeader();
 
-        List<Role> tokenRoles = jwtService.getRolesFromToken(token);
+        List<Role> userRoles = jwtService.getRolesFromToken(token);
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
@@ -52,13 +52,13 @@ public class AuthorizationAspect {
         if (
                 Collections.disjoint(
                         requiredRoles.stream().map(Role::getId).toList(),
-                        tokenRoles.stream().map(Role::getId).toList()
+                        userRoles.stream().map(Role::getId).toList()
                 )
         ) {
             throw new UnauthorizedAccessException("Unauthorized access, required roles: [" +
                     String.join(", ", requiredRolesIds) +
                     "], user roles: [" +
-                    String.join(", ", tokenRoles.stream().map(Role::getId).toList()) +
+                    String.join(", ", userRoles.stream().map(Role::getId).toList()) +
                     "]");
         }
 

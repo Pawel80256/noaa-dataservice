@@ -16,11 +16,11 @@ public class MeasurementUpdateValueDto implements UpdateDto {
         return newValue;
     }
 
-//    public void setMeasurementId(String measurementId) {
-//        this.measurementId = measurementId;
-//    }
-//
-//    public void setNewValue(Integer newValue) {
-//        this.newValue = newValue;
-//    }
+    public void setMeasurementId(String measurementId) {
+        this.measurementId = measurementId;
+    }
+
+    public void setNewValue(Integer newValue) {
+        this.newValue = newValue;
+    }
 }
