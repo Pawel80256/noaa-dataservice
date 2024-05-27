@@ -21,6 +21,17 @@ import java.util.regex.Pattern;
 public class ExceptionHandlingAspect {
     private final Logger log = LoggerFactory.getLogger(ExceptionHandlingAspect.class);
 
+    @Pointcut("execution(* com.master.dataloader.controller..*.*(..))")
+    public void controllerMethods() {}
+    @Pointcut("execution(* com.master.dataloader.service..*.*(..))")
+    public void serviceMethods(){}
+
+    @AfterThrowing(pointcut = "controllerMethods() || serviceMethods()", throwing = "ex")
+    public void handleInternalServerError(JoinPoint joinPoint, Exception ex){
+        String sourceComponentName = joinPoint.getSignature().getDeclaringTypeName();
+        log.error("Internal server error occurred in " + sourceComponentName, ex);
+    }
+
     @Pointcut("execution(* com.master.dataloader.service.*.delete*(..))")
     public void deleteOperation() {}
 
