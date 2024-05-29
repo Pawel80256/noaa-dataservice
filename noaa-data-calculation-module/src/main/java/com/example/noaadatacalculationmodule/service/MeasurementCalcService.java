@@ -1,6 +1,7 @@
 package com.example.noaadatacalculationmodule.service;
 
 import com.example.noaadatacalculationmodule.dtos.MeasurementExtremeValuesDto;
+import com.example.noaadatacalculationmodule.dtos.MeasurementStatisticsDto;
 import com.example.noaadatacalculationmodule.models.Measurement;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class MeasurementCalcService {
+
+    public MeasurementStatisticsDto calculateStatistics(List<Measurement> measurements){
+        var measurementStatisticsDto = new MeasurementStatisticsDto();
+        measurementStatisticsDto.setAverage(calculateAverageValue(measurements));
+        measurementStatisticsDto.setMedian(calculateMedian(measurements));
+        measurementStatisticsDto.setStandardDeviation(calculateStandardDeviation(measurements));
+        measurementStatisticsDto.setMeasurementExtremeValuesDto(calculateExtremeValues(measurements));
+        return measurementStatisticsDto;
+    }
 
     public Double calculateAverageValue(List<Measurement> measurements){
         int counter = 0;

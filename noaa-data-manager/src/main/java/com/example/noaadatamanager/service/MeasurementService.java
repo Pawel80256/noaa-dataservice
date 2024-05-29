@@ -2,6 +2,7 @@ package com.example.noaadatamanager.service;
 
 import com.example.noaadatamanager.dtos.input.MeasurementInputDto;
 import com.example.noaadatamanager.dtos.output.MeasurementExtremeValuesDto;
+import com.example.noaadatamanager.dtos.output.MeasurementStatisticsDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateCommentDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateValueDto;
 import com.example.noaadatamanager.exceptions.ValidationException;
@@ -46,6 +47,24 @@ public class MeasurementService {
         measurement.setComment(dto.getUpdatedFieldValue());
         measurementRepository.save(measurement);
         return measurement.getId();
+    }
+
+    public MeasurementStatisticsDto calculateStatistics(List<String> measurementIds){
+        List<Measurement> measurements = measurementRepository.findAllById(measurementIds);
+        MeasurementStatisticsDto measurementsStatistics;
+
+        try{
+            measurementsStatistics = restClient
+                    .post()
+                    .uri("/measurements/statistics")
+                    .body(measurements)
+                    .retrieve()
+                    .body(MeasurementStatisticsDto.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+        return measurementsStatistics;
     }
 
     public Double calculateAverage(List<String> measurementIds){
