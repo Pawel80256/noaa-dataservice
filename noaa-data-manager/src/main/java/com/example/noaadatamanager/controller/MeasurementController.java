@@ -10,7 +10,6 @@ import com.example.noaadatamanager.service.MeasurementService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
@@ -35,7 +34,6 @@ public class MeasurementController {
     public ResponseEntity<Void> delete(@RequestParam(name = "measurementId") String measurementId){
         measurementService.delete(measurementId);
         return ResponseEntity.ok().build();
-//        return ResponseEntity.ok(measurementService.delete(measurementId));
     }
 
     @PutMapping("/value")

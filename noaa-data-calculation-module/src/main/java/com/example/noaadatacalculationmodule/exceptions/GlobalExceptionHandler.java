@@ -1,6 +1,5 @@
-package com.example.noaadatamanager.exceptions;
+package com.example.noaadatacalculationmodule.exceptions;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,45 +10,11 @@ import org.springframework.web.context.request.WebRequest;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UnauthorizedAccessException.class)
-    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedAccessException ex, WebRequest rq) {
-        ApiError apiError = new ApiError(
-                HttpStatus.UNAUTHORIZED,
-                "Unauthorized access",
-                ex.getMessage(),
-                rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"        );
-
-        return new ResponseEntity<>(apiError, apiError.getStatus());
-    }
-
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<Object> handleValidationException(ValidationException ex, WebRequest rq) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST,
                 "Data validation error",
-                ex.getMessage(),
-                rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"        );
-
-        return new ResponseEntity<>(apiError, apiError.getStatus());
-    }
-
-    //todo: move to aspect
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<Object> handleExpiredJwtException(ExpiredJwtException ex, WebRequest rq){
-        ApiError apiError = new ApiError(
-                HttpStatus.UNAUTHORIZED,
-                "Authorization token is expired",
-                ex.getMessage(),
-                rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"        );
-
-        return new ResponseEntity<>(apiError, apiError.getStatus());
-    }
-
-    @ExceptionHandler(CalculationModuleException.class)
-    public ResponseEntity<Object> handleExpiredJwtException(CalculationModuleException ex, WebRequest rq){
-        ApiError apiError = new ApiError(
-                HttpStatus.UNAUTHORIZED,
-                "Calculation module exception occurred",
                 ex.getMessage(),
                 rq.getDescription(false) + " (" + ((ServletWebRequest) rq).getHttpMethod() + ")"        );
 

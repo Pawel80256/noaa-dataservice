@@ -5,10 +5,12 @@ import com.example.noaadatamanager.dtos.output.MeasurementExtremeValuesDto;
 import com.example.noaadatamanager.dtos.output.MeasurementStatisticsDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateCommentDto;
 import com.example.noaadatamanager.dtos.update.MeasurementUpdateValueDto;
+import com.example.noaadatamanager.exceptions.CalculationModuleException;
 import com.example.noaadatamanager.exceptions.ValidationException;
 import com.example.noaadatamanager.mapper.MeasurementMapper;
 import com.example.noaadatamanager.entities.Measurement;
 import com.example.noaadatamanager.repository.MeasurementRepository;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -67,19 +69,19 @@ public class MeasurementService {
         return measurementsStatistics;
     }
 
-    public Double calculateAverage(List<String> measurementIds){
+    public Double calculateAverage(List<String> measurementIds) {
         List<Measurement> measurements = measurementRepository.findAllById(measurementIds);
         Double averageValue;
-        try{
-            averageValue = restClient
-                    .post()
-                    .uri("/measurements/average")
-                    .body(measurements)
-                    .retrieve()
-                    .body(Double.class);
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
+
+        averageValue = restClient
+                .post()
+                .uri("/measurements/average")
+                .body(measurements)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (request,response) -> {
+                    throw new CalculationModuleException("Invalid input, check calculation module logs for details");
+                 })
+                .body(Double.class);
 
         return averageValue;
     }
