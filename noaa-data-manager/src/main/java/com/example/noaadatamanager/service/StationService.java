@@ -28,7 +28,6 @@ public class StationService {
     }
 
     public String updateName(StationUpdateNameDto dto){
-        //moge tak zrobic bo aspekt waliduje id
         Station station  = stationRepository.findById(dto.getEntityId()).get();
         station.setName(dto.getUpdatedFieldValue());
         stationRepository.save(station);
