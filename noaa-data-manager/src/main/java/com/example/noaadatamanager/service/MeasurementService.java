@@ -82,4 +82,40 @@ public class MeasurementService {
 
         return extremeValues;
     }
+
+    public Double calculateStandardDeviation(List<String> measurementIds){
+        List<Measurement> measurements = measurementRepository.findAllById(measurementIds);
+        Double standardDeviation;
+
+        try{
+            standardDeviation = restClient
+                    .post()
+                    .uri("/measurements/standard-deviation")
+                    .body(measurements)
+                    .retrieve()
+                    .body(Double.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+        return standardDeviation;
+    }
+
+    public Double calculateMedian(List<String> measurementIds){
+        List<Measurement> measurements = measurementRepository.findAllById(measurementIds);
+        Double median;
+
+        try{
+            median = restClient
+                    .post()
+                    .uri("/measurements/median")
+                    .body(measurements)
+                    .retrieve()
+                    .body(Double.class);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+        return median;
+    }
 }

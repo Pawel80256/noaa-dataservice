@@ -25,4 +25,14 @@ public class MeasurementCalcController {
     public ResponseEntity<MeasurementExtremeValuesDto> getExtremeValues (@RequestBody List<Measurement> measurements){
         return ResponseEntity.ok(measurementCalcService.calculateExtremeValues(measurements));
     }
+
+    @PostMapping("/standard-deviation")
+    public ResponseEntity<Double> calculateStandardDeviation(@RequestBody List<Measurement> measurements){
+        return ResponseEntity.ok(measurementCalcService.calculateStandardDeviation(measurements));
+    }
+
+    @PostMapping("/median")
+    public ResponseEntity<Double> calculateMedian(@RequestBody List<Measurement> measurements){
+        return ResponseEntity.ok(measurementCalcService.calculateMedian(measurements));
+    }
 }

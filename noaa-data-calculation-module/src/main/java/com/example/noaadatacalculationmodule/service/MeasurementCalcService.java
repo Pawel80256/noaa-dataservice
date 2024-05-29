@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class MeasurementCalcService {
@@ -56,5 +57,35 @@ public class MeasurementCalcService {
         result.setMinValue(minValueMap);
         result.setMaxValue(maxValueMap);
         return result;
+    }
+
+    public Double calculateStandardDeviation(List<Measurement> measurements) {
+        double mean = calculateAverageValue(measurements);
+        double variance = 0.0;
+
+        for (Measurement measurement : measurements) {
+            variance += Math.pow(measurement.getValue() - mean, 2);
+        }
+
+        variance = variance / measurements.size();
+        return Math.sqrt(variance);
+    }
+
+    public Double calculateMedian(List<Measurement> measurements) {
+        List<Integer> values = measurements.stream()
+                .map(Measurement::getValue)
+                .sorted()
+                .collect(Collectors.toList());
+
+        int size = values.size();
+        if (size == 0) {
+            return null;
+        }
+
+        if (size % 2 == 0) {
+            return (values.get(size / 2 - 1) + values.get(size / 2)) / 2.0;
+        } else {
+            return (double) values.get(size / 2);
+        }
     }
 }

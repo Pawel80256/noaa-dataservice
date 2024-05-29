@@ -59,4 +59,13 @@ public class MeasurementController {
         return ResponseEntity.ok(measurementService.calculateExtremeValues(measurementIds));
     }
 
+    @PostMapping("/standard-deviation")
+    public ResponseEntity<Double> calculateStandardDeviation(@RequestBody List<String> measurementIds){
+        return ResponseEntity.ok(measurementService.calculateStandardDeviation(measurementIds));
+    }
+
+    @PostMapping("/median")
+    public ResponseEntity<Double> calculateMedian(@RequestBody List<String> measurementIds){
+        return ResponseEntity.ok(measurementService.calculateMedian(measurementIds));
+    }
 }
