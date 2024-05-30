@@ -64,15 +64,22 @@ public class MeasurementService {
         List<Measurement> measurements = measurementRepository.findAllById(measurementIds);
         MeasurementStatisticsDto measurementsStatistics;
 
+        long startTime = System.nanoTime();
+
         try{
             measurementsStatistics = restClient
                     .post()
                     .uri("/measurements/statistics")
                     .body(measurements)
                     .retrieve()
+                    .onStatus(HttpStatusCode::is4xxClientError, (request,response) -> {
+                        throw new CalculationModuleException("Invalid input, check calculation module logs for details");
+                    })
                     .body(MeasurementStatisticsDto.class);
-        }catch (Exception e){
-            throw new RuntimeException(e);
+        }finally {
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;
+            log.info("Calculating statistics took <" + duration + "> ns");
         }
 
         return measurementsStatistics;

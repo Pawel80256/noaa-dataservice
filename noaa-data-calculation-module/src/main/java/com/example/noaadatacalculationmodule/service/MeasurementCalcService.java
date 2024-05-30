@@ -22,7 +22,6 @@ public class MeasurementCalcService {
 
     private final Logger log = LoggerFactory.getLogger(MeasurementCalcService.class);
 
-    //walidacja tylko w metodach liczacych pojedyncze parametry, na potrzeby testów wydajnosciowych
     public MeasurementStatisticsDto calculateStatistics(List<Measurement> measurements){
         var measurementStatisticsDto = new MeasurementStatisticsDto();
         measurementStatisticsDto.setAverage(calculateAverageValue(measurements));
@@ -33,23 +32,8 @@ public class MeasurementCalcService {
     }
 
     public Double calculateAverageValue(List<Measurement> measurements){
-//        log.info("Starting average calculation for measurements [" +
-//                String.join(",",measurements.stream().map(Measurement::getId).toList())
-//                + "]"
-//        );
 
         //todo validate if measurements are the same datatype
-//        if(measurements.size() < 2){
-//            String message = "At least 2 measurements required";
-//            log.error(message);
-//            throw new ValidationException(message);
-//        }
-//
-//        if(measurements.size() > 10){
-//            String message = "Max 10 measurements allowed";
-//            log.error(message);
-//            throw new ValidationException(message);
-//        }
 
         int counter = 0;
         double valueSum = 0;
@@ -59,7 +43,6 @@ public class MeasurementCalcService {
             valueSum += measurement.getValue();
         }
 
-//        log.info("Average calculation finished");
         return (valueSum/counter);
     }
 
