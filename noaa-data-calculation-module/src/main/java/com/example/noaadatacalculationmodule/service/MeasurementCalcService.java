@@ -29,12 +29,8 @@ public class MeasurementCalcService {
     }
 
     public Double calculateAverageValue(List<Measurement> measurements){
-        log.info("Starting average calculation for measurements [" +
-                String.join(",",measurements.stream().map(Measurement::getId).toList())
-                + "]"
-        );
+        log.info("Starting average calculation");
 
-        //todo validate if measurements are the same datatype
         if(measurements.size() < 2){
             String message = "At least 2 measurements required";
             log.error(message);
@@ -60,8 +56,17 @@ public class MeasurementCalcService {
     }
 
     public MeasurementExtremeValuesDto calculateExtremeValues(List<Measurement> measurements) {
-        if (measurements.isEmpty()) {
-            return new MeasurementExtremeValuesDto();
+        log.info("Starting extreme values calculation");
+        if(measurements.size() < 2){
+            String message = "At least 2 measurements required";
+            log.error(message);
+            throw new ValidationException(message);
+        }
+
+        if(measurements.size() > 10){
+            String message = "Max 10 measurements allowed";
+            log.error(message);
+            throw new ValidationException(message);
         }
 
         Map<String, Integer> minValueMap = new HashMap<>();
@@ -91,10 +96,26 @@ public class MeasurementCalcService {
         MeasurementExtremeValuesDto result = new MeasurementExtremeValuesDto();
         result.setMinValue(minValueMap);
         result.setMaxValue(maxValueMap);
+
+        log.info("Successfully finished extreme values calculation");
+
         return result;
     }
 
     public Double calculateStandardDeviation(List<Measurement> measurements) {
+        log.info("Starting standard deviation calculation");
+        if(measurements.size() < 2){
+            String message = "At least 2 measurements required";
+            log.error(message);
+            throw new ValidationException(message);
+        }
+
+        if(measurements.size() > 10){
+            String message = "Max 10 measurements allowed";
+            log.error(message);
+            throw new ValidationException(message);
+        }
+
         double mean = calculateAverageValue(measurements);
         double variance = 0.0;
 
@@ -103,10 +124,26 @@ public class MeasurementCalcService {
         }
 
         variance = variance / measurements.size();
+
+        log.info("Successfully finished standard deviation calculation");
+
         return Math.sqrt(variance);
     }
 
     public Double calculateMedian(List<Measurement> measurements) {
+        log.info("Starting median calculation");
+        if(measurements.size() < 2){
+            String message = "At least 2 measurements required";
+            log.error(message);
+            throw new ValidationException(message);
+        }
+
+        if(measurements.size() > 10){
+            String message = "Max 10 measurements allowed";
+            log.error(message);
+            throw new ValidationException(message);
+        }
+
         List<Integer> values = measurements.stream()
                 .map(Measurement::getValue)
                 .sorted()
@@ -116,6 +153,8 @@ public class MeasurementCalcService {
         if (size == 0) {
             return null;
         }
+
+        log.info("Successfully finished median calculation");
 
         if (size % 2 == 0) {
             return (values.get(size / 2 - 1) + values.get(size / 2)) / 2.0;
