@@ -12,10 +12,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("measurements")
-@RequiredArgsConstructor
 public class MeasurementCalcController {
 
     private final MeasurementCalcService measurementCalcService;
+
+    public MeasurementCalcController(MeasurementCalcService measurementCalcService) {
+        this.measurementCalcService = measurementCalcService;
+    }
 
     @PostMapping("/statistics")
     public ResponseEntity<MeasurementStatisticsDto> calculateStatistics(@RequestBody List<Measurement> measurements){
