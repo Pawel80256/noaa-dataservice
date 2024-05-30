@@ -8,6 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,23 +33,23 @@ public class MeasurementCalcService {
     }
 
     public Double calculateAverageValue(List<Measurement> measurements){
-        log.info("Starting average calculation for measurements [" +
-                String.join(",",measurements.stream().map(Measurement::getId).toList())
-                + "]"
-        );
+//        log.info("Starting average calculation for measurements [" +
+//                String.join(",",measurements.stream().map(Measurement::getId).toList())
+//                + "]"
+//        );
 
         //todo validate if measurements are the same datatype
-        if(measurements.size() < 2){
-            String message = "At least 2 measurements required";
-            log.error(message);
-            throw new ValidationException(message);
-        }
-
-        if(measurements.size() > 10){
-            String message = "Max 10 measurements allowed";
-            log.error(message);
-            throw new ValidationException(message);
-        }
+//        if(measurements.size() < 2){
+//            String message = "At least 2 measurements required";
+//            log.error(message);
+//            throw new ValidationException(message);
+//        }
+//
+//        if(measurements.size() > 10){
+//            String message = "Max 10 measurements allowed";
+//            log.error(message);
+//            throw new ValidationException(message);
+//        }
 
         int counter = 0;
         double valueSum = 0;
@@ -55,7 +59,7 @@ public class MeasurementCalcService {
             valueSum += measurement.getValue();
         }
 
-        log.info("Average calculation finished");
+//        log.info("Average calculation finished");
         return (valueSum/counter);
     }
 
