@@ -10,6 +10,8 @@ import com.example.noaadatamanager.exceptions.ValidationException;
 import com.example.noaadatamanager.mapper.MeasurementMapper;
 import com.example.noaadatamanager.entities.Measurement;
 import com.example.noaadatamanager.repository.MeasurementRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -21,6 +23,7 @@ public class MeasurementService {
     private final MeasurementRepository measurementRepository;
     private final MeasurementMapper measurementMapper;
     private final RestClient restClient;
+    private final Logger log = LoggerFactory.getLogger(MeasurementService.class);
     public MeasurementService(MeasurementRepository measurementRepository, MeasurementMapper measurementMapper, RestClient restClient) {
         this.measurementRepository = measurementRepository;
         this.measurementMapper = measurementMapper;
@@ -73,15 +76,23 @@ public class MeasurementService {
         List<Measurement> measurements = measurementRepository.findAllById(measurementIds);
         Double averageValue;
 
-        averageValue = restClient
-                .post()
-                .uri("/measurements/average")
-                .body(measurements)
-                .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, (request,response) -> {
-                    throw new CalculationModuleException("Invalid input, check calculation module logs for details");
-                 })
-                .body(Double.class);
+        long startTime = System.nanoTime();
+
+        try{
+            averageValue = restClient
+                    .post()
+                    .uri("/measurements/average")
+                    .body(measurements)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::is4xxClientError, (request,response) -> {
+                        throw new CalculationModuleException("Invalid input, check calculation module logs for details");
+                    })
+                    .body(Double.class);
+        }finally {
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;
+            log.info("Calculating average value took <" + duration + "> ns");
+        }
 
         return averageValue;
     }

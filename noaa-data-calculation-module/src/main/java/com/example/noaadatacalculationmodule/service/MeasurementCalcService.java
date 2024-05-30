@@ -34,6 +34,7 @@ public class MeasurementCalcService {
                 + "]"
         );
 
+        //todo validate if measurements are the same datatype
         if(measurements.size() < 2){
             String message = "At least 2 measurements required";
             log.error(message);
