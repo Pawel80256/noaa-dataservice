@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class Measurement {
     private String id;
 
-    private DataType dataType;
+    private DataType datatype;
 
     private Station station;
 

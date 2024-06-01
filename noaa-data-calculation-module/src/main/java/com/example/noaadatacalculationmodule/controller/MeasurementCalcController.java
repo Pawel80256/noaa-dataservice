@@ -19,7 +19,9 @@ public class MeasurementCalcController {
 
     @PostMapping("/statistics")
     public ResponseEntity<MeasurementStatisticsDto> calculateStatistics(@RequestBody List<Measurement> measurements){
-        return ResponseEntity.ok(measurementCalcService.calculateStatistics(measurements));
+        return ResponseEntity.ok(
+                measurementCalcService.calculateStatistics(measurements)
+        );
     }
 
     @PostMapping("/average")

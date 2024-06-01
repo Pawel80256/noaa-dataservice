@@ -19,7 +19,7 @@ public class MeasurementCalcService {
     private final Logger log = LoggerFactory.getLogger(MeasurementCalcService.class);
 
     //walidacja tylko w metodach liczacych pojedyncze parametry, na potrzeby testów wydajnosciowych
-    public MeasurementStatisticsDto calculateStatistics(List<Measurement> measurements){
+    public MeasurementStatisticsDto calculateStatistics(List<Measurement> measurements) {
         var measurementStatisticsDto = new MeasurementStatisticsDto();
         measurementStatisticsDto.setAverage(calculateAverageValue(measurements));
         measurementStatisticsDto.setMedian(calculateMedian(measurements));
@@ -37,10 +37,19 @@ public class MeasurementCalcService {
             throw new ValidationException(message);
         }
 
-        if(measurements.size() > 10){
+        if(measurements.size() > 1000){
             String message = "Max 10 measurements allowed";
             log.error(message);
             throw new ValidationException(message);
+        }
+
+        String firstDataTypeId = measurements.getFirst().getDatatype().getId();
+        for (Measurement measurement : measurements) {
+            if (!measurement.getDatatype().getId().equals(firstDataTypeId)) {
+                String message = "All measurements must have the same dataType.id";
+                log.error(message);
+                throw new ValidationException(message);
+            }
         }
 
         int counter = 0;
@@ -63,10 +72,19 @@ public class MeasurementCalcService {
             throw new ValidationException(message);
         }
 
-        if(measurements.size() > 10){
+        if(measurements.size() > 1000){
             String message = "Max 10 measurements allowed";
             log.error(message);
             throw new ValidationException(message);
+        }
+
+        String firstDataTypeId = measurements.getFirst().getDatatype().getId();
+        for (Measurement measurement : measurements) {
+            if (!measurement.getDatatype().getId().equals(firstDataTypeId)) {
+                String message = "All measurements must have the same dataType.id";
+                log.error(message);
+                throw new ValidationException(message);
+            }
         }
 
         Map<String, Integer> minValueMap = new HashMap<>();
@@ -110,10 +128,19 @@ public class MeasurementCalcService {
             throw new ValidationException(message);
         }
 
-        if(measurements.size() > 10){
+        if(measurements.size() > 1000){
             String message = "Max 10 measurements allowed";
             log.error(message);
             throw new ValidationException(message);
+        }
+
+        String firstDataTypeId = measurements.getFirst().getDatatype().getId();
+        for (Measurement measurement : measurements) {
+            if (!measurement.getDatatype().getId().equals(firstDataTypeId)) {
+                String message = "All measurements must have the same dataType.id";
+                log.error(message);
+                throw new ValidationException(message);
+            }
         }
 
         double mean = calculateAverageValue(measurements);
@@ -138,10 +165,19 @@ public class MeasurementCalcService {
             throw new ValidationException(message);
         }
 
-        if(measurements.size() > 10){
+        if(measurements.size() > 1000){
             String message = "Max 10 measurements allowed";
             log.error(message);
             throw new ValidationException(message);
+        }
+
+        String firstDataTypeId = measurements.getFirst().getDatatype().getId();
+        for (Measurement measurement : measurements) {
+            if (!measurement.getDatatype().getId().equals(firstDataTypeId)) {
+                String message = "All measurements must have the same dataType.id";
+                log.error(message);
+                throw new ValidationException(message);
+            }
         }
 
         List<Integer> values = measurements.stream()
